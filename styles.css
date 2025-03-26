@@ -25,6 +25,8 @@
   --btn-hover: #2563eb;
   --transition-speed: 0.2s;
   --animation-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --card-overlay: rgba(255, 255, 255, 0.03);
+  --card-overlay-hover: rgba(255, 255, 255, 0.05);
 
   /* Reduced border radius */
   --border-radius-sm: 4px;
@@ -51,6 +53,8 @@
   --btn-hover: #2563eb;
   --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   --glow: 0 0 10px rgba(59, 130, 246, 0.25);
+  --card-overlay: rgba(0, 0, 0, 0.03);
+  --card-overlay-hover: rgba(0, 0, 0, 0.05);
 }
 
 body {
@@ -114,6 +118,7 @@ body {
   text-align: center;
   transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1),
               opacity 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+              color:var(--text-color)
 }
 
 
@@ -123,9 +128,29 @@ body {
 }
 
 .clock .seconds.counting {
-  animation: countEffect 1.5s cubic-bezier(0.8, 0.0, 0.1, 1);
-  transform-origin: center;
-}
+            animation: countEffect 1.5s cubic-bezier(0.8, 0.0, 0.1, 1);
+            transform-origin: center;
+            display: inline-block;
+        }
+
+        @keyframes countEffect {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            20% {
+                transform: translateY(-15px);
+                opacity: 0;
+            }
+            21% {
+                transform: translateY(15px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
 
 @keyframes pulseTime {
   0% {
@@ -171,6 +196,7 @@ body {
   width: 12px; /* Set fixed width to maintain alignment */
   text-align: center;
   justify-content: center;
+  color:var(--text-color)
 }
 
 @keyframes blinkSeparator {
@@ -352,8 +378,8 @@ body {
   transition: all 0.3s var(--animation-easing);
   position: relative;
   padding: 12px 8px;
+ background-color: var(--card-overlay);
   border-radius: var(--border-radius-md);
-  background-color: rgba(255, 255, 255, 0.03);
   animation: fadeInScale 0.5s var(--animation-easing) backwards;
 }
 
@@ -367,7 +393,7 @@ body {
 
 .bookmark-item:hover {
   transform: translateY(-3px);
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--card-overlay-hover);
 }
 
 .bookmark-icon {
@@ -1021,24 +1047,7 @@ input:checked + .slider:before {
   }
 }
 
-@keyframes countEffect {
-  0% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-  20% {
-    transform: translateY(-15px);
-    opacity: 0;
-  }
-  21% {
-    transform: translateY(15px);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
+
 
 /* Add a subtle hover effect to interactive elements */
 button:active,
@@ -1313,13 +1322,15 @@ select::-webkit-scrollbar-thumb {
   width: 600px;
   max-width: 90vw;
   height: 350px;
-  background-color: rgba(21, 21, 26, 0.95);
+  background-color: var(--modal-bg);
   border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
   box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
   transition: bottom 0.3s var(--animation-easing);
   z-index: 500;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-bottom: none;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .terminal-notes.active {
@@ -1331,7 +1342,7 @@ select::-webkit-scrollbar-thumb {
   align-items: center;
   justify-content: space-between;
   padding: 10px 15px;
-  background-color: rgba(30, 30, 36, 0.9);
+  background-color: var(--modal-bg);
   border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -1372,7 +1383,7 @@ select::-webkit-scrollbar-thumb {
   top: -30px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(21, 21, 26, 0.95);
+  background-color: var(--modal-bg);
   color: var(--text-color);
   border: none;
   border-radius: var(--border-radius-lg) var (--border-radius-lg) 0 0;
@@ -1415,7 +1426,7 @@ select::-webkit-scrollbar-thumb {
 }
 
 .command-input {
-  color: #fff;
+  color: var(--text-color);
   background: transparent;
   outline: none;
   flex: 1;
@@ -1441,7 +1452,7 @@ select::-webkit-scrollbar-thumb {
 }
 
 .note-content {
-  color: #fff;
+  color: var(--text-color);
   flex: 1;
   word-break: break-word;
 }
@@ -1665,7 +1676,7 @@ select::-webkit-scrollbar-thumb {
 
 /* Improve GitHub activity styling */
 .commit-item {
-  background-color: rgba(255, 255, 255, 0.03);
+  background-color: var(--card-overlay);
   border-radius: var(--border-radius-sm);
   padding: 8px 10px;
   margin-bottom: 6px;
@@ -1674,7 +1685,7 @@ select::-webkit-scrollbar-thumb {
 }
 
 .commit-item:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color:  var(--card-overlay-hover);
   transform: translateY(-2px);
 }
 
@@ -1948,11 +1959,12 @@ select::-webkit-scrollbar-thumb {
   display: flex;
   flex-direction: column;
   grid-column: span 2;
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: var(--border-radius-lg);
+ background-color: var(--card-overlay);
+  border-radius: var(--border-radius-md);
   overflow: hidden;
   transition: all 0.3s var(--animation-easing);
   animation: fadeInScale 0.5s var(--animation-easing) backwards;
+
 }
 
 .folder-header {

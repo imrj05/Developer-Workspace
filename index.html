@@ -38,29 +38,9 @@
       <div id="date" class="date"></div>
     </div>
 
-    <!-- Add search bar component here -->
+    <!-- Replace the existing search-container with this simplified version -->
     <div class="search-container">
       <form id="searchForm" class="search-form">
-        <div class="search-engine-selector">
-          <button type="button" id="searchEngineButton" class="search-engine-button">
-            <img src="https://www.google.com/favicon.ico" alt="Google" id="searchEngineIcon">
-            <i class="fas fa-caret-down"></i>
-          </button>
-          <div class="search-engine-dropdown" id="searchEngineDropdown">
-            <div class="search-engine-option selected" data-engine="google" data-icon="https://www.google.com/favicon.ico">
-              <img src="https://www.google.com/favicon.ico" alt="Google"> Google
-            </div>
-            <div class="search-engine-option" data-engine="duckduckgo" data-icon="https://duckduckgo.com/favicon.ico">
-              <img src="https://duckduckgo.com/favicon.ico" alt="DuckDuckGo"> DuckDuckGo
-            </div>
-            <div class="search-engine-option" data-engine="bing" data-icon="https://www.bing.com/favicon.ico">
-              <img src="https://www.bing.com/favicon.ico" alt="Bing"> Bing
-            </div>
-            <div class="search-engine-option" data-engine="yahoo" data-icon="https://www.yahoo.com/favicon.ico">
-              <img src="https://www.yahoo.com/favicon.ico" alt="Yahoo"> Yahoo
-            </div>
-          </div>
-        </div>
         <div class="search-input-container">
           <input type="text" id="searchInput" class="search-engine-input" placeholder="Search the web..." autocomplete="off">
           <button type="submit" class="search-button">
@@ -240,26 +220,6 @@
         <label>
           <input type="checkbox" id="tempUnitToggle">
           <span>Use Fahrenheit</span>
-        </label>
-      </div>
-    </div>
-
-    <!-- Add Search Settings Section -->
-    <div class="settings-section">
-      <h3>Search Settings</h3>
-      <div class="form-group">
-        <label for="defaultSearchEngine">Default Search Engine</label>
-        <select id="defaultSearchEngine" class="select-format">
-          <option value="google">Google</option>
-          <option value="duckduckgo">DuckDuckGo</option>
-          <option value="bing">Bing</option>
-          <option value="yahoo">Yahoo</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>
-          <input type="checkbox" id="openInNewTab" checked>
-          <span>Open searches in new tab</span>
         </label>
       </div>
     </div>

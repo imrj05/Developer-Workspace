@@ -46,12 +46,6 @@ const closeFolderModalBtn = document.getElementById('closeFolderModal');
 const saveFolderBtn = document.getElementById('saveFolder');
 const searchForm = document.getElementById('searchForm');
 const searchInput = document.getElementById('searchInput');
-const searchEngineButton = document.getElementById('searchEngineButton');
-const searchEngineIcon = document.getElementById('searchEngineIcon');
-const searchEngineDropdown = document.getElementById('searchEngineDropdown');
-const searchEngineOptions = document.querySelectorAll('.search-engine-option');
-const defaultSearchEngineSelect = document.getElementById('defaultSearchEngine');
-const openInNewTabToggle = document.getElementById('openInNewTab');
 const weatherWidgetToggle = document.getElementById('weatherWidgetToggle');
 const bookmarksToggle = document.getElementById('bookmarksToggle');
 const devPanelToggleSwitch = document.getElementById('devPanelToggle');
@@ -136,6 +130,26 @@ const DEFAULT_FOLDERS = [
     ]
   }
 ];
+// Array of all background URLs (excluding custom and random)
+const BACKGROUND_URLS = [
+  'https://images.unsplash.com/photo-1572270907014-c31da1c54124?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2089&q=80',
+  'https://images.unsplash.com/photo-1485470733090-0aae1788d5af?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjI0MX0&auto=format&fit=crop&w=1991&q=80',
+  'https://images.unsplash.com/photo-1499623838158-29acea518eaa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2000&q=80',
+  'https://images.unsplash.com/photo-1494806812796-244fe51b774d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2000&q=80',
+  'https://images.unsplash.com/photo-1519501025264-65ba15a82390?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2000&q=80',
+  'https://images.unsplash.com/photo-1531366936337-7c912a4589a7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2000&q=80',
+  'https://images.unsplash.com/photo-1550859492-d5da9d8e45f3?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2000&q=80',
+  'https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80',
+  'https://images.unsplash.com/photo-1484417894907-623942c8ee29?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80',
+  'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80',
+  'https://images.unsplash.com/photo-1489861518096-4d12b732e831?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80',
+  'https://images.unsplash.com/photo-1520034475321-cbe63696469a?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80',
+  'https://images.unsplash.com/photo-1506477331477-33d5d8b3dc85?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80',
+  'https://images.unsplash.com/photo-1498036882173-b41c28a8ba34?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80',
+  'https://images.unsplash.com/photo-1504639725590-34d0984388bd?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80',
+  'https://images.unsplash.com/photo-1483401757487-2ced3fa77952?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80',
+  'https://images.unsplash.com/photo-1536599018102-9f803c140fc1?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80'
+];
 function getCategoryLabel(category) {
   switch (category) {
     case 'dev': return 'Dev';
@@ -174,6 +188,8 @@ function getTimeAgo(date) {
   return `${Math.floor(seconds)} seconds ago`;
 }
 
+
+
 function getRandomBackground() {
   const randomIndex = Math.floor(Math.random() * BACKGROUND_URLS.length);
   return BACKGROUND_URLS[randomIndex];
@@ -201,10 +217,6 @@ function setupEventListeners() {
   closeFolderModalBtn.addEventListener('click', closeFolderModal);
   saveFolderBtn.addEventListener('click', saveFolder);
   searchForm.addEventListener('submit', handleSearch);
-  searchEngineButton.addEventListener('click', toggleSearchEngineDropdown);
-  searchEngineOptions.forEach(option => option.addEventListener('click', selectSearchEngine));
-  defaultSearchEngineSelect.addEventListener('change', updateDefaultSearchEngine);
-  openInNewTabToggle.addEventListener('change', toggleOpenInNewTab);
   weatherWidgetToggle.addEventListener('change', toggleWeatherWidget);
   bookmarksToggle.addEventListener('change', toggleBookmarks);
   devPanelToggleSwitch.addEventListener('change', toggleDevPanel);
@@ -307,9 +319,6 @@ function applySettings(settings) {
   bookmarksToggle.checked = settings.showBookmarks;
   devPanelToggleSwitch.checked = settings.showDevPanel;
   terminalNotesToggle.checked = settings.showTerminalNotes;
-  defaultSearchEngineSelect.value = settings.defaultSearchEngine;
-  openInNewTabToggle.checked = settings.openSearchInNewTab;
-  updateSearchEngineIcon(settings.defaultSearchEngine);
 
   // Apply show seconds setting
   if (settings.hasOwnProperty('showSeconds')) {
@@ -335,20 +344,6 @@ function applySettings(settings) {
   document.querySelector('.bookmarks-container').style.display = settings.showBookmarks ? 'block' : 'none';
   document.getElementById('devPanel').style.display = settings.showDevPanel ? 'block' : 'none';
   document.getElementById('terminalNotes').style.display = settings.showTerminalNotes ? 'block' : 'none';
-}
-
-function updateSearchEngineIcon(engine) {
-  const engineData = {
-    google: 'https://www.google.com/favicon.ico',
-    duckduckgo: 'https://www.duckduckgo.com/favicon.ico',
-    bing: 'https://www.bing.com/favicon.ico',
-    yahoo: 'https://www.yahoo.com/favicon.ico'
-  };
-  const iconUrl = engineData[engine] || 'https://www.google.com/favicon.ico';
-  searchEngineIcon.src = iconUrl;
-  searchEngineIcon.setAttribute('data-engine', engine);
-  searchEngineIcon.setAttribute('data-icon', iconUrl);
-  searchEngineIcon.setAttribute('alt', engine.charAt(0).toUpperCase() + engine.slice(1));
 }
 
 // Bookmark Functions
@@ -941,65 +936,14 @@ function handleSearch(e) {
   e.preventDefault();
   const query = searchInput.value.trim();
 
-    const SEARCH_ENGINES = {
-    google: 'https://www.google.com/search?q=',
-    duckduckgo: 'https://www.duckduckgo.com/?q=',
-    bing: 'https://www.bing.com/search?q=',
-    yahoo: 'https://search.yahoo.com/search?p='
-  };
   if (query) {
-    chrome.storage.sync.get('settings', function(data) {
-      const settings = data.settings || DEFAULT_SETTINGS;
-      const currentSearchEngine = settings.defaultSearchEngine || 'google';
-      const searchUrl = SEARCH_ENGINES[currentSearchEngine] + encodeURIComponent(query);
-      if (settings.openSearchInNewTab) {
-        window.open(searchUrl, '_blank');
-      } else {
-        window.location.href = searchUrl;
-      }
-      searchInput.value = '';
+    // Use Chrome's search API to perform the search
+    chrome.search.query({
+      text: query,
+      disposition: 'NEW_TAB'  // Open in new tab
     });
+    searchInput.value = '';
   }
-}
-
-function toggleSearchEngineDropdown(e) {
-  e.preventDefault();
-  e.stopPropagation();
-  searchEngineDropdown.classList.toggle('active');
-}
-
-function selectSearchEngine() {
-  const engine = this.getAttribute('data-engine');
-  const icon = this.getAttribute('data-icon');
-  searchEngineIcon.src = icon;
-  currentSearchEngine = engine;
-  searchEngineOptions.forEach(opt => opt.classList.remove('selected'));
-  this.classList.add('selected');
-  searchEngineDropdown.classList.remove('active');
-  chrome.storage.sync.get('settings', function(data) {
-    const settings = data.settings || DEFAULT_SETTINGS;
-    settings.defaultSearchEngine = engine;
-    saveSettings(settings);
-  });
-}
-
-function updateDefaultSearchEngine() {
-  const engine = defaultSearchEngineSelect.value;
-  currentSearchEngine = engine;
-  updateSearchEngineIcon(engine);
-  chrome.storage.sync.get('settings', function(data) {
-    const settings = data.settings || DEFAULT_SETTINGS;
-    settings.defaultSearchEngine = engine;
-    saveSettings(settings);
-  });
-}
-
-function toggleOpenInNewTab() {
-  chrome.storage.sync.get('settings', function(data) {
-    const settings = data.settings || DEFAULT_SETTINGS;
-    settings.openSearchInNewTab = openInNewTabToggle.checked;
-    saveSettings(settings);
-  });
 }
 
 function toggleWeatherWidget() {
@@ -1470,9 +1414,9 @@ function updateTimerDisplay() {
   const seconds = (timeLeft % 60).toString().padStart(2, '0');
   timerDisplay.textContent = `${minutes}:${seconds}`;
   if (timerRunning) {
-    document.title = `${minutes}:${seconds} - Developer Workspace`;
+    document.title = `${minutes}:${seconds} - Developer Home`;
   } else {
-    document.title = `Developer Workspace`;
+    document.title = `Developer Home`;
   }
 }
 

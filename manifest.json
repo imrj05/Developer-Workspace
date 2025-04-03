@@ -10,11 +10,16 @@
     "permissions": [
         "storage",
         "notifications",
-        "geolocation"
+        "geolocation",
+        "search"
     ],
     "icons": {
         "16": "icons/icon-48x48.png",
         "48": "icons/icon-72x72.png",
-        "128": "icons/icon-128x128.png"
+        "72": "icons/icon-96x96.png",
+        "128": "icons/icon-128x128.png",
+        "192": "icons/icon-192x192.png",
+        "256": "icons/icon-256x256.png",
+        "512": "icons/icon-512x512.png"
     }
 }

@@ -17,6 +17,148 @@ const DEFAULT_SETTINGS = {
   openSearchInNewTab: true
 };
 
+// Update the checkApiStatus function
+async function checkApiStatus() {
+  const apiList = document.querySelector('.api-list');
+  apiList.innerHTML = ''; // Clear existing statuses
+
+  for (const api of DEFAULT_APIS) {
+    try {
+      // Create API item element
+      const apiItem = document.createElement('div');
+      apiItem.className = 'api-item';
+
+      // Add loading state
+      apiItem.innerHTML = `
+        <div class="api-name">
+          <i class="${api.icon}"></i>
+          ${api.name}
+        </div>
+        <div class="api-status-indicator status-loading"></div>
+      `;
+      apiList.appendChild(apiItem);
+
+      const response = await fetch(api.url, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        },
+        timeout: 5000 // 5 second timeout
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      // Determine status based on indicator field
+      let status = 'up';
+      if (data.status && data.status.indicator) {
+        // Map the indicator values to your status classes
+        switch(data.status.indicator) {
+          case 'none':
+            status = 'up';  // All Systems Operational
+            break;
+          case 'minor':
+            status = 'degraded';  // Minor issues
+            break;
+          case 'major':
+          case 'critical':
+            status = 'down';  // Major issues or outage
+            break;
+          default:
+            status = 'unknown';
+        }
+      } else if (data.page && data.page.status) {
+        status = data.page.status;
+      }
+
+      // Update status indicator
+      const statusIndicator = apiItem.querySelector('.api-status-indicator');
+      statusIndicator.className = `api-status-indicator status-${status}`;
+
+      // Add tooltip with status description
+      let tooltipText = "Unknown status";
+      if (data.status && data.status.description) {
+        tooltipText = data.status.description;
+      }
+      statusIndicator.title = tooltipText;
+
+    } catch (error) {
+      console.error(`Error checking ${api.name} status:`, error);
+      // Show error state
+      const apiItem = document.createElement('div');
+      apiItem.className = 'api-item';
+      apiItem.innerHTML = `
+        <div class="api-name">
+          <i class="${api.icon}"></i>
+          ${api.name}
+        </div>
+        <div class="api-status-indicator status-down" title="Unable to fetch status"></div>
+      `;
+      apiList.appendChild(apiItem);
+    }
+  }
+}
+
+const DEFAULT_APIS = [
+  {
+    name: 'GitHub',
+    url: 'https://www.githubstatus.com/api/v2/status.json',
+    icon: 'fab fa-github'
+  },
+  {
+    name: 'Cloudflare',
+    url: 'https://www.cloudflarestatus.com/api/v2/status.json',
+    icon: 'fas fa-cloud'
+  },
+  {
+    name: 'NPM',
+    url: 'https://status.npmjs.org/api/v2/status.json',
+    icon: 'fab fa-npm'
+  },
+  {
+    name: 'Vercel',
+    url: 'https://www.vercel-status.com/api/v2/status.json',
+    icon: 'fas fa-shapes'
+  },
+  {
+    name: 'Azure',
+    url: 'https://status.dev.azure.com/_apis/status/health',
+    icon: 'fab fa-microsoft'
+  },
+  {
+    name: 'Netlify',
+    url: 'https://www.netlifystatus.com/api/v2/status.json',
+    icon: 'fas fa-network-wired'
+  },
+  {
+    name: 'Digital Ocean',
+    url: 'https://status.digitalocean.com/api/v2/status.json',
+    icon: 'fas fa-water'
+  },
+  {
+    name: 'Heroku',
+    url: 'https://status.heroku.com/api/v4/current-status',
+    icon: 'fas fa-h-square'
+  },
+  {
+    name: 'CircleCI',
+    url: 'https://status.circleci.com/api/v2/status.json',
+    icon: 'fas fa-circle-notch'
+  }
+];
+
+const DOCUMENTATION_LINKS = [
+  { name: 'MDN Web Docs', url: 'https://developer.mozilla.org', icon: 'fab fa-firefox-browser' },
+  { name: 'DevDocs', url: 'https://devdocs.io', icon: 'fas fa-book' },
+  { name: 'Can I Use', url: 'https://caniuse.com', icon: 'fas fa-browser' },
+  { name: 'W3Schools', url: 'https://www.w3schools.com', icon: 'fas fa-code' },
+  { name: 'Stack Overflow', url: 'https://stackoverflow.com', icon: 'fab fa-stack-overflow' },
+  { name: 'Web.dev', url: 'https://web.dev', icon: 'fab fa-chrome' }
+];
+
 // DOM Elements
 const clockElement = document.getElementById('clock');
 const dateElement = document.getElementById('date');
@@ -61,9 +203,8 @@ const terminalNotes = document.getElementById('terminalNotes');
 const terminalToggle = document.getElementById('terminalToggle');
 const terminalInput = document.getElementById('terminalInput');
 const terminalOutput = document.getElementById('terminalOutput');
-const devPanelHeaderToggle = document.getElementById('devPanelToggleBtn');
+// const devPanelHeaderToggle = document.getElementById('devPanelToggleBtn');
 const iconOptions = document.querySelectorAll('.icon-option');
-
 
 // Pomodoro Timer functionality
 let timerInterval;
@@ -228,7 +369,7 @@ function setupEventListeners() {
   terminalToggle.addEventListener('click', toggleTerminalVisibility);
   terminalInput.addEventListener('keydown', getTerminalFunctionality);
   overlay.addEventListener('click', closeModals);
-  devPanelHeaderToggle.addEventListener('click', toggleDevPanelHeader);
+  // devPanelHeaderToggle.addEventListener('click', toggleDevPanelHeader);
 
   // ? load icon click
   // Icon selection in bookmark modal
@@ -246,29 +387,44 @@ iconOptions.forEach(option => {
     document.getElementById('bookmarkIcon').dataset.isHtml = "true";
   });
 });
+
+  // Add collapsible functionality
+  document.querySelectorAll('.collapsible').forEach(header => {
+    header.addEventListener('click', function() {
+      const targetId = this.dataset.target;
+      const content = document.getElementById(targetId);
+
+      // Toggle collapsed state
+      this.classList.toggle('collapsed');
+      content.classList.toggle('collapsed');
+
+      // Save state to localStorage
+      localStorage.setItem(`${targetId}-collapsed`, this.classList.contains('collapsed'));
+    });
+  });
 }
 
 
-function toggleDevPanelHeader() {
-  devPanel.classList.toggle('collapsed');
-  devPanelHeaderToggle.classList.toggle('collapsed');
-  githubActivity.classList.toggle('hidden');
-  if (githubActivity.classList.contains('hidden')) {
-    devPanelHeaderToggle.innerHTML = '<i class="fas fa-chevron-down"></i>';
-    devPanel.classList.add('collapsed');
-  } else {
-    devPanelHeaderToggle.innerHTML = '<i class="fas fa-chevron-up"></i>';
-    devPanel.classList.remove('collapsed');
-  }
+// function toggleDevPanelHeader() {
+//   devPanel.classList.toggle('collapsed');
+//   devPanelHeaderToggle.classList.toggle('collapsed');
+//   githubActivity.classList.toggle('hidden');
+//   if (githubActivity.classList.contains('hidden')) {
+//     devPanelHeaderToggle.innerHTML = '<i class="fas fa-chevron-down"></i>';
+//     devPanel.classList.add('collapsed');
+//   } else {
+//     devPanelHeaderToggle.innerHTML = '<i class="fas fa-chevron-up"></i>';
+//     devPanel.classList.remove('collapsed');
+//   }
 
-  // if (githubActivity.classList.contains('hidden')) {
-  //     devPanelHeaderToggle.innerHTML = '<i class="fas fa-chevron-down"></i>';
-  //     devPanel.classList.add('collapsed');
-  //   } else {
-  //     devPanelHeaderToggle.innerHTML = '<i class="fas fa-chevron-up"></i>';
-  //     devPanel.classList.remove('collapsed');
-  //   }
-}
+//   // if (githubActivity.classList.contains('hidden')) {
+//   //     devPanelHeaderToggle.innerHTML = '<i class="fas fa-chevron-down"></i>';
+//   //     devPanel.classList.add('collapsed');
+//   //   } else {
+//   //     devPanelHeaderToggle.innerHTML = '<i class="fas fa-chevron-up"></i>';
+//   //     devPanel.classList.remove('collapsed');
+//   //   }
+// }
 
 
 
@@ -1525,6 +1681,274 @@ function startAutoRotate() {
   }, 30 * 60 * 1000);
 }
 
+// Dev Tools Functions
+function initializeDevTools() {
+  // Setup collapsible sections
+  document.querySelectorAll('.section-header').forEach(header => {
+    const targetId = header.dataset.target;
+    const content = document.getElementById(targetId);
+
+    // Restore collapsed state from localStorage
+    const isCollapsed = localStorage.getItem(`${targetId}-collapsed`) === 'true';
+    if (isCollapsed) {
+      header.classList.add('collapsed');
+      content.classList.add('collapsed');
+    }
+
+    // Add click handler
+    header.addEventListener('click', () => {
+      // Toggle collapsed state
+      const isCollapsing = !header.classList.contains('collapsed');
+
+      header.classList.toggle('collapsed');
+      content.classList.toggle('collapsed');
+
+      // Save state to localStorage
+      localStorage.setItem(`${targetId}-collapsed`, isCollapsing);
+
+      // Optional: Add smooth height transition
+      if (!isCollapsing) {
+        content.style.maxHeight = content.scrollHeight + 'px';
+        setTimeout(() => {
+          content.style.maxHeight = null;
+        }, 0);
+      } else {
+        content.style.maxHeight = '0';
+      }
+    });
+  });
+
+  // Initialize features
+  setupApiStatus();
+  setupQuickDocs();
+  updateGitHubUsername();
+}
+
+// Add a helper function to show/hide sections smoothly
+function toggleSection(header, content, isCollapsing) {
+  if (isCollapsing) {
+    content.style.maxHeight = '0';
+    content.addEventListener('transitionend', () => {
+      content.classList.add('collapsed');
+    }, { once: true });
+  } else {
+    content.classList.remove('collapsed');
+    content.style.maxHeight = content.scrollHeight + 'px';
+    content.addEventListener('transitionend', () => {
+      content.style.maxHeight = null;
+    }, { once: true });
+  }
+}
+
+// Add this helper function for notifications
+function showNotification(message) {
+  const notification = document.createElement('div');
+  notification.className = 'notification';
+  notification.textContent = message;
+  document.body.appendChild(notification);
+
+  setTimeout(() => {
+    notification.classList.add('show');
+    setTimeout(() => {
+      notification.classList.remove('show');
+      setTimeout(() => notification.remove(), 300);
+    }, 2000);
+  }, 100);
+}
+
+function setupApiStatus() {
+  const apiList = document.querySelector('.api-list');
+
+  // Check API status every 5 minutes
+  checkApiStatus();
+  setInterval(checkApiStatus, 5 * 60 * 1000);
+}
+// Update the checkApiStatus function
+async function checkApiStatus() {
+  const apiList = document.querySelector('.api-list');
+  apiList.innerHTML = ''; // Clear existing statuses
+
+  for (const api of DEFAULT_APIS) {
+    try {
+      // Create API item element
+      const apiItem = document.createElement('div');
+      apiItem.className = 'api-item';
+
+      // Add loading state
+      apiItem.innerHTML = `
+        <div class="api-name">
+          <i class="${api.icon}"></i>
+          ${api.name}
+        </div>
+        <div class="api-status-indicator status-loading"></div>
+      `;
+      apiList.appendChild(apiItem);
+
+      const response = await fetch(api.url, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        },
+        timeout: 5000 // 5 second timeout
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      // Determine status based on indicator field
+      let status = 'up';
+      if (data.status && data.status.indicator) {
+        // Map the indicator values to your status classes
+        switch(data.status.indicator) {
+          case 'none':
+            status = 'up';  // All Systems Operational
+            break;
+          case 'minor':
+            status = 'degraded';  // Minor issues
+            break;
+          case 'major':
+          case 'critical':
+            status = 'down';  // Major issues or outage
+            break;
+          default:
+            status = 'unknown';
+        }
+      } else if (data.page && data.page.status) {
+        status = data.page.status;
+      }
+
+      // Update status indicator
+      const statusIndicator = apiItem.querySelector('.api-status-indicator');
+      statusIndicator.className = `api-status-indicator status-${status}`;
+
+      // Add tooltip with status description
+      let tooltipText = "Unknown status";
+      if (data.status && data.status.description) {
+        tooltipText = data.status.description;
+      }
+      statusIndicator.title = tooltipText;
+
+    } catch (error) {
+      console.error(`Error checking ${api.name} status:`, error);
+      // Show error state
+      const apiItem = document.createElement('div');
+      apiItem.className = 'api-item';
+      apiItem.innerHTML = `
+        <div class="api-name">
+          <i class="${api.icon}"></i>
+          ${api.name}
+        </div>
+        <div class="api-status-indicator status-down" title="Unable to fetch status"></div>
+      `;
+      apiList.appendChild(apiItem);
+    }
+  }
+}
+
+// Helper function to check a single API status
+async function checkSingleApiStatus(api, apiItemElement) {
+  const statusIndicator = apiItemElement.querySelector('.api-status-indicator');
+  const detailsSection = apiItemElement.querySelector('.api-details');
+
+  // Set to loading state
+  statusIndicator.className = 'api-status-indicator status-loading';
+  detailsSection.innerHTML = '<div class="status-text">Checking...</div>';
+
+  try {
+    const response = await fetch(api.url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+      },
+      timeout: 5000
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // Determine status
+    let status = 'up';
+    let statusText = 'Operational';
+    let lastUpdated = new Date().toLocaleString();
+
+    if (data.status) {
+      status = data.status.indicator ||
+              (data.status.description === 'All Systems Operational' ? 'up' : 'degraded');
+      statusText = data.status.description || statusText;
+      lastUpdated = data.page?.updated_at ? new Date(data.page.updated_at).toLocaleString() : lastUpdated;
+    } else if (data.page && data.page.status) {
+      status = data.page.status;
+      statusText = data.page.status_description || statusText;
+      lastUpdated = data.page.updated_at ? new Date(data.page.updated_at).toLocaleString() : lastUpdated;
+    }
+
+    // Update status indicator
+    statusIndicator.className = `api-status-indicator status-${status}`;
+    statusIndicator.title = `Status: ${status.charAt(0).toUpperCase() + status.slice(1)}`;
+
+    // Update details
+    detailsSection.innerHTML = `
+      <div class="status-text">${statusText}</div>
+      <div class="last-updated">Last updated: ${lastUpdated}</div>
+      ${api.url ? `<a href="${api.url}" target="_blank" class="view-details">View Details</a>` : ''}
+    `;
+  } catch (error) {
+    console.error(`Error rechecking ${api.name} status:`, error);
+    statusIndicator.className = 'api-status-indicator status-down';
+    statusIndicator.title = 'Unable to fetch status';
+
+    detailsSection.innerHTML = `
+      <div class="status-text">Status Check Failed</div>
+      <div class="error-message">${error.message}</div>
+      <div class="last-updated">Last attempt: ${new Date().toLocaleString()}</div>
+      ${api.url ? `<a href="${api.url}" target="_blank" class="retry-check">Retry</a>` : ''}
+    `;
+
+    // Re-add event listener for retry
+    const retryButton = detailsSection.querySelector('.retry-check');
+    if (retryButton) {
+      retryButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        checkSingleApiStatus(api, apiItemElement);
+      });
+    }
+  }
+}
+
+function setupQuickDocs() {
+  const docsSearch = document.getElementById('docsSearch');
+  const docsLinks = document.querySelector('.docs-links');
+
+  // Render initial documentation links
+  renderDocLinks();
+
+  // Setup search functionality
+  docsSearch.addEventListener('input', (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    const filteredLinks = DOCUMENTATION_LINKS.filter(link =>
+      link.name.toLowerCase().includes(searchTerm)
+    );
+    renderDocLinks(filteredLinks);
+  });
+}
+
+function renderDocLinks(links = DOCUMENTATION_LINKS) {
+  const docsLinks = document.querySelector('.docs-links');
+
+  docsLinks.innerHTML = links.map(link => `
+    <a href="${link.url}" class="doc-link" target="_blank">
+      <i class="${link.icon}"></i>
+      ${link.name}
+    </a>
+  `).join('');
+}
+
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
   setupEventListeners();
@@ -1546,4 +1970,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
   loadNotes();
   updateTimerDisplay();
+  initializeDevTools();
 });

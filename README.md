@@ -4,7 +4,7 @@
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)
 
-A modern, customizable developer dashboard with integrated tools, API status monitoring, and productivity features to supercharge your development workflow.
+A modern, customizable Chrome extension dashboard for developers with integrated tools, bookmark management, and productivity features.
 
 ## ✨ Features
 
@@ -13,64 +13,53 @@ A modern, customizable developer dashboard with integrated tools, API status mon
   - Customizable 12/24-hour format
   - Multiple timezone support
   - Optional seconds display
-  - Animated transitions
-  - Date display
+  - Date display with clean typography
 
 - **🔖 Advanced Bookmark Management**
-  - Categorized bookmarks
-  - Folder organization
-  - Custom icons and colors
-  - Quick search functionality
-  - Category filtering
-  - Favicon auto-detection
+  - Import Chrome bookmarks with one click
+  - Smart categorization (Dev, Social, AI, etc.)
+  - Folder organization with custom colors
+  - Quick search and filtering
+  - Automatic favicon fetching
+  - Duplicate detection
+  - Custom icons support
 
 - **💻 Developer Tools**
-  - Real-time GitHub activity tracking
-  - API status monitoring
+  - GitHub activity tracking with real-time updates
+  - API status monitoring for popular services
   - Quick documentation access
-  - Terminal-style notes
-  - Code snippet storage
-
-- **⚡ Productivity Features**
-  - Pomodoro timer
-  - Work/break cycle management
-  - Quick search with multiple engines
-  - Weather widget with location detection
-  - Dark/light mode toggle
+  - Terminal-style notes with code formatting
+  - Pomodoro timer for productivity
 
 ### Visual Customization
 - **🎨 Theme Options**
-  - Dark/light mode
-  - 12+ curated background options
+  - Dark/light mode toggle
+  - 12+ curated background wallpapers
   - Custom background upload
-  - Random background option
+  - Random background rotation
   - Glassmorphism UI effects
 
 - **🎯 UI Components**
   - Collapsible panels
   - Smooth animations
+  - Toast notifications
   - Responsive design
-  - Mobile-friendly interface
   - Custom scrollbars
 
-## 🔧 Technologies
+### Productivity Features
+- **⚡ Quick Actions**
+  - Instant web search
+  - Weather widget with location detection
+  - Work/break cycle management
+  - Note organization
+  - Bookmark import wizard
 
-<table>
-  <tr>
-    <td align="center" width="96">
-      <img src="https://skillicons.dev/icons?i=js" width="48" height="48" alt="JavaScript" />
-      <br>JavaScript
-    </td>
-    <td align="center" width="96">
-      <img src="https://skillicons.dev/icons?i=html" width="48" height="48" alt="HTML" />
-      <br>HTML
-    </td>
-    <td align="center" width="96">
-      <img src="https://skillicons.dev/icons?i=css" width="48" height="48" alt="CSS" />
-      <br>CSS
-    </td>
-  </tr>
-</table>
+## 🔧 Technologies
+- Vanilla JavaScript
+- Chrome Extension APIs
+- HTML5 & CSS3
+- FontAwesome Icons
+- Google Fonts
 
 ## 🚀 Getting Started
 
@@ -79,74 +68,72 @@ A modern, customizable developer dashboard with integrated tools, API status mon
 git clone https://github.com/yourusername/developer-workspace.git
 ```
 
-2. Open `index.html` in your browser
-3. Configure your settings via the gear icon
-4. Start adding your bookmarks and customizing the workspace
+2. Load the extension in Chrome:
+   - Open Chrome and go to `chrome://extensions/`
+   - Enable "Developer mode"
+   - Click "Load unpacked"
+   - Select the extension directory
+
+3. Open a new tab to see your new developer workspace
 
 ## 📚 Usage Guide
 
-### Dashboard Sections
-
-#### Clock & Weather
-- Toggle between 12/24-hour format
-- Enable/disable seconds display
-- Weather widget shows local conditions
-- Multiple timezone support
-
-#### Bookmark Management
-- Click '+' to add new bookmarks
-- Create folders for organization
-- Use categories for filtering
+### Bookmark Management
+- Click 'Import' to fetch Chrome bookmarks
+- Use '+' to add new bookmarks manually
+- Create folders for better organization
+- Filter bookmarks by categories
 - Search across all bookmarks
-- Quick access to frequently used sites
+- Customize icons and colors
 
-#### Developer Panel
-- Monitor GitHub activity
-- Track API statuses
-- Access documentation
-- Use Pomodoro timer
-- Store quick notes
+### Developer Tools
+- Connect GitHub account to track activity
+- Monitor API statuses in real-time
+- Access documentation quickly
+- Use terminal notes for quick coding notes
+- Set Pomodoro timers for focused work
 
 ### Customization
 - Access settings via gear icon
+- Toggle features on/off
 - Choose from preset backgrounds
 - Upload custom backgrounds
-- Toggle dark/light mode
-- Adjust component visibility
+- Switch between dark/light modes
 
 ## ⚙️ Configuration
 
 ### Available Settings
-- **Theme**: Dark/Light mode toggle
+- **Theme**: Dark/Light mode
 - **Clock**: Format, timezone, seconds display
 - **Background**: Preset/custom options
 - **Weather**: Temperature unit (C°/F°)
-- **Components**: Toggle visibility of widgets
 - **GitHub**: Username for activity tracking
-- **API Status**: Custom endpoint monitoring
+- **Components**: Toggle visibility of widgets
+- **API Status**: Service monitoring options
 
 ## 🛠️ Troubleshooting
 
 ### Common Issues
 
-**Weather Widget Not Loading**
-- Check browser location permissions
-- Ensure internet connectivity
-- Try manual location input
+**Import Not Working**
+- Check Chrome permissions
+- Ensure background service is running
+- Try refreshing the extension
 
-**GitHub Activity Not Showing**
+**GitHub Activity Issues**
 - Verify username in settings
 - Check API rate limits
-- Ensure valid GitHub token (if used)
+- Ensure internet connectivity
 
 ## 🗺️ Roadmap
 
+Planned features:
 - [ ] Cloud sync for settings
 - [ ] Multiple workspace profiles
 - [ ] Custom API monitoring
 - [ ] Enhanced note-taking features
 - [ ] Calendar integration
-- [ ] Task management
+- [ ] Advanced search options
 - [ ] Team collaboration features
 - [ ] PWA support
 
@@ -154,18 +141,12 @@ git clone https://github.com/yourusername/developer-workspace.git
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
 ## 📄 License
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
 ## 👥 Contact
 
-Rajeshwar Kashyap - [@yourtwitter](https://twitter.com/yourtwitter)
+Rajeshwar Kashyap - [@im_rj05](https://twitter.com/im_rj05)
 
-Project Link: [https://github.com/yourusername/developer-workspace](https://github.com/yourusername/developer-workspace)
+Project Link: [https://github.com/work-rjkashyap/developer-workspace](https://github.com/work-rjkashyap/developer-workspace)

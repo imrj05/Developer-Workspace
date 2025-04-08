@@ -1516,6 +1516,9 @@ select::-webkit-scrollbar-thumb {
   z-index: 100;
   max-width: 350px;
   transition: all 0.3s var(--animation-easing);
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .dev-panel:hover {

@@ -299,6 +299,8 @@ body {
   padding: 24px;
   z-index: 1;
   max-width: 90dvw;
+  max-height: 50dvh;
+  overflow: hidden;
   margin: 0 auto;
   box-shadow: var(--card-shadow);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -358,11 +360,20 @@ body {
 .add-bookmark-btn:hover:after {
   left: 100%;
 }
+.bookmarks-content {
+
+  max-height:280px; /* Set a max height for the bookmarks container */
+  overflow-y: auto; /* Enable scrolling if content exceeds max height */
+
+  padding:10px 5px;
+}
 
 .bookmarks-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
   gap: 20px;
+
+
 }
 
 .bookmark-item {
@@ -374,6 +385,7 @@ body {
   transition: all 0.3s var(--animation-easing);
   position: relative;
   padding: 12px 8px;
+  max-height: 100px;
   background-color: var(--card-overlay);
   border-radius: var(--border-radius-md);
   animation: fadeInScale 0.5s var(--animation-easing) backwards;

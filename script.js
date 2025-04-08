@@ -21,6 +21,8 @@ const DEFAULT_SETTINGS = {
   showPomodoroTimer: true
 };
 
+const resetDefaultBtn = document.getElementById('resetDefaultBtn');
+
 // Update the checkApiStatus function
 async function checkApiStatus() {
   const apiList = document.querySelector('.api-list');
@@ -373,6 +375,7 @@ function setupEventListeners() {
   terminalToggle.addEventListener('click', toggleTerminalVisibility);
   terminalInput.addEventListener('keydown', getTerminalFunctionality);
   overlay.addEventListener('click', closeModals);
+  resetDefaultBtn.addEventListener('click', resetToDefault);
   // devPanelHeaderToggle.addEventListener('click', toggleDevPanelHeader);
 
   // ? load icon click
@@ -2059,6 +2062,62 @@ function togglePomodoroTimer() {
     saveSettings(settings);
     applySettings(settings);
   });
+}
+
+// Add new function to handle reset
+function resetToDefault() {
+    if (confirm('Are you sure you want to reset all settings and bookmarks to default? This cannot be undone.')) {
+        // Show loading state
+        resetDefaultBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Resetting...';
+        resetDefaultBtn.disabled = true;
+
+        // Reset all storage
+        chrome.storage.sync.set({
+            settings: DEFAULT_SETTINGS,
+            bookmarks: DEFAULT_BOOKMARKS,
+            folders: DEFAULT_FOLDERS
+        }, function() {
+            // Apply default settings
+            applySettings(DEFAULT_SETTINGS);
+
+            // Refresh bookmarks display
+            renderBookmarks(DEFAULT_BOOKMARKS, DEFAULT_FOLDERS, '');
+
+            // Update UI elements
+            darkModeToggle.checked = DEFAULT_SETTINGS.darkMode;
+            clockFormatSelect.value = DEFAULT_SETTINGS.clockFormat;
+            timeZoneSelect.value = DEFAULT_SETTINGS.timeZone;
+            showSecondsToggle.checked = DEFAULT_SETTINGS.showSeconds;
+            tempUnitToggle.checked = DEFAULT_SETTINGS.useFahrenheit;
+            weatherWidgetToggle.checked = DEFAULT_SETTINGS.showWeatherWidget;
+            bookmarksToggle.checked = DEFAULT_SETTINGS.showBookmarks;
+            devPanelToggleSwitch.checked = DEFAULT_SETTINGS.showDevPanel;
+            terminalNotesToggle.checked = DEFAULT_SETTINGS.showTerminalNotes;
+            githubUsernameInput.value = DEFAULT_SETTINGS.githubUsername;
+
+            // Reset dev panel toggles
+            document.getElementById('githubActivityToggle').checked = DEFAULT_SETTINGS.showGitHubActivity;
+            document.getElementById('apiStatusToggle').checked = DEFAULT_SETTINGS.showApiStatus;
+            document.getElementById('quickDocsToggle').checked = DEFAULT_SETTINGS.showQuickDocs;
+            document.getElementById('pomodoroToggle').checked = DEFAULT_SETTINGS.showPomodoroTimer;
+
+            // Reset button state
+            setTimeout(() => {
+                resetDefaultBtn.innerHTML = '<i class="fas fa-undo-alt"></i> Reset to Default';
+                resetDefaultBtn.disabled = false;
+
+                // Show success message
+                const toast = document.createElement('div');
+                toast.className = 'toast-message';
+                toast.innerHTML = '<i class="fas fa-check-circle"></i> Settings reset successfully';
+                document.body.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.remove();
+                }, 3000);
+            }, 1000);
+        });
+    }
 }
 
 // Initialize the application

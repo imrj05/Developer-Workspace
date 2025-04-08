@@ -276,6 +276,40 @@
         </div>
       </div>
     </div>
+
+    <div class="settings-section">
+      <h3>Developer Panel Features</h3>
+      <div class="component-toggles">
+        <div class="toggle-item">
+          <span>GitHub Activity</span>
+          <label class="switch">
+            <input type="checkbox" id="githubActivityToggle" checked>
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <div class="toggle-item">
+          <span>API Status</span>
+          <label class="switch">
+            <input type="checkbox" id="apiStatusToggle" checked>
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <div class="toggle-item">
+          <span>Quick Documentation</span>
+          <label class="switch">
+            <input type="checkbox" id="quickDocsToggle" checked>
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <div class="toggle-item">
+          <span>Pomodoro Timer</span>
+          <label class="switch">
+            <input type="checkbox" id="pomodoroToggle" checked>
+            <span class="slider round"></span>
+          </label>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Add bookmark modal -->
@@ -377,62 +411,70 @@
 
   <div class="dev-panel" id="devPanel">
     <!-- GitHub Activity Section -->
-    <div class="section-header" data-target="githubActivity">
-      <h3><i class="fab fa-github"></i> Developer Activity</h3>
-      <button class="collapse-btn">
-        <i class="fas fa-chevron-up"></i>
-      </button>
-    </div>
-    <div class="section-content" id="githubActivity">
-      <div class="loading">Loading commits...</div>
+    <div id="githubActivitySection" class="section">
+      <div class="section-header" data-target="githubActivity">
+        <h3><i class="fab fa-github"></i> Developer Activity</h3>
+        <button class="collapse-btn">
+          <i class="fas fa-chevron-up"></i>
+        </button>
+      </div>
+      <div class="section-content" id="githubActivity">
+        <div class="loading">Loading commits...</div>
+      </div>
     </div>
 
     <!-- API Status Section -->
-    <div class="section-header" data-target="apiStatus">
-      <h3><i class="fas fa-server"></i> API Status</h3>
-      <button class="collapse-btn">
-        <i class="fas fa-chevron-up"></i>
-      </button>
-    </div>
-    <div class="section-content" id="apiStatus">
-      <div class="api-list">
-        <!-- API items will be dynamically populated -->
+    <div id="apiStatusSection" class="section">
+      <div class="section-header" data-target="apiStatus">
+        <h3><i class="fas fa-server"></i> API Status</h3>
+        <button class="collapse-btn">
+          <i class="fas fa-chevron-up"></i>
+        </button>
+      </div>
+      <div class="section-content" id="apiStatus">
+        <div class="api-list">
+          <!-- API items will be dynamically populated -->
+        </div>
       </div>
     </div>
 
     <!-- Documentation Section -->
-    <div class="section-header" data-target="quickDocs">
-      <h3><i class="fas fa-book"></i> Quick Documentation</h3>
-      <button class="collapse-btn">
-        <i class="fas fa-chevron-up"></i>
-      </button>
-    </div>
-    <div class="section-content" id="quickDocs">
-      <div class="docs-search">
-        <i class="fas fa-search"></i>
-        <input type="text" id="docsSearch" placeholder="Search documentation...">
+    <div id="quickDocsSection" class="section">
+      <div class="section-header" data-target="quickDocs">
+        <h3><i class="fas fa-book"></i> Quick Documentation</h3>
+        <button class="collapse-btn">
+          <i class="fas fa-chevron-up"></i>
+        </button>
       </div>
-      <div class="docs-links">
-        <!-- Documentation links will be dynamically populated -->
+      <div class="section-content" id="quickDocs">
+        <div class="docs-search">
+          <i class="fas fa-search"></i>
+          <input type="text" id="docsSearch" placeholder="Search documentation...">
+        </div>
+        <div class="docs-links">
+          <!-- Documentation links will be dynamically populated -->
+        </div>
       </div>
     </div>
 
-    <!-- Timer section remains unchanged -->
-    <div class="dev-timer">
-      <div class="timer-display" id="timerDisplay">25:00</div>
-      <div class="timer-controls">
-        <button class="timer-btn" id="timerStart" title="Start/Pause Timer">
-          <i class="fas fa-play"></i>
-        </button>
-        <button class="timer-btn" id="timerReset" title="Reset Timer">
-          <i class="fas fa-redo-alt"></i>
-        </button>
-        <button class="timer-btn active" id="pomodoroMode" title="Pomodoro Mode">
-          <i class="fas fa-brain"></i>
-        </button>
-        <button class="timer-btn" id="breakMode" title="Break Mode">
-          <i class="fas fa-coffee"></i>
-        </button>
+    <!-- Timer section -->
+    <div id="pomodoroSection" class="section">
+      <div class="dev-timer">
+        <div class="timer-display" id="timerDisplay">25:00</div>
+        <div class="timer-controls">
+          <button class="timer-btn" id="timerStart" title="Start/Pause Timer">
+            <i class="fas fa-play"></i>
+          </button>
+          <button class="timer-btn" id="timerReset" title="Reset Timer">
+            <i class="fas fa-redo-alt"></i>
+          </button>
+          <button class="timer-btn active" id="pomodoroMode" title="Pomodoro Mode">
+            <i class="fas fa-brain"></i>
+          </button>
+          <button class="timer-btn" id="breakMode" title="Break Mode">
+            <i class="fas fa-coffee"></i>
+          </button>
+        </div>
       </div>
     </div>
   </div>

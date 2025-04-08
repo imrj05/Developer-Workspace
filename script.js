@@ -14,7 +14,11 @@ const DEFAULT_SETTINGS = {
   showDevPanel: true,
   showTerminalNotes: true,
   defaultSearchEngine: 'google',
-  openSearchInNewTab: true
+  openSearchInNewTab: true,
+  showGitHubActivity: true,
+  showApiStatus: true,
+  showQuickDocs: true,
+  showPomodoroTimer: true
 };
 
 // Update the checkApiStatus function
@@ -402,6 +406,11 @@ iconOptions.forEach(option => {
       localStorage.setItem(`${targetId}-collapsed`, this.classList.contains('collapsed'));
     });
   });
+
+  document.getElementById('githubActivityToggle').addEventListener('change', toggleGitHubActivity);
+  document.getElementById('apiStatusToggle').addEventListener('change', toggleApiStatus);
+  document.getElementById('quickDocsToggle').addEventListener('change', toggleQuickDocs);
+  document.getElementById('pomodoroToggle').addEventListener('change', togglePomodoroTimer);
 }
 
 
@@ -500,6 +509,58 @@ function applySettings(settings) {
   document.querySelector('.bookmarks-container').style.display = settings.showBookmarks ? 'block' : 'none';
   document.getElementById('devPanel').style.display = settings.showDevPanel ? 'block' : 'none';
   document.getElementById('terminalNotes').style.display = settings.showTerminalNotes ? 'block' : 'none';
+
+  document.getElementById('githubActivitySection').style.display = settings.showGitHubActivity ? 'block' : 'none';
+  document.getElementById('apiStatusSection').style.display = settings.showApiStatus ? 'block' : 'none';
+  document.getElementById('quickDocsSection').style.display = settings.showQuickDocs ? 'block' : 'none';
+  document.getElementById('pomodoroSection').style.display = settings.showPomodoroTimer ? 'block' : 'none';
+
+  // Update toggle states
+  document.getElementById('githubActivityToggle').checked = settings.showGitHubActivity;
+  document.getElementById('apiStatusToggle').checked = settings.showApiStatus;
+  document.getElementById('quickDocsToggle').checked = settings.showQuickDocs;
+  document.getElementById('pomodoroToggle').checked = settings.showPomodoroTimer;
+
+  // Safely toggle visibility of dev panel sections
+  const toggleSection = (elementId, isVisible) => {
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.style.display = isVisible ? 'block' : 'none';
+    }
+  };
+
+  // Handle dev panel section visibility
+  toggleSection('githubActivitySection', settings.showGitHubActivity);
+  toggleSection('apiStatusSection', settings.showApiStatus);
+  toggleSection('quickDocsSection', settings.showQuickDocs);
+  toggleSection('pomodoroSection', settings.showPomodoroTimer);
+
+  // Update toggle states
+  const updateToggle = (elementId, value) => {
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.checked = value;
+    }
+  };
+
+  updateToggle('githubActivityToggle', settings.showGitHubActivity);
+  updateToggle('apiStatusToggle', settings.showApiStatus);
+  updateToggle('quickDocsToggle', settings.showQuickDocs);
+  updateToggle('pomodoroToggle', settings.showPomodoroTimer);
+
+  // Hide dev panel if all sections are hidden
+  const isAnyDevPanelSectionVisible =
+    settings.showGitHubActivity ||
+    settings.showApiStatus ||
+    settings.showQuickDocs ||
+    settings.showPomodoroTimer;
+
+  const devPanel = document.getElementById('devPanel');
+  if (devPanel) {
+    devPanel.style.display = isAnyDevPanelSectionVisible ? 'block' : 'none';
+    // Update the main dev panel toggle
+    devPanelToggleSwitch.checked = isAnyDevPanelSectionVisible;
+  }
 }
 
 // Bookmark Functions
@@ -1129,12 +1190,26 @@ function toggleBookmarks() {
 function toggleDevPanel() {
   chrome.storage.sync.get('settings', function(data) {
     const settings = data.settings || DEFAULT_SETTINGS;
-    settings.showDevPanel = devPanelToggleSwitch.checked;
-    saveSettings(settings);
-    const devPanel = document.getElementById('devPanel');
-    if (devPanel) {
-      devPanel.style.display = settings.showDevPanel ? 'block' : 'none';
+    const isEnabled = devPanelToggleSwitch.checked;
+
+    // If enabling dev panel, show at least one section
+    if (isEnabled && !settings.showGitHubActivity &&
+        !settings.showApiStatus && !settings.showQuickDocs &&
+        !settings.showPomodoroTimer) {
+      settings.showGitHubActivity = true;
     }
+
+    // If disabling, hide all sections
+    if (!isEnabled) {
+      settings.showGitHubActivity = false;
+      settings.showApiStatus = false;
+      settings.showQuickDocs = false;
+      settings.showPomodoroTimer = false;
+    }
+
+    settings.showDevPanel = isEnabled;
+    saveSettings(settings);
+    applySettings(settings);
   });
 }
 
@@ -1947,6 +2022,43 @@ function renderDocLinks(links = DOCUMENTATION_LINKS) {
       ${link.name}
     </a>
   `).join('');
+}
+
+// Add new toggle functions
+function toggleGitHubActivity() {
+  chrome.storage.sync.get('settings', function(data) {
+    const settings = data.settings || DEFAULT_SETTINGS;
+    settings.showGitHubActivity = document.getElementById('githubActivityToggle').checked;
+    saveSettings(settings);
+    applySettings(settings);
+  });
+}
+
+function toggleApiStatus() {
+  chrome.storage.sync.get('settings', function(data) {
+    const settings = data.settings || DEFAULT_SETTINGS;
+    settings.showApiStatus = document.getElementById('apiStatusToggle').checked;
+    saveSettings(settings);
+    applySettings(settings);
+  });
+}
+
+function toggleQuickDocs() {
+  chrome.storage.sync.get('settings', function(data) {
+    const settings = data.settings || DEFAULT_SETTINGS;
+    settings.showQuickDocs = document.getElementById('quickDocsToggle').checked;
+    saveSettings(settings);
+    applySettings(settings);
+  });
+}
+
+function togglePomodoroTimer() {
+  chrome.storage.sync.get('settings', function(data) {
+    const settings = data.settings || DEFAULT_SETTINGS;
+    settings.showPomodoroTimer = document.getElementById('pomodoroToggle').checked;
+    saveSettings(settings);
+    applySettings(settings);
+  });
 }
 
 // Initialize the application

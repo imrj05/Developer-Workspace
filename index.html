@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Developer Workspace</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
- <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Space+Grotesk:wght@300..700&display=swap"
+    rel="stylesheet">
 </head>
+
 <body>
   <div class="weather-widget">
     <div class="weather-icon">
@@ -42,7 +46,8 @@
     <div class="search-container">
       <form id="searchForm" class="search-form">
         <div class="search-input-container">
-          <input type="text" id="searchInput" class="search-engine-input" placeholder="Search the web..." autocomplete="off">
+          <input type="text" id="searchInput" class="search-engine-input" placeholder="Search the web..."
+            autocomplete="off">
           <button type="submit" class="search-button">
             <i class="fas fa-search"></i>
           </button>
@@ -64,43 +69,31 @@
           <button id="addBookmark" class="add-bookmark-btn">
             <i class="fas fa-plus"></i> Add
           </button>
-           <!-- Quick actions -->
-  <div class="quick-actions">
-    <button class="import-btn" title="Import Chrome Bookmarks">
-      <i class="fas fa-file-import"></i>
-      Import
-    </button>
-    <!-- Other quick actions -->
-  </div>
+
         </div>
       </div>
 
       <div class="bookmarks-tabs">
-  <div class="tab active" data-category="all">All</div>
-  <div class="tab" data-category="dev">Development</div>
-  <div class="tab" data-category="prod">Productivity</div>
-  <div class="tab" data-category="social">Social</div>
-  <div class="tab" data-category="ai">AI</div>
-  <div class="tab" data-category="imported">Imported</div>
-  <div class="tab" data-category="other">Other</div>
-</div>
-<div class="bookmarks-content">
-      <div id="bookmarks" class="bookmarks-grid">
-        <!-- Bookmarks will be loaded dynamically from storage -->
+        <div class="tab active" data-category="all">All</div>
+        <div class="tab" data-category="dev">Development</div>
+        <div class="tab" data-category="prod">Productivity</div>
+        <div class="tab" data-category="social">Social</div>
+
+        <div class="tab" data-category="ai">AI</div>
+        <div class="tab" data-category="imported">Imported</div>
+        <div class="tab" data-category="social">Social</div> <!-- Social media platforms -->
+        <div class="tab" data-category="shopping">Shopping</div> <!-- E-commerce and online shopping -->
+        <div class="tab" data-category="entertainment">Entertainment</div> <!-- Media, music, video streaming -->
+        <div class="tab" data-category="education">Education</div> <!-- Learning platforms, online courses -->
+        <div class="tab" data-category="news">News</div>
+        <div class="tab" data-category="other">Other</div>
       </div>
+      <div class="bookmarks-content">
+        <div id="bookmarks" class="bookmarks-grid">
+          <!-- Bookmarks will be loaded dynamically from storage -->
+        </div>
       </div>
     </div>
-  </div>
-
-
-
-  <!-- Import progress -->
-  <div class="import-progress">
-    <div class="progress-text">Importing bookmarks...</div>
-    <div class="progress-bar">
-      <div class="progress-fill"></div>
-    </div>
-    <div class="import-status">Processing...</div>
   </div>
 
   <!-- Settings panel -->
@@ -127,72 +120,89 @@
     <div class="settings-section">
       <h3>Background</h3>
       <div class="background-options">
-        <div class="background-option" data-bg="https://images.unsplash.com/photo-1572270907014-c31da1c54124?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2089&q=80">
+        <div class="background-option"
+          data-bg="https://images.unsplash.com/photo-1572270907014-c31da1c54124?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2089&q=80">
           <div class="bg-preview default-bg"></div>
           <span>Default</span>
         </div>
-        <div class="background-option" data-bg="https://images.unsplash.com/photo-1485470733090-0aae1788d5af?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjI0MX0&auto=format&fit=crop&w=1991&q=80">
+        <div class="background-option"
+          data-bg="https://images.unsplash.com/photo-1485470733090-0aae1788d5af?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjI0MX0&auto=format&fit=crop&w=1991&q=80">
           <div class="bg-preview mountains-bg"></div>
           <span>Mountains</span>
         </div>
-        <div class="background-option" data-bg="https://images.unsplash.com/photo-1499623838158-29acea518eaa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2000&q=80">
+        <div class="background-option"
+          data-bg="https://images.unsplash.com/photo-1499623838158-29acea518eaa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2000&q=80">
           <div class="bg-preview ocean-bg"></div>
           <span>Ocean</span>
         </div>
-        <div class="background-option" data-bg="https://images.unsplash.com/photo-1494806812796-244fe51b774d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2000&q=80">
+        <div class="background-option"
+          data-bg="https://images.unsplash.com/photo-1494806812796-244fe51b774d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2000&q=80">
           <div class="bg-preview forest-bg"></div>
           <span>Forest</span>
         </div>
-        <div class="background-option" data-bg="https://images.unsplash.com/photo-1519501025264-65ba15a82390?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2000&q=80">
+        <div class="background-option"
+          data-bg="https://images.unsplash.com/photo-1519501025264-65ba15a82390?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2000&q=80">
           <div class="bg-preview night-city-bg"></div>
           <span>Night City</span>
         </div>
-        <div class="background-option" data-bg="https://images.unsplash.com/photo-1531366936337-7c912a4589a7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2000&q=80">
+        <div class="background-option"
+          data-bg="https://images.unsplash.com/photo-1531366936337-7c912a4589a7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2000&q=80">
           <div class="bg-preview aurora-bg"></div>
           <span>Aurora</span>
         </div>
-        <div class="background-option" data-bg="https://images.unsplash.com/photo-1550859492-d5da9d8e45f3?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2000&q=80">
+        <div class="background-option"
+          data-bg="https://images.unsplash.com/photo-1550859492-d5da9d8e45f3?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2000&q=80">
           <div class="bg-preview abstract-bg"></div>
           <span>Abstract</span>
         </div>
 
-        <div class="background-option" data-bg="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
+        <div class="background-option"
+          data-bg="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
           <div class="bg-preview code-bg"></div>
           <span>Code</span>
         </div>
-        <div class="background-option" data-bg="https://images.unsplash.com/photo-1484417894907-623942c8ee29?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
+        <div class="background-option"
+          data-bg="https://images.unsplash.com/photo-1484417894907-623942c8ee29?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
           <div class="bg-preview dark-office-bg"></div>
           <span>Dark Office</span>
         </div>
-        <div class="background-option" data-bg="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
+        <div class="background-option"
+          data-bg="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
           <div class="bg-preview tech-bg"></div>
           <span>Tech</span>
         </div>
-        <div class="background-option" data-bg="https://images.unsplash.com/photo-1483401757487-2ced3fa77952?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
+        <div class="background-option"
+          data-bg="https://images.unsplash.com/photo-1483401757487-2ced3fa77952?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
           <div class="bg-preview galaxy-bg"></div>
           <span>Galaxy</span>
         </div>
-        <div class="background-option" data-bg="https://images.unsplash.com/photo-1520034475321-cbe63696469a?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
+        <div class="background-option"
+          data-bg="https://images.unsplash.com/photo-1520034475321-cbe63696469a?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
           <div class="bg-preview data-bg"></div>
           <span>Data</span>
         </div>
-        <div class="background-option" data-bg="https://images.unsplash.com/photo-1506477331477-33d5d8b3dc85?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
+        <div class="background-option"
+          data-bg="https://images.unsplash.com/photo-1506477331477-33d5d8b3dc85?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
           <div class="bg-preview dark-ocean-bg"></div>
           <span>Dark Ocean</span>
         </div>
-        <div class="background-option" data-bg="https://images.unsplash.com/photo-1498036882173-b41c28a8ba34?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
+        <div class="background-option"
+          data-bg="https://images.unsplash.com/photo-1498036882173-b41c28a8ba34?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
           <div class="bg-preview cityscape-bg"></div>
           <span>Cityscape</span>
         </div>
-        <div class="background-option" data-bg="https://images.unsplash.com/photo-1504639725590-34d0984388bd?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
+        <div class="background-option"
+          data-bg="https://images.unsplash.com/photo-1504639725590-34d0984388bd?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
           <div class="bg-preview nebula-bg"></div>
           <span>Nebula</span>
         </div>
-        <div class="background-option" data-bg="https://images.unsplash.com/photo-1489861518096-4d12b732e831?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
+        <div class="background-option"
+          data-bg="https://images.unsplash.com/photo-1489861518096-4d12b732e831?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
           <div class="bg-preview gradient-bg"></div>
           <span>Gradient</span>
         </div>
-        <div class="background-option" data-bg="https://images.unsplash.com/photo-1536599018102-9f803c140fc1?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
+        <div class="background-option"
+          data-bg="https://images.unsplash.com/photo-1536599018102-9f803c140fc1?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
           <div class="bg-preview coding-desk-bg"></div>
           <span>Coding Desk</span>
         </div>
@@ -202,7 +212,8 @@
             <i class="fas fa-random"></i>
           </div>
           <span>Random</span>
-        </div> <div class="background-option" data-bg="custom">
+        </div>
+        <div class="background-option" data-bg="custom">
           <div class="bg-preview custom-bg">
             <i class="fas fa-upload"></i>
           </div>
@@ -532,7 +543,6 @@
   </div>
 
   <script src="script.js"></script>
-  <script src="bookmark-importer.js"></script>
-  <script src="init.js"></script>
 </body>
+
 </html>

@@ -221,25 +221,25 @@ let timeLeft = 25 * 60; // 25 minutes in seconds
 // Default Bookmarks and Folders for Developers
 const DEFAULT_BOOKMARKS = [
   // Essential Productivity
-  { title: 'Gmail', url: 'https://mail.google.com', icon: 'M', color: '#D44638', category: 'prod' },
-  { title: 'Google', url: 'https://www.google.com', icon: 'G', color: '#4285f4', category: 'other' },
+  { title: 'Gmail', url: 'https://mail.google.com', icon: 'M', color: '#ffffff0f', category: 'prod' },
+  { title: 'Google', url: 'https://www.google.com', icon: 'G', color: '##ffffff0f', category: 'other' },
 
   // Development Essential
-  { title: 'GitHub', url: 'https://www.github.com', icon: 'GH', color: '#333333', category: 'dev' },
-  { title: 'Stack Overflow', url: 'https://stackoverflow.com', icon: 'SO', color: '#F48024', category: 'dev' },
-  { title: 'VSCode', url: 'https://vscode.dev', icon: '<i class="fas fa-code"></i>', color: '#007ACC', iconIsHtml: true, category: 'dev' },
+  { title: 'GitHub', url: 'https://www.github.com', icon: 'GH', color: '#ffffff0f', category: 'dev' },
+  { title: 'Stack Overflow', url: 'https://stackoverflow.com', icon: 'SO', color: '#ffffff0f', category: 'dev' },
+  { title: 'VSCode', url: 'https://vscode.dev', icon: '<i class="fas fa-code"></i>', color: '#ffffff0f', iconIsHtml: true, category: 'dev' },
 
   // Web Development Resources
-  { title: 'Tailwind CSS', url: 'https://tailwindcss.com', icon: 'TW', color: '#38B2AC', category: 'dev' },
-  { title: 'MDN Web Docs', url: 'https://developer.mozilla.org', icon: 'MDN', color: '#000000', category: 'dev' },
+  { title: 'Tailwind CSS', url: 'https://tailwindcss.com', icon: 'TW', color: '#ffffff0f', category: 'dev' },
+  { title: 'MDN Web Docs', url: 'https://developer.mozilla.org', icon: 'MDN', color: '#ffffff0f', category: 'dev' },
 
   // AI Resources
-  { title: 'Claude', url: 'https://claude.ai', icon: 'CL', color: '#0057FF', category: 'ai' },
-  { title: 'ChatGPT', url: 'https://chat.openai.com', icon: 'AI', color: '#10A37F', category: 'ai' },
+  { title: 'Claude', url: 'https://claude.ai', icon: 'CL', color: '#ffffff0f', category: 'ai' },
+  { title: 'ChatGPT', url: 'https://chat.openai.com', icon: 'AI', color: '#ffffff0f', category: 'ai' },
 
   // Social and Learning
-  { title: 'YouTube', url: 'https://www.youtube.com', icon: 'Y', color: '#FF0000', category: 'social' },
-  { title: 'Dev.to', url: 'https://dev.to', icon: 'D', color: '#0A0A0A', category: 'dev' }
+  { title: 'YouTube', url: 'https://www.youtube.com', icon: 'Y', color: '#ffffff0f', category: 'social' },
+  { title: 'Dev.to', url: 'https://dev.to', icon: 'D', color: '#ffffff0f', category: 'dev' }
 ];
 
 const DEFAULT_FOLDERS = [
@@ -249,9 +249,9 @@ const DEFAULT_FOLDERS = [
     color: '#007ACC',
     category: 'dev',
     items: [
-      { title: 'GitHub', url: 'https://www.github.com', icon: 'GH', color: '#333333' },
-      { title: 'CodePen', url: 'https://codepen.io', icon: 'CP', color: '#47cf73' },
-      { title: 'NPM', url: 'https://www.npmjs.com', icon: 'NPM', color: '#cb3837' }
+      { title: 'GitHub', url: 'https://www.github.com', icon: 'GH', color: '#ffffff0f' },
+      { title: 'CodePen', url: 'https://codepen.io', icon: 'CP', color: '#ffffff0f' },
+      { title: 'NPM', url: 'https://www.npmjs.com', icon: 'NPM', color: '#ffffff0f' }
     ]
   },
   {
@@ -260,9 +260,9 @@ const DEFAULT_FOLDERS = [
     color: '#61DAFB',
     category: 'dev',
     items: [
-      { title: 'React', url: 'https://react.dev', icon: 'R', color: '#61DAFB' },
-      { title: 'Next.js', url: 'https://nextjs.org', icon: 'NX', color: '#000000' },
-      { title: 'TypeScript', url: 'https://www.typescriptlang.org', icon: 'TS', color: '#3178C6' }
+      { title: 'React', url: 'https://react.dev', icon: 'R', color: '#ffffff0f' },
+      { title: 'Next.js', url: 'https://nextjs.org', icon: 'NX', color: '#ffffff0f' },
+      { title: 'TypeScript', url: 'https://www.typescriptlang.org', icon: 'TS', color: '#ffffff0f' }
     ]
   },
   {
@@ -271,9 +271,9 @@ const DEFAULT_FOLDERS = [
     color: '#FF6F61',
     category: 'ai',
     items: [
-      { title: 'Claude', url: 'https://claude.ai', icon: 'CL', color: '#0057FF' },
-      { title: 'Hugging Face', url: 'https://huggingface.co', icon: 'HF', color: '#FFD21E' },
-      { title: 'Kaggle', url: 'https://www.kaggle.com', icon: 'K', color: '#20BEFF' }
+      { title: 'Claude', url: 'https://claude.ai', icon: 'CL', color: '#ffffff0f' },
+      { title: 'Hugging Face', url: 'https://huggingface.co', icon: 'HF', color: '#ffffff0f' },
+      { title: 'Kaggle', url: 'https://www.kaggle.com', icon: 'K', color: '#ffffff0f' }
     ]
   }
 ];
@@ -303,6 +303,12 @@ function getCategoryLabel(category) {
     case 'prod': return 'Prod';
     case 'social': return 'Social';
     case 'ai': return 'AI';
+    case 'imported': return 'Imported';
+    case 'shopping': return 'Shopping';
+    case 'entertainment': return 'Entertainment';
+    case 'education': return 'Education';
+    case 'news': return 'News';
+
     case 'other': return 'Other';
     default: return 'Other';
   }
@@ -376,7 +382,7 @@ function setupEventListeners() {
   terminalInput.addEventListener('keydown', getTerminalFunctionality);
   overlay.addEventListener('click', closeModals);
   resetDefaultBtn.addEventListener('click', resetToDefault);
-  // devPanelHeaderToggle.addEventListener('click', toggleDevPanelHeader);
+
 
   // ? load icon click
   // Icon selection in bookmark modal
@@ -414,8 +420,26 @@ iconOptions.forEach(option => {
   document.getElementById('apiStatusToggle').addEventListener('change', toggleApiStatus);
   document.getElementById('quickDocsToggle').addEventListener('change', toggleQuickDocs);
   document.getElementById('pomodoroToggle').addEventListener('change', togglePomodoroTimer);
+
+  chrome.bookmarks.onCreated.addListener(refreshBookmarks);
+  chrome.bookmarks.onRemoved.addListener(refreshBookmarks);
+  chrome.bookmarks.onChanged.addListener(refreshBookmarks);
 }
 
+function showToast(message) {
+  const toast = document.createElement('div');
+  toast.className = 'toast-message';
+  toast.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 300);
+    }, 2000);
+  }, 100);
+}
 
 // function toggleDevPanelHeader() {
 //   devPanel.classList.toggle('collapsed');
@@ -445,11 +469,92 @@ iconOptions.forEach(option => {
 function loadSettings() {
   chrome.storage.sync.get(['settings', 'bookmarks', 'folders'], function(data) {
     const settings = data.settings || DEFAULT_SETTINGS;
-    const bookmarks = data.bookmarks || DEFAULT_BOOKMARKS;
-    const folders = data.folders || DEFAULT_FOLDERS;
-    applySettings(settings);
-    renderBookmarks(bookmarks, folders);
+    const customBookmarks = data.bookmarks || [];
+    const customFolders = data.folders || [];
+
+    // Get Chrome bookmarks
+    chrome.bookmarks.getTree((chromeBookmarkTree) => {
+      const processedChromeBookmarks = processChromeBookmarks(chromeBookmarkTree[0]);
+
+      // Ensure processedChromeBookmarks.bookmarks exists
+      const chromeBookmarks = processedChromeBookmarks.bookmarks || [];
+      const chromeFolders = processedChromeBookmarks.folders || [];
+
+      // Combine and filter bookmarks/folders
+      const allBookmarks = [...customBookmarks, ...chromeBookmarks].filter(Boolean);
+      const allFolders = [...customFolders, ...chromeFolders].filter(Boolean);
+
+      applySettings(settings);
+      renderBookmarks(allBookmarks, allFolders);
+    });
   });
+}
+
+function processChromeBookmarks(node, path = '', result = { bookmarks: [], folders: [] }) {
+  if (!node) return result;
+
+  if (node.children) {
+    // This is a folder
+    const currentPath = path ? `${path}/${node.title}` : node.title;
+
+    if (node.title) { // Skip root folder
+      const folderId = `chrome_folder_${node.id}`;
+      const folderBookmarks = [];
+
+      // Process children first to collect folder items
+      node.children.forEach(child => {
+        if (child && child.url) {
+          // This is a bookmark in the folder
+          const bookmark = {
+            title: child.title || '',
+            url: child.url,
+            id: child.id,
+            isExtensionBookmark: true,
+            category: guessCategory(child.url),
+            folder: currentPath,
+            path: currentPath.split('/')
+          };
+          folderBookmarks.push(bookmark);
+          result.bookmarks.push(bookmark);
+        } else if (child) {
+          // Recurse into subfolders
+          processChromeBookmarks(child, currentPath, result);
+        }
+      });
+
+      // Add folder with its bookmarks if it has any
+      if (folderBookmarks.length > 0) {
+        result.folders.push({
+          id: folderId,
+          name: node.title,
+          color: getColorForFolder(node.title),
+          category: 'imported',
+          items: folderBookmarks,
+          path: currentPath
+        });
+      }
+    }
+  } else if (node.url) {
+    result.bookmarks.push({
+      title: node.title,
+      url: node.url,
+      folder: path
+    });
+  }
+
+  return result;
+}
+
+function getColorForFolder(name) {
+  const colors = [
+    '#4285f4', '#ea4335', '#fbbc05', '#34a853',
+    '#673ab7', '#3f51b5', '#2196f3', '#03a9f4'
+  ];
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return colors[Math.abs(hash) % colors.length];
 }
 
 function saveSettings(settings) {
@@ -467,8 +572,11 @@ function applySettings(settings) {
 
   clockFormatSelect.value = settings.clockFormat;
   document.body.style.backgroundImage = `url('${settings.background}')`;
-  if (settings.background === 'custom' && settings.customBackground) {
-    document.body.style.backgroundImage = `url('${settings.customBackground}')`;
+  // get custom background from local storage
+  const customBg = localStorage.getItem('customBackground');
+
+  if (settings.background === 'custom' && customBg) {
+    document.body.style.backgroundImage = `url('${customBg}')`;
   }
 
   backgroundOptions.forEach(option => {
@@ -569,42 +677,37 @@ function applySettings(settings) {
 // Bookmark Functions
 function renderBookmarks(bookmarks = [], folders = [], filter = '') {
   bookmarksContainer.innerHTML = '';
-  bookmarks = Array.isArray(bookmarks) ? bookmarks : [];
-  folders = Array.isArray(folders) ? folders : [];
+
+  // Ensure we have arrays and filter out any undefined/null values
+  bookmarks = (Array.isArray(bookmarks) ? bookmarks : []).filter(Boolean);
+  folders = (Array.isArray(folders) ? folders : []).filter(Boolean);
+
   const activeTab = document.querySelector('.bookmarks-tabs .tab.active');
   const activeCategory = activeTab ? activeTab.dataset.category : 'all';
-  let filteredBookmarks = bookmarks;
 
+  // Filter bookmarks with null checks
+  let filteredBookmarks = bookmarks;
   if (filter) {
     filteredBookmarks = bookmarks.filter(bookmark =>
-      bookmark.title.toLowerCase().includes(filter.toLowerCase()) ||
-      bookmark.url.toLowerCase().includes(filter.toLowerCase())
+      bookmark &&
+      ((bookmark.title && bookmark.title.toLowerCase().includes(filter.toLowerCase())) ||
+       (bookmark.url && bookmark.url.toLowerCase().includes(filter.toLowerCase())))
     );
   }
 
   if (activeCategory !== 'all') {
-    filteredBookmarks = filteredBookmarks.filter(bookmark => bookmark.category === activeCategory);
+    filteredBookmarks = filteredBookmarks.filter(bookmark =>
+      bookmark &&
+      (activeCategory === 'imported' ? bookmark.isExtensionBookmark : bookmark.category === activeCategory)
+    );
   }
 
-  let filteredFolders = folders;
+  // Render folders first
+  folders.forEach(folder => {
+    if (activeCategory !== 'all' && activeCategory !== 'imported' && folder.category !== activeCategory) {
+      return;
+    }
 
-  if (filter) {
-    filteredFolders = folders.filter(folder => {
-      if (folder.name.toLowerCase().includes(filter.toLowerCase())) {
-        return true;
-      }
-      return folder.items.some(item =>
-        item.title.toLowerCase().includes(filter.toLowerCase()) ||
-        (item.url && item.url.toLowerCase().includes(filter.toLowerCase()))
-      );
-    });
-  }
-
-  if (filteredFolders && activeCategory !== 'all') {
-    filteredFolders = filteredFolders.filter(folder => folder.category === activeCategory);
-  }
-
-  filteredFolders.forEach(folder => {
     const folderEl = document.createElement('div');
     folderEl.className = 'bookmark-folder';
     folderEl.dataset.folderId = folder.id;
@@ -682,20 +785,36 @@ function renderBookmarks(bookmarks = [], folders = [], filter = '') {
     bookmarksContainer.appendChild(folderEl);
   });
 
+  // Then render bookmarks not in folders
   filteredBookmarks.forEach((bookmark, index) => {
-    const bookmarkEl = createBookmarkElement(bookmark, () => deleteBookmark(index));
-    const categoryEl = document.createElement('div');
-    categoryEl.className = 'bookmark-category';
-    categoryEl.textContent = getCategoryLabel(bookmark.category);
-    bookmarkEl.appendChild(categoryEl);
-    if (filter && bookmark.title.toLowerCase().includes(filter.toLowerCase())) {
-      const titleEl = bookmarkEl.querySelector('.bookmark-title');
-      titleEl.innerHTML = highlightText(bookmark.title, filter);
+    if (!bookmark.folder) { // Only render bookmarks not in folders
+      const bookmarkEl = createBookmarkElement(bookmark, () => {
+        if (!bookmark.isExtensionBookmark) {
+          deleteBookmark(index);
+        }
+      });
+
+      if (bookmark.isExtensionBookmark) {
+        const chromeIcon = document.createElement('div');
+        chromeIcon.className = 'chrome-source';
+        chromeIcon.innerHTML = '<i class="fab fa-chrome" title="Chrome Bookmark"></i>';
+        bookmarkEl.appendChild(chromeIcon);
+        bookmarkEl.querySelector('.bookmark-delete')?.remove();
+      }
+
+      const categoryEl = document.createElement('div');
+      categoryEl.className = 'bookmark-category';
+      categoryEl.textContent = getCategoryLabel(bookmark.category);
+      bookmarkEl.appendChild(categoryEl);
+      if (filter && bookmark.title.toLowerCase().includes(filter.toLowerCase())) {
+        const titleEl = bookmarkEl.querySelector('.bookmark-title');
+        titleEl.innerHTML = highlightText(bookmark.title, filter);
+      }
+      bookmarksContainer.appendChild(bookmarkEl);
     }
-    bookmarksContainer.appendChild(bookmarkEl);
   });
 
-  if (filteredBookmarks.length === 0 && filteredFolders.length === 0) {
+  if (filteredBookmarks.length === 0 && folders.length === 0) {
     const noResultsEl = document.createElement('div');
     noResultsEl.className = 'no-results';
     noResultsEl.style.gridColumn = '1 / -1';
@@ -721,44 +840,179 @@ function createBookmarkElement(bookmark, deleteCallback) {
 
   // Function to set fallback icon
   const setFallbackIcon = () => {
-    // Improved Font Awesome detection
+    // Center content in the icon container
+    iconEl.style.display = 'flex';
+    iconEl.style.alignItems = 'center';
+    iconEl.style.justifyContent = 'center';
+
     if (bookmark.iconIsHtml || (typeof bookmark.icon === 'string' && bookmark.icon.match(/fa[srb]? fa-\w+/))) {
-      // For Font Awesome icons
-      if (bookmark.icon.match(/fa[srb]? fa-\w+/)) {
-        iconEl.innerHTML = `<i class="${bookmark.icon}"></i>`;
-      } else {
-        iconEl.innerHTML = bookmark.icon;
-      }
+      iconEl.innerHTML = `<i class="${bookmark.icon}"></i>`;
     } else {
-      // For text/emoji icons
       iconEl.textContent = bookmark.icon;
     }
     iconEl.style.backgroundColor = bookmark.color;
   };
 
-  // Try to fetch favicon
   const faviconImg = document.createElement('img');
-  faviconImg.src = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(bookmark.url)}&sz=32`;
   faviconImg.alt = 'Favicon';
   faviconImg.classList.add('favicon');
+  // Set explicit width and height to ensure consistent sizing
+  faviconImg.style.width = '36px';
+  faviconImg.style.height = '36px';
+  faviconImg.style.objectFit = 'contain';
 
-  faviconImg.onload = () => {
-    // If favicon loads successfully, use it
-    iconEl.innerHTML = '';
-    iconEl.appendChild(faviconImg);
+  // Extract hostname properly
+  let hostname;
+  try {
+    // Handle URLs with or without protocol
+    if (!bookmark.url.startsWith('http')) {
+      hostname = new URL('https://' + bookmark.url).hostname;
+    } else {
+      hostname = new URL(bookmark.url).hostname;
+    }
+  } catch (e) {
+    // If URL parsing fails, use the raw URL as hostname
+    hostname = bookmark.url.replace(/^https?:\/\//, '').split('/')[0];
+  }
+
+  // Create an array of possible favicon sources to try
+  const faviconSources = [
+    `https://www.google.com/s2/favicons?domain=${encodeURIComponent(bookmark.url)}&sz=32`,
+    `https://www.google.com/s2/favicons?domain=${encodeURIComponent(hostname)}&sz=32`,
+    // Icon.horse service with size parameter (primary, very reliable)
+    `https://icon.horse/icon/${hostname}?size=small`,
+
+    // Direct favicon approach - often works well
+    `https://${hostname}/favicon.ico`,
+
+    // DuckDuckGo's favicon service (good alternative)
+    `https://icons.duckduckgo.com/ip3/${hostname}.ico`,
+
+    // Google favicon service as backup
+    `https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://${hostname}&size=32`,
+
+    // Data URI fallback for a basic placeholder
+    'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"%3E%3Crect width="16" height="16" fill="%23ccc"/%3E%3Ctext x="8" y="12" font-size="10" text-anchor="middle" fill="%23333"%3E?%3C/text%3E%3C/svg%3E'
+  ];
+
+  // Keep track of which source we're trying
+  let currentSourceIndex = 0;
+
+  // Debug information container for logging
+  const debugInfo = {
+    hostname: hostname,
+    attempts: []
   };
+
+  // Try the next favicon source without fetch (to avoid CORS issues)
+  const tryNextSource = () => {
+    try {
+       if (currentSourceIndex < faviconSources.length) {
+      const currentUrl = faviconSources[currentSourceIndex];
+      currentSourceIndex++;
+
+      // Log the attempt
+      // console.log(`Trying favicon source ${currentSourceIndex}/${faviconSources.length}: ${currentUrl}`);
+      debugInfo.attempts.push({ url: currentUrl });
+
+      // Set the src directly - we'll rely on onerror/onload instead of fetch
+      try {
+        faviconImg.src = currentUrl;
+      } catch (error) {
+        console.log(`Error setting favicon source: ${error}`);
+
+      }
+
+    } else {
+      // If all sources fail, use the fallback
+      // console.log(`All favicon sources failed for ${hostname}`, debugInfo.attempts);
+      setFallbackIcon();
+    }
+    } catch (error) {
+      console.log(`Error trying favicon source: ${error}`);
+
+    }
+
+  };
+ try {
+  // Set up event handlers for success and error
+  faviconImg.onload = () => {
+    // Only proceed if the image actually loaded with content
+    try {
+ if (faviconImg.naturalWidth > 1) {
+      const successUrl = faviconImg.src;
+      // console.log(`✓ Favicon loaded successfully from: ${successUrl}`);
+
+      // Add success info to the last attempt
+      if (debugInfo.attempts.length > 0) {
+        debugInfo.attempts[debugInfo.attempts.length - 1].success = true;
+      }
+
+      iconEl.innerHTML = '';
+
+      // Handle icon styling and positioning
+      iconEl.style.display = 'flex';
+      iconEl.style.alignItems = 'center';
+      iconEl.style.justifyContent = 'center';
+
+      // Add the favicon image
+      iconEl.appendChild(faviconImg);
+
+      // Store the successful source URL as a data attribute
+      iconEl.dataset.faviconSource = successUrl;
+    } else {
+      // Image too small or empty, try next source
+      console.log(`✗ Favicon loaded but too small from: ${faviconImg.src}`);
+
+      // Add failure info to the last attempt
+      if (debugInfo.attempts.length > 0) {
+        debugInfo.attempts[debugInfo.attempts.length - 1].error = 'Too small';
+      }
+
+
+    }
+    } catch (error) {
+      console.log(`Error loading favicon: ${error}`);
+    }
+
+
+
+
+  };
+  } catch (error) {
+      console.log(`Error loading favicon: ${error}`);
+
+       tryNextSource();
+    }
 
   faviconImg.onerror = () => {
-    // If favicon fails to load, use fallback icon
-    setFallbackIcon();
+    // Image failed to load, try next source
+    console.log(`✗ Favicon failed to load from: ${faviconImg.src}`);
+
+    // Add failure info to the last attempt
+    if (debugInfo.attempts.length > 0) {
+      debugInfo.attempts[debugInfo.attempts.length - 1].error = 'Failed to load';
+    }
+
+    tryNextSource();
   };
 
-  // Initially set fallback icon in case favicon doesn't load immediately
+  // Start trying sources
+  tryNextSource();
+
+  // Set initial fallback icon (will be replaced if a favicon loads successfully)
   setFallbackIcon();
 
   const titleEl = document.createElement('div');
   titleEl.className = 'bookmark-title';
-  titleEl.textContent = bookmark.title;
+  titleEl.textContent = shortenTitle(bookmark.title); // Use the helper function to shorten the title
+
+  if (bookmark.isExtensionBookmark) {
+    const chromeIcon = document.createElement('div');
+    chromeIcon.className = 'chrome-source';
+    chromeIcon.innerHTML = '<i class="fab fa-chrome" title="Chrome Bookmark"></i>';
+    bookmarkEl.appendChild(chromeIcon);
+  }
 
   const deleteBtn = document.createElement('div');
   deleteBtn.className = 'bookmark-delete';
@@ -768,6 +1022,13 @@ function createBookmarkElement(bookmark, deleteCallback) {
     deleteCallback();
   });
 
+  if (bookmark.folder) {
+    const folderEl = document.createElement('div');
+    folderEl.className = 'bookmark-folder-label';
+    folderEl.textContent = `Folder: ${bookmark.folder}`;
+    bookmarkEl.appendChild(folderEl);
+  }
+
   bookmarkEl.appendChild(iconEl);
   bookmarkEl.appendChild(titleEl);
   bookmarkEl.appendChild(deleteBtn);
@@ -775,6 +1036,12 @@ function createBookmarkElement(bookmark, deleteCallback) {
   return bookmarkEl;
 }
 
+function shortenTitle(title) {
+  if (title.length > 20) {
+    return title.substring(0, 17) + '...';
+  }
+  return title;
+}
 
 function toggleFolderContent(folderId) {
   const folderContent = document.querySelector(`.folder-content[data-folder-id="${folderId}"]`);
@@ -805,21 +1072,32 @@ function deleteBookmarkFromFolder(folderId, itemIndex) {
 }
 
 function deleteBookmark(index) {
-  chrome.storage.sync.get(['bookmarks', 'folders'], function(data) {
-    const bookmarks = data.bookmarks || DEFAULT_BOOKMARKS;
-    const folders = data.folders || DEFAULT_FOLDERS;
-    bookmarks.splice(index, 1);
-    saveBookmarks(bookmarks);
-    renderBookmarks(bookmarks, folders, searchBookmarks ? searchBookmarks.value : '');
-  });
+    chrome.storage.sync.get(['bookmarks', 'folders'], function(data) {
+        const bookmarks = data.bookmarks || DEFAULT_BOOKMARKS;
+        const bookmark = bookmarks[index];
+
+        if (bookmark.isExtensionBookmark) {
+            // Delete from Chrome bookmarks
+            chrome.bookmarks.remove(bookmark.id, () => {
+                refreshBookmarks();
+            });
+        } else {
+            // Delete custom bookmark
+            bookmarks.splice(index, 1);
+            chrome.storage.sync.set({ bookmarks: bookmarks }, () => {
+                renderBookmarks(bookmarks, data.folders || DEFAULT_FOLDERS, searchBookmarks ? searchBookmarks.value : '');
+            });
+        }
+    });
 }
 
-// Function to save bookmarks to storage
-function saveBookmarks(bookmarks) {
-  chrome.storage.sync.set({ bookmarks: bookmarks });
+function refreshBookmarks() {
+    if (window.bookmarkImporter) {
+        window.bookmarkImporter.getAllBookmarks().then(({bookmarks, folders}) => {
+            renderBookmarks(bookmarks, folders, searchBookmarks ? searchBookmarks.value : '');
+        });
+    }
 }
-
-
 
 function editFolder(folderId) {
   chrome.storage.sync.get(['folders'], function(data) {
@@ -882,19 +1160,18 @@ function addBookmark() {
       const folderIndex = folders.findIndex(f => f.id === folderId);
       if (folderIndex !== -1) {
         folders[folderIndex].items.push(newBookmark);
-        chrome.storage.sync.set({ folders: folders });
-        chrome.storage.sync.get(['bookmarks'], function(bookmarkData) {
-          renderBookmarks(bookmarkData.bookmarks || DEFAULT_BOOKMARKS, folders, searchBookmarks.value);
+        chrome.storage.sync.set({ folders: folders }, () => {
+          refreshBookmarks();
         });
-        closeBookmarkModal();
       }
+      closeBookmarkModal();
     });
   } else {
-    chrome.storage.sync.get(['bookmarks', 'folders'], function(data) {
-      const bookmarks = data.bookmarks || DEFAULT_BOOKMARKS;
-      bookmarks.push(newBookmark);
-      chrome.storage.sync.set({ bookmarks: bookmarks });
-      renderBookmarks(bookmarks, data.folders || DEFAULT_FOLDERS, searchBookmarks.value);
+    chrome.bookmarks.create({
+      title: newBookmark.title,
+      url: newBookmark.url
+    }, () => {
+      refreshBookmarks();
       closeBookmarkModal();
     });
   }
@@ -1071,12 +1348,19 @@ function selectBackground() {
 
 function uploadCustomBackground() {
   if (this.files && this.files[0]) {
+    // check the file size if size greater then 2 MB then show error toast
+    if (this.files[0].size > 2 * 1024 * 1024) {
+      showToast('File size exceeds 2 MB. Please choose a smaller file.');
+      return;
+    }
     const reader = new FileReader();
     reader.onload = function(e) {
       chrome.storage.sync.get('settings', function(data) {
         const settings = data.settings || DEFAULT_SETTINGS;
         settings.background = 'custom';
-        settings.customBackground = e.target.result;
+        // settings.customBackground = e.target.result;
+        // set the background  result on local storage
+        localStorage.setItem('customBackground', e.target.result);
         saveSettings(settings);
         applySettings(settings);
       });
@@ -1139,7 +1423,28 @@ function refreshGitHubActivity() {
 function filterBookmarks() {
   const searchTerm = this.value.trim();
   chrome.storage.sync.get(['bookmarks', 'folders'], function(data) {
-    renderBookmarks(data.bookmarks || DEFAULT_BOOKMARKS, data.folders || DEFAULT_FOLDERS, searchTerm);
+    const extensionBookmarks = data.bookmarks || DEFAULT_BOOKMARKS;
+    const folders = data.folders || DEFAULT_FOLDERS;
+
+    // Get Chrome bookmarks
+    chrome.bookmarks.getTree((chromeBookmarkTree) => {
+      const chromeBookmarks = processBookmarkTree(chromeBookmarkTree[0]);
+
+      // Mark bookmarks by source
+      const markedChromeBookmarks = chromeBookmarks.map(b => ({
+        ...b,
+        isExtensionBookmark: true,
+        category: guessCategory(b.url) // Add this helper function
+      }));
+
+      const markedExtensionBookmarks = extensionBookmarks.map(b => ({
+        ...b,
+        isExtensionBookmark: false
+      }));
+
+      const allBookmarks = [...markedChromeBookmarks, ...markedExtensionBookmarks];
+      renderBookmarks(allBookmarks, folders, searchTerm);
+    });
   });
 }
 
@@ -1147,10 +1452,175 @@ function switchBookmarkTab() {
   bookmarksTabs.forEach(tab => tab.classList.remove('active'));
   this.classList.add('active');
   localStorage.setItem('active_bookmarks_tab', this.dataset.category);
+
   chrome.storage.sync.get(['bookmarks', 'folders'], function(data) {
-    renderBookmarks(data.bookmarks || DEFAULT_BOOKMARKS, data.folders || DEFAULT_FOLDERS, searchBookmarks.value);
+    const extensionBookmarks = data.bookmarks || DEFAULT_BOOKMARKS;
+    const folders = data.folders || DEFAULT_FOLDERS;
+
+    // Get Chrome bookmarks
+    chrome.bookmarks.getTree((chromeBookmarkTree) => {
+      const chromeBookmarks = processBookmarkTree(chromeBookmarkTree[0]);
+
+      // Mark bookmarks by source
+      const markedChromeBookmarks = chromeBookmarks.map(b => ({
+        ...b,
+        isExtensionBookmark: true,
+        category: guessCategory(b.url) // Add this helper function
+      }));
+
+      const markedExtensionBookmarks = extensionBookmarks.map(b => ({
+        ...b,
+        isExtensionBookmark: false
+      }));
+
+      const allBookmarks = [...markedChromeBookmarks, ...markedExtensionBookmarks];
+      renderBookmarks(allBookmarks, folders, searchBookmarks.value);
+    });
   });
 }
+
+// Add these helper functions
+function processBookmarkTree(node, result = []) {
+  if (node.url) {
+    result.push({
+      title: node.title,
+      url: node.url,
+      id: node.id,
+      dateAdded: node.dateAdded
+    });
+  }
+  if (node.children) {
+    node.children.forEach(child => processBookmarkTree(child, result));
+  }
+  return result;
+}
+
+function guessCategory(url) {
+  const lowerUrl = url.toLowerCase();
+
+  // Known developer sites
+  if (lowerUrl.includes('github.com') ||
+      lowerUrl.includes('stackoverflow.com') ||
+      lowerUrl.includes('npmjs.com') ||
+      lowerUrl.includes('developer.mozilla.org') ||
+      lowerUrl.includes('w3schools.com') ||
+      lowerUrl.includes('codepen.io') ||
+      lowerUrl.includes('jsfiddle.net')) {
+    return 'dev';
+  }
+
+  // AI tools
+  if (lowerUrl.includes('chat.openai.com') ||
+      lowerUrl.includes('claude.ai') ||
+      lowerUrl.includes('bard.google.com') ||
+      lowerUrl.includes('perplexity.ai') ||
+      lowerUrl.includes('phind.com')) {
+    return 'ai';
+  }
+
+  // Productivity tools
+  if (lowerUrl.includes('gmail.com') ||
+      lowerUrl.includes('calendar.google.com') ||
+      lowerUrl.includes('docs.google.com') ||
+      lowerUrl.includes('notion.so') ||
+      lowerUrl.includes('trello.com') ||
+      lowerUrl.includes('slack.com')) {
+    return 'prod';
+  }
+
+  // Social media
+  if (lowerUrl.includes('twitter.com') ||
+      lowerUrl.includes('facebook.com') ||
+      lowerUrl.includes('linkedin.com') ||
+      lowerUrl.includes('instagram.com') ||
+      lowerUrl.includes('reddit.com') ||
+      lowerUrl.includes('tiktok.com')) {
+    return 'social';
+  }
+
+  // Shopping / commerce
+  if (lowerUrl.includes('amazon.') ||
+      lowerUrl.includes('flipkart.') ||
+      lowerUrl.includes('ebay.') ||
+      lowerUrl.includes('shopify.') ||
+      lowerUrl.includes('etsy.com')) {
+    return 'shopping';
+  }
+
+  // Entertainment / media
+  if (lowerUrl.includes('youtube.com') ||
+      lowerUrl.includes('netflix.com') ||
+      lowerUrl.includes('spotify.com') ||
+      lowerUrl.includes('hotstar.com') ||
+      lowerUrl.includes('primevideo.com')) {
+    return 'entertainment';
+  }
+
+  // Education
+  if (lowerUrl.includes('khanacademy.org') ||
+      lowerUrl.includes('coursera.org') ||
+      lowerUrl.includes('edx.org') ||
+      lowerUrl.includes('udemy.com') ||
+      lowerUrl.includes('brilliant.org')) {
+    return 'education';
+  }
+
+  // News
+  if (lowerUrl.includes('bbc.com') ||
+      lowerUrl.includes('cnn.com') ||
+      lowerUrl.includes('nytimes.com') ||
+      lowerUrl.includes('theguardian.com') ||
+      lowerUrl.includes('indiatoday.in')) {
+    return 'news';
+  }
+
+  // Finance
+  if (lowerUrl.includes('paypal.com') ||
+      lowerUrl.includes('paytm.') ||
+      lowerUrl.includes('wise.com')) {
+    return 'finance';
+  }
+
+  // Food
+  if (lowerUrl.includes('zomato.com') ||
+      lowerUrl.includes('swiggy.com') ||
+      lowerUrl.includes('ubereats.com')) {
+    return 'food';
+  }
+
+  // Travel
+  if (lowerUrl.includes('airbnb.com') ||
+      lowerUrl.includes('booking.com') ||
+      lowerUrl.includes('makemytrip.')) {
+    return 'travel';
+  }
+
+  // Heuristic keyword matching
+  const keywords = {
+    dev: ['code', 'dev', 'api', 'git', 'docs'],
+    ai: ['ai', 'ml', 'gpt'],
+    prod: ['task', 'todo', 'calendar', 'mail', 'project'],
+    social: ['profile', 'feed', 'friends', 'status'],
+    shopping: ['shop', 'cart', 'product', 'checkout'],
+    entertainment: ['video', 'music', 'tv', 'movie'],
+    education: ['learn', 'course', 'study', 'class'],
+    news: ['news', 'headline', 'report', 'breaking'],
+    finance: ['money', 'bank', 'loan', 'fintech'],
+    food: ['food', 'restaurant', 'cafe', 'zomato'],
+    travel: ['travel', 'flight', 'hotel', 'booking']
+  };
+
+  for (const [category, keys] of Object.entries(keywords)) {
+    for (const key of keys) {
+      if (lowerUrl.includes(key)) {
+        return category;
+      }
+    }
+  }
+
+  return 'other';
+}
+
 
 function handleSearch(e) {
   e.preventDefault();
@@ -1315,53 +1785,7 @@ function updateClock() {
   });
 }
 
-// async function fetchTechNews() {
-//   const apiKey = 'e0aa6c2966654e288b1202437230e4d2';
-//   const url = `https://newsapi.org/v2/top-headlines?sources=hacker-news,ars-technica,techcrunch&apiKey=${apiKey}`;
 
-//   try {
-//     const response = await fetch(url);
-//     if (!response.ok) {
-//       throw new Error(`News API Error: ${response.status}`);
-//     }
-//     const data = await response.json();
-//     let newsPanel = document.getElementById('techNewsPanel');
-//     if (!newsPanel) {
-//       newsPanel = document.createElement('div');
-//       newsPanel.className = 'tech-news-panel';
-//       newsPanel.id = 'techNewsPanel';
-//       document.body.appendChild(newsPanel);
-//       newsPanel.innerHTML = `
-//         <div class="news-panel-header">
-//           <h3><i class="fas fa-newspaper"></i> Tech News</h3>
-//           <button class="news-panel-toggle">
-//             <i class="fas fa-times"></i>
-//           </button>
-//         </div>
-//         <div class="news-content" id="newsContent"></div>
-//       `;
-//       const closeBtn = newsPanel.querySelector('.news-panel-toggle');
-//       closeBtn.addEventListener('click', function() {
-//         newsPanel.classList.add('hidden');
-//       });
-//     }
-//     const newsContent = document.getElementById('newsContent');
-//     newsContent.innerHTML = '';
-//     data.articles.slice(0, 5).forEach(article => {
-//       const newsItem = document.createElement('a');
-//       newsItem.href = article.url;
-//       newsItem.target = '_blank';
-//       newsItem.className = 'news-item';
-//       newsItem.innerHTML = `
-//         <div class="news-title">${article.title}</div>
-//         <div class="news-source">${article.source.name}</div>
-//       `;
-//       newsContent.appendChild(newsItem);
-//     });
-//   } catch (error) {
-//     console.error('Error fetching tech news:', error);
-//   }
-// }
 
 async function fetchGitHubActivity(username) {
   if (!username || username.trim() === '') {
@@ -2118,6 +2542,118 @@ function resetToDefault() {
             }, 1000);
         });
     }
+}
+
+function processChromeBookmarks(node, path = '', result = { bookmarks: [], folders: [] }) {
+  if (!node) return result;
+
+  if (node.children) {
+    // This is a folder
+    const currentPath = path ? `${path}/${node.title}` : node.title;
+
+    if (node.title) { // Skip root folder
+      const folderId = `chrome_folder_${node.id}`;
+      const folderBookmarks = [];
+
+      // Process children first to collect folder items
+      node.children.forEach(child => {
+        if (child && child.url) {
+          // This is a bookmark in the folder
+          const bookmark = {
+            title: child.title || '',
+            url: child.url,
+            id: child.id,
+            isExtensionBookmark: true,
+            category: guessCategory(child.url),
+            folder: currentPath,
+            path: currentPath.split('/')
+          };
+          folderBookmarks.push(bookmark);
+          result.bookmarks.push(bookmark);
+        } else if (child) {
+          // Recurse into subfolders
+          processChromeBookmarks(child, currentPath, result);
+        }
+      });
+
+      // Add folder with its bookmarks if it has any
+      if (folderBookmarks.length > 0) {
+        result.folders.push({
+          id: folderId,
+          name: node.title,
+          color: getColorForFolder(node.title),
+          category: 'imported',
+          items: folderBookmarks,
+          path: currentPath
+        });
+      }
+    }
+  } else if (node.url) {
+    result.bookmarks.push({
+      title: node.title,
+      url: node.url,
+      folder: path
+    });
+  }
+
+  return result;
+}
+
+function renderChromeBookmarks(bookmarks) {
+  const bookmarksContainer = document.getElementById('bookmarks');
+  bookmarksContainer.innerHTML = '';
+
+  // Group bookmarks by folder
+  const bookmarksByFolder = bookmarks.reduce((acc, bookmark) => {
+    const folder = bookmark.folder || 'Uncategorized';
+    if (!acc[folder]) {
+      acc[folder] = [];
+    }
+    acc[folder].push(bookmark);
+    return acc;
+  }, {});
+
+  // Render each folder and its bookmarks
+  Object.entries(bookmarksByFolder).forEach(([folderName, folderBookmarks]) => {
+    if (folderName !== 'Uncategorized') {
+      const folderId = 'folder_' + Date.now() + Math.random().toString(36).substr(2, 9);
+      const folderEl = document.createElement('div');
+      folderEl.className = 'bookmark-folder';
+      folderEl.dataset.folderId = folderId;
+
+      // Create folder header
+      const folderHeader = document.createElement('div');
+      folderHeader.className = 'folder-header';
+      folderHeader.innerHTML = `
+        <div class="folder-icon">
+          <i class="fas fa-folder"></i>
+        </div>
+        <div class="folder-title">${folderName}</div>
+      `;
+      folderHeader.addEventListener('click', () => toggleFolderContent(folderId));
+
+      // Create folder content
+      const folderContent = document.createElement('div');
+      folderContent.className = 'folder-content';
+      folderContent.dataset.folderId = folderId;
+
+      // Add bookmarks to folder
+      folderBookmarks.forEach(bookmark => {
+        const bookmarkEl = createBookmarkElement(bookmark, () => {});
+        folderContent.appendChild(bookmarkEl);
+      });
+
+      folderEl.appendChild(folderHeader);
+      folderEl.appendChild(folderContent);
+      bookmarksContainer.appendChild(folderEl);
+    } else {
+      // Render uncategorized bookmarks directly
+      folderBookmarks.forEach(bookmark => {
+        const bookmarkEl = createBookmarkElement(bookmark, () => {});
+        bookmarksContainer.appendChild(bookmarkEl);
+      });
+    }
+  });
 }
 
 // Initialize the application

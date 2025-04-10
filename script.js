@@ -303,12 +303,9 @@ function getCategoryLabel(category) {
     case 'prod': return 'Prod';
     case 'social': return 'Social';
     case 'ai': return 'AI';
-    case 'imported': return 'Imported';
     case 'shopping': return 'Shopping';
     case 'entertainment': return 'Entertainment';
     case 'education': return 'Education';
-    case 'news': return 'News';
-
     case 'other': return 'Other';
     default: return 'Other';
   }
@@ -511,11 +508,9 @@ function processChromeBookmarks(node, path = '', result = { bookmarks: [], folde
             id: child.id,
             isExtensionBookmark: true,
             category: guessCategory(child.url),
-            folder: currentPath,
             path: currentPath.split('/')
           };
           folderBookmarks.push(bookmark);
-          result.bookmarks.push(bookmark);
         } else if (child) {
           // Recurse into subfolders
           processChromeBookmarks(child, currentPath, result);
@@ -530,15 +525,22 @@ function processChromeBookmarks(node, path = '', result = { bookmarks: [], folde
           color: getColorForFolder(node.title),
           category: 'imported',
           items: folderBookmarks,
+          isExtensionFolder: true,
           path: currentPath
         });
       }
+
+      // Also add bookmarks to the main bookmarks array
+      result.bookmarks.push(...folderBookmarks);
     }
   } else if (node.url) {
+    // This is a top-level bookmark
     result.bookmarks.push({
       title: node.title,
       url: node.url,
-      folder: path
+      id: node.id,
+      isExtensionBookmark: true,
+      category: guessCategory(node.url)
     });
   }
 
@@ -718,7 +720,7 @@ function renderBookmarks(bookmarks = [], folders = [], filter = '') {
 
     const folderIcon = document.createElement('div');
     folderIcon.className = 'folder-icon';
-    folderIcon.innerHTML = '<i class="fas fa-folder"></i>';
+    folderIcon.innerHTML = folder.isExtensionFolder ? '<i class="fab fa-chrome"></i>' : '<i class="fas fa-folder"></i>';
     folderIcon.style.backgroundColor = folder.color;
 
     const folderTitle = document.createElement('div');
@@ -732,24 +734,27 @@ function renderBookmarks(bookmarks = [], folders = [], filter = '') {
     const folderActions = document.createElement('div');
     folderActions.className = 'folder-actions';
 
-    const editAction = document.createElement('div');
-    editAction.className = 'folder-action';
-    editAction.innerHTML = '<i class="fas fa-edit"></i>';
-    editAction.addEventListener('click', e => {
-      e.stopPropagation();
-      editFolder(folder.id);
-    });
+    // Only show edit/delete actions for custom folders
+    if (!folder.isExtensionFolder) {
+      const editAction = document.createElement('div');
+      editAction.className = 'folder-action';
+      editAction.innerHTML = '<i class="fas fa-edit"></i>';
+      editAction.addEventListener('click', e => {
+        e.stopPropagation();
+        editFolder(folder.id);
+      });
 
-    const deleteAction = document.createElement('div');
-    deleteAction.className = 'folder-action';
-    deleteAction.innerHTML = '<i class="fas fa-trash-alt"></i>';
-    deleteAction.addEventListener('click', e => {
-      e.stopPropagation();
-      deleteFolder(folder.id);
-    });
+      const deleteAction = document.createElement('div');
+      deleteAction.className = 'folder-action';
+      deleteAction.innerHTML = '<i class="fas fa-trash-alt"></i>';
+      deleteAction.addEventListener('click', e => {
+        e.stopPropagation();
+        deleteFolder(folder.id);
+      });
 
-    folderActions.appendChild(editAction);
-    folderActions.appendChild(deleteAction);
+      folderActions.appendChild(editAction);
+      folderActions.appendChild(deleteAction);
+    }
 
     folderHeader.appendChild(folderIcon);
     folderHeader.appendChild(folderTitle);
@@ -761,11 +766,16 @@ function renderBookmarks(bookmarks = [], folders = [], filter = '') {
 
     if (localStorage.getItem(`folder_${folder.id}_open`) === 'true') {
       folderContent.classList.add('open');
+      folderIcon.innerHTML = folder.isExtensionFolder ? '<i class="fab fa-chrome"></i>' : '<i class="fas fa-folder-open"></i>';
     }
 
     if (folder.items.length > 0) {
       folder.items.forEach((item, itemIndex) => {
-        const bookmarkEl = createBookmarkElement(item, () => deleteBookmarkFromFolder(folder.id, itemIndex));
+        const bookmarkEl = createBookmarkElement(item, () => {
+          if (!folder.isExtensionFolder) {
+            deleteBookmarkFromFolder(folder.id, itemIndex);
+          }
+        });
         if (filter && item.title.toLowerCase().includes(filter.toLowerCase())) {
           const titleEl = bookmarkEl.querySelector('.bookmark-title');
           titleEl.innerHTML = highlightText(item.title, filter);
@@ -781,7 +791,6 @@ function renderBookmarks(bookmarks = [], folders = [], filter = '') {
 
     folderEl.appendChild(folderHeader);
     folderEl.appendChild(folderContent);
-
     bookmarksContainer.appendChild(folderEl);
   });
 
@@ -806,6 +815,7 @@ function renderBookmarks(bookmarks = [], folders = [], filter = '') {
       categoryEl.className = 'bookmark-category';
       categoryEl.textContent = getCategoryLabel(bookmark.category);
       bookmarkEl.appendChild(categoryEl);
+
       if (filter && bookmark.title.toLowerCase().includes(filter.toLowerCase())) {
         const titleEl = bookmarkEl.querySelector('.bookmark-title');
         titleEl.innerHTML = highlightText(bookmark.title, filter);
@@ -814,6 +824,7 @@ function renderBookmarks(bookmarks = [], folders = [], filter = '') {
     }
   });
 
+  // Show no results message if needed
   if (filteredBookmarks.length === 0 && folders.length === 0) {
     const noResultsEl = document.createElement('div');
     noResultsEl.className = 'no-results';
@@ -1126,6 +1137,28 @@ function deleteFolder(folderId) {
   }
 }
 
+// Helper function to check for duplicate URLs
+function isUrlDuplicate(url, bookmarks = [], folders = []) {
+  // Normalize the URL
+  const normalizedUrl = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+
+  // Check in bookmarks
+  if (bookmarks.some(bookmark => {
+    const bookmarkUrl = bookmark.url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+    return bookmarkUrl === normalizedUrl;
+  })) {
+    return true;
+  }
+
+  // Check in folder items
+  return folders.some(folder =>
+    folder.items && folder.items.some(item => {
+      const itemUrl = item.url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+      return itemUrl === normalizedUrl;
+    })
+  );
+}
+
 function addBookmark() {
   const title = document.getElementById('bookmarkTitle').value.trim();
   const url = document.getElementById('bookmarkUrl').value.trim();
@@ -1145,36 +1178,54 @@ function addBookmark() {
     formattedUrl = 'https://' + url;
   }
 
-  const newBookmark = {
-    title: title,
-    url: formattedUrl,
-    icon: icon || title.charAt(0),
-    iconIsHtml: iconIsHtml,
-    color: color,
-    category: category || 'other'
-  };
+  // Check for duplicates in both chrome bookmarks and our storage
+  chrome.bookmarks.getTree((chromeBookmarkTree) => {
+    chrome.storage.sync.get(['bookmarks', 'folders'], function(data) {
+      const existingBookmarks = data.bookmarks || DEFAULT_BOOKMARKS;
+      const existingFolders = data.folders || DEFAULT_FOLDERS;
+      const processedChromeBookmarks = processChromeBookmarks(chromeBookmarkTree[0]);
+      const allBookmarks = [...existingBookmarks, ...(processedChromeBookmarks.bookmarks || [])];
+      const allFolders = [...existingFolders, ...(processedChromeBookmarks.folders || [])];
 
-  if (folderId && folderId !== 'none') {
-    chrome.storage.sync.get(['folders'], function(data) {
-      const folders = data.folders || DEFAULT_FOLDERS;
-      const folderIndex = folders.findIndex(f => f.id === folderId);
-      if (folderIndex !== -1) {
-        folders[folderIndex].items.push(newBookmark);
-        chrome.storage.sync.set({ folders: folders }, () => {
+      if (isUrlDuplicate(formattedUrl, allBookmarks, allFolders)) {
+        showToast('This URL already exists in your bookmarks');
+        return;
+      }
+
+      const newBookmark = {
+        title: title,
+        url: formattedUrl,
+        icon: icon || title.charAt(0),
+        iconIsHtml: iconIsHtml,
+        color: color,
+        category: category || 'other'
+      };
+
+      if (folderId && folderId !== 'none') {
+        chrome.storage.sync.get(['folders'], function(data) {
+          const folders = data.folders || DEFAULT_FOLDERS;
+          const folderIndex = folders.findIndex(f => f.id === folderId);
+          if (folderIndex !== -1) {
+            folders[folderIndex].items.push(newBookmark);
+            chrome.storage.sync.set({ folders: folders }, () => {
+              closeBookmarkModal();
+              refreshBookmarks();
+              showToast('Bookmark added successfully to folder');
+            });
+          }
+        });
+      } else {
+        chrome.bookmarks.create({
+          title: newBookmark.title,
+          url: newBookmark.url
+        }, () => {
+          closeBookmarkModal();
           refreshBookmarks();
+          showToast('Bookmark added successfully');
         });
       }
-      closeBookmarkModal();
     });
-  } else {
-    chrome.bookmarks.create({
-      title: newBookmark.title,
-      url: newBookmark.url
-    }, () => {
-      refreshBookmarks();
-      closeBookmarkModal();
-    });
-  }
+  });
 }
 
 function openFolderModal() {
@@ -1565,15 +1616,6 @@ function guessCategory(url) {
     return 'education';
   }
 
-  // News
-  if (lowerUrl.includes('bbc.com') ||
-      lowerUrl.includes('cnn.com') ||
-      lowerUrl.includes('nytimes.com') ||
-      lowerUrl.includes('theguardian.com') ||
-      lowerUrl.includes('indiatoday.in')) {
-    return 'news';
-  }
-
   // Finance
   if (lowerUrl.includes('paypal.com') ||
       lowerUrl.includes('paytm.') ||
@@ -1604,7 +1646,6 @@ function guessCategory(url) {
     shopping: ['shop', 'cart', 'product', 'checkout'],
     entertainment: ['video', 'music', 'tv', 'movie'],
     education: ['learn', 'course', 'study', 'class'],
-    news: ['news', 'headline', 'report', 'breaking'],
     finance: ['money', 'bank', 'loan', 'fintech'],
     food: ['food', 'restaurant', 'cafe', 'zomato'],
     travel: ['travel', 'flight', 'hotel', 'booking']
@@ -2565,11 +2606,9 @@ function processChromeBookmarks(node, path = '', result = { bookmarks: [], folde
             id: child.id,
             isExtensionBookmark: true,
             category: guessCategory(child.url),
-            folder: currentPath,
             path: currentPath.split('/')
           };
           folderBookmarks.push(bookmark);
-          result.bookmarks.push(bookmark);
         } else if (child) {
           // Recurse into subfolders
           processChromeBookmarks(child, currentPath, result);
@@ -2584,15 +2623,22 @@ function processChromeBookmarks(node, path = '', result = { bookmarks: [], folde
           color: getColorForFolder(node.title),
           category: 'imported',
           items: folderBookmarks,
+          isExtensionFolder: true,
           path: currentPath
         });
       }
+
+      // Also add bookmarks to the main bookmarks array
+      result.bookmarks.push(...folderBookmarks);
     }
   } else if (node.url) {
+    // This is a top-level bookmark
     result.bookmarks.push({
       title: node.title,
       url: node.url,
-      folder: path
+      id: node.id,
+      isExtensionBookmark: true,
+      category: guessCategory(node.url)
     });
   }
 

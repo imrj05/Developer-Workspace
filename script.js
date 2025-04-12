@@ -195,7 +195,7 @@ const saveFolderBtn = document.getElementById('saveFolder');
 const searchForm = document.getElementById('searchForm');
 const searchInput = document.getElementById('searchInput');
 const weatherWidgetToggle = document.getElementById('weatherWidgetToggle');
-const bookmarksToggle = document.getElementById('bookmarksToggle');
+const bookmarksToggle = document.getElementById('toggleMostVisited');
 const devPanelToggleSwitch = document.getElementById('devPanelToggle');
 const terminalNotesToggle = document.getElementById('terminalNotesToggle');
 const devPanel = document.getElementById('devPanel');
@@ -421,6 +421,7 @@ iconOptions.forEach(option => {
   chrome.bookmarks.onCreated.addListener(refreshBookmarks);
   chrome.bookmarks.onRemoved.addListener(refreshBookmarks);
   chrome.bookmarks.onChanged.addListener(refreshBookmarks);
+
 }
 
 function showToast(message) {
@@ -468,23 +469,56 @@ function loadSettings() {
     const settings = data.settings || DEFAULT_SETTINGS;
     const customBookmarks = data.bookmarks || [];
     const customFolders = data.folders || [];
+    const showBookmarks = settings.showBookmarks;
 
     // Get Chrome bookmarks
-    chrome.bookmarks.getTree((chromeBookmarkTree) => {
-      const processedChromeBookmarks = processChromeBookmarks(chromeBookmarkTree[0]);
 
-      // Ensure processedChromeBookmarks.bookmarks exists
-      const chromeBookmarks = processedChromeBookmarks.bookmarks || [];
-      const chromeFolders = processedChromeBookmarks.folders || [];
+       chrome.bookmarks.getTree((chromeBookmarkTree) => {
+         const processedChromeBookmarks = processChromeBookmarks(chromeBookmarkTree[0]);
+         const chromeBookmark = processBookmarkTree(chromeBookmarkTree[0]);
+       // Mark bookmarks by source
+      const markedChromeBookmarks = chromeBookmark.map(b => ({
+        ...b,
+        isExtensionBookmark: true,
+        category: guessCategory(b.url) // Add this helper function
+      })) ?? [];
+
+      const markedExtensionBookmarks = customBookmarks.map(b => ({
+        ...b,
+        isExtensionBookmark: false
+      })) ?? [];
+
+
+
+      const chromeFolders = chromeBookmark.folders || [];
+
 
       // Combine and filter bookmarks/folders
-      const allBookmarks = [...customBookmarks, ...chromeBookmarks].filter(Boolean);
-      const allFolders = [...customFolders, ...chromeFolders].filter(Boolean);
+      const allBookmarks = [...markedChromeBookmarks, ...markedExtensionBookmarks];
 
+      const allFolders = [...customFolders, ...chromeFolders].filter(Boolean);
       applySettings(settings);
-      renderBookmarks(allBookmarks, allFolders);
+
+      const viewToggle = document.getElementById('toggleMostVisited');
+
+      if (showBookmarks) {
+        viewToggle.checked = true;
+        showMostVisitedView();
+      } else {
+        viewToggle.checked = false;
+
+        renderBookmarks(allBookmarks, allFolders, searchBookmarks.value);
+        showBookmarksView();
+      }
     });
+
+
   });
+
+
+
+  // Set initial toggle states
+  document.getElementById('toggleMostVisited').checked = false;
 }
 
 function processChromeBookmarks(node, path = '', result = { bookmarks: [], folders: [] }) {
@@ -523,7 +557,7 @@ function processChromeBookmarks(node, path = '', result = { bookmarks: [], folde
           id: folderId,
           name: node.title,
           color: getColorForFolder(node.title),
-          category: 'imported',
+          category: 'chrome',
           items: folderBookmarks,
           isExtensionFolder: true,
           path: currentPath
@@ -619,7 +653,7 @@ function applySettings(settings) {
 
   // Ensure visibility settings are applied immediately
   document.querySelector('.weather-widget').style.display = settings.showWeatherWidget ? 'flex' : 'none';
-  document.querySelector('.bookmarks-container').style.display = settings.showBookmarks ? 'block' : 'none';
+  // document.querySelector('.bookmarks-container').style.display = settings.showBookmarks ? 'block' : 'none';
   document.getElementById('devPanel').style.display = settings.showDevPanel ? 'block' : 'none';
   document.getElementById('terminalNotes').style.display = settings.showTerminalNotes ? 'block' : 'none';
 
@@ -680,12 +714,24 @@ function applySettings(settings) {
 function renderBookmarks(bookmarks = [], folders = [], filter = '') {
   bookmarksContainer.innerHTML = '';
 
+
+
   // Ensure we have arrays and filter out any undefined/null values
   bookmarks = (Array.isArray(bookmarks) ? bookmarks : []).filter(Boolean);
   folders = (Array.isArray(folders) ? folders : []).filter(Boolean);
 
   const activeTab = document.querySelector('.bookmarks-tabs .tab.active');
-  const activeCategory = activeTab ? activeTab.dataset.category : 'all';
+  const activeTabFromLocalStorage = localStorage.getItem('active_bookmarks_tab');
+  const activeCategory = activeTabFromLocalStorage ? activeTabFromLocalStorage: activeTab.dataset.category  ?? 'all';
+
+  // set active on selected tab
+  bookmarksTabs.forEach(tab => tab.classList.remove('active'));
+  bookmarksTabs.forEach(tab => {
+    if (tab.dataset.category === activeCategory) {
+      tab.classList.add('active');
+    }
+  });
+
 
   // Filter bookmarks with null checks
   let filteredBookmarks = bookmarks;
@@ -697,18 +743,21 @@ function renderBookmarks(bookmarks = [], folders = [], filter = '') {
     );
   }
 
+
   if (activeCategory !== 'all') {
     filteredBookmarks = filteredBookmarks.filter(bookmark =>
       bookmark &&
-      (activeCategory === 'imported' ? bookmark.isExtensionBookmark : bookmark.category === activeCategory)
+      (activeCategory === 'chrome' ? bookmark.isExtensionBookmark : bookmark.category === activeCategory)
     );
   }
 
+
   // Render folders first
   folders.forEach(folder => {
-    if (activeCategory !== 'all' && activeCategory !== 'imported' && folder.category !== activeCategory) {
+    if (activeCategory !== 'all' && activeCategory !== 'chrome' && folder.category !== activeCategory) {
       return;
     }
+
 
     const folderEl = document.createElement('div');
     folderEl.className = 'bookmark-folder';
@@ -794,6 +843,7 @@ function renderBookmarks(bookmarks = [], folders = [], filter = '') {
     bookmarksContainer.appendChild(folderEl);
   });
 
+
   // Then render bookmarks not in folders
   filteredBookmarks.forEach((bookmark, index) => {
     if (!bookmark.folder) { // Only render bookmarks not in folders
@@ -824,8 +874,10 @@ function renderBookmarks(bookmarks = [], folders = [], filter = '') {
     }
   });
 
+
   // Show no results message if needed
-  if (filteredBookmarks.length === 0 && folders.length === 0) {
+  const activeCategoryFolder = folders.filter((cat)=>cat.category===activeCategory)
+  if (filteredBookmarks.length === 0 && activeCategoryFolder.length === 0) {
     const noResultsEl = document.createElement('div');
     noResultsEl.className = 'no-results';
     noResultsEl.style.gridColumn = '1 / -1';
@@ -1025,13 +1077,17 @@ function createBookmarkElement(bookmark, deleteCallback) {
     bookmarkEl.appendChild(chromeIcon);
   }
 
-  const deleteBtn = document.createElement('div');
-  deleteBtn.className = 'bookmark-delete';
-  deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
-  deleteBtn.addEventListener('click', e => {
-    e.preventDefault();
-    deleteCallback();
-  });
+  // Remove delete button for most visited items
+  if (!bookmark.isMostVisited && !bookmark.isExtensionBookmark) {
+    const deleteBtn = document.createElement('div');
+    deleteBtn.className = 'bookmark-delete';
+    deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
+    deleteBtn.addEventListener('click', e => {
+      e.preventDefault();
+      deleteCallback();
+    });
+    bookmarkEl.appendChild(deleteBtn);
+  }
 
   if (bookmark.folder) {
     const folderEl = document.createElement('div');
@@ -1042,7 +1098,6 @@ function createBookmarkElement(bookmark, deleteCallback) {
 
   bookmarkEl.appendChild(iconEl);
   bookmarkEl.appendChild(titleEl);
-  bookmarkEl.appendChild(deleteBtn);
 
   return bookmarkEl;
 }
@@ -1512,6 +1567,7 @@ function switchBookmarkTab() {
     chrome.bookmarks.getTree((chromeBookmarkTree) => {
       const chromeBookmarks = processBookmarkTree(chromeBookmarkTree[0]);
 
+
       // Mark bookmarks by source
       const markedChromeBookmarks = chromeBookmarks.map(b => ({
         ...b,
@@ -1694,10 +1750,19 @@ function toggleBookmarks() {
     const settings = data.settings || DEFAULT_SETTINGS;
     settings.showBookmarks = bookmarksToggle.checked;
     saveSettings(settings);
-    const bookmarksContainer = document.querySelector('.bookmarks-container');
-    if (bookmarksContainer) {
-      bookmarksContainer.style.display = settings.showBookmarks ? 'block' : 'none';
-    }
+
+      if (bookmarksToggle.checked) {
+        // remove active from all tabs
+       localStorage.setItem('active_bookmarks_tab', 'all');
+        bookmarksTabs.forEach(tab => tab.classList.remove('active'));
+        bookmarksTabs[0].classList.add('active');
+
+        showMostVisitedView();
+      } else {
+
+        renderBookmarks(data.bookmarks || DEFAULT_BOOKMARKS, data.folders || DEFAULT_FOLDERS, searchBookmarks.value);
+        showBookmarksView();
+      }
   });
 }
 
@@ -2261,10 +2326,35 @@ function initializeDevTools() {
     });
   });
 
+  chrome.storage.sync.get('settings', function(data) {
+    const settings = data.settings || DEFAULT_SETTINGS;
+
+    const showDevPanel = settings.showDevPanel;
+    const showGitHubActivity = settings.showGitHubActivity
+    const showPomodoroTimer = settings.showPomodoroTimer
+    const showQuickDocs = settings.showQuickDocs
+    const showApiStatus = settings.showApiStatus
+
+    if(showDevPanel && showGitHubActivity){
+      fetchGitHubActivity(settings.githubUsername || 'github');
+    }
+  if(showDevPanel && showPomodoroTimer){
+      updateTimerDisplay();
+    }
+    if(showDevPanel && showQuickDocs){
+      setupQuickDocs();
+    }
+    if(showDevPanel && showApiStatus){
+   setupApiStatus();
+    }
+
+
+  });
+
   // Initialize features
-  setupApiStatus();
-  setupQuickDocs();
-  updateGitHubUsername();
+
+
+
 }
 
 // Add a helper function to show/hide sections smoothly
@@ -2499,6 +2589,9 @@ function toggleGitHubActivity() {
     settings.showGitHubActivity = document.getElementById('githubActivityToggle').checked;
     saveSettings(settings);
     applySettings(settings);
+    if (settings.showGitHubActivity) {
+      fetchGitHubActivity(settings.githubUsername || 'github');
+    }
   });
 }
 
@@ -2508,6 +2601,9 @@ function toggleApiStatus() {
     settings.showApiStatus = document.getElementById('apiStatusToggle').checked;
     saveSettings(settings);
     applySettings(settings);
+    if (settings.showApiStatus) {
+      checkApiStatus();
+    }
   });
 }
 
@@ -2517,6 +2613,9 @@ function toggleQuickDocs() {
     settings.showQuickDocs = document.getElementById('quickDocsToggle').checked;
     saveSettings(settings);
     applySettings(settings);
+    if (settings.showQuickDocs) {
+      setupQuickDocs();
+    }
   });
 }
 
@@ -2526,6 +2625,9 @@ function togglePomodoroTimer() {
     settings.showPomodoroTimer = document.getElementById('pomodoroToggle').checked;
     saveSettings(settings);
     applySettings(settings);
+    if (settings.showPomodoroTimer) {
+      updateTimerDisplay();
+    }
   });
 }
 
@@ -2621,7 +2723,7 @@ function processChromeBookmarks(node, path = '', result = { bookmarks: [], folde
           id: folderId,
           name: node.title,
           color: getColorForFolder(node.title),
-          category: 'imported',
+          category: 'chrome',
           items: folderBookmarks,
           isExtensionFolder: true,
           path: currentPath
@@ -2702,6 +2804,70 @@ function renderChromeBookmarks(bookmarks) {
   });
 }
 
+function showMostVisitedView() {
+  // Hide bookmark categories
+  const bookmarksTabs = document.querySelector('.bookmarks-tabs');
+  if (bookmarksTabs) {
+    bookmarksTabs.style.display = 'none';
+  }
+
+  chrome.topSites.get((sites) => {
+    const mostVisitedBookmarks = sites.map(site => ({
+      title: site.title || new URL(site.url).hostname,
+      url: site.url,
+      icon: site.title ? site.title[0].toUpperCase() : new URL(site.url).hostname[0].toUpperCase(),
+      color: '#ffffff0f',
+      category: 'most-visited',
+      isMostVisited: true
+    }));
+
+    renderBookmarks(mostVisitedBookmarks, []);
+  });
+}
+
+function showBookmarksView() {
+  // Show bookmark categories
+  const bookmarksTabs = document.querySelector('.bookmarks-tabs');
+  if (bookmarksTabs) {
+    bookmarksTabs.style.display = 'flex';
+  }
+
+  chrome.storage.sync.get(['bookmarks', 'folders'], function(data) {
+      const settings = data.settings || DEFAULT_SETTINGS;
+    const customBookmarks = data.bookmarks || [];
+    const customFolders = data.folders || [];
+    const showBookmarks = settings.showBookmarks;
+
+    // Get Chrome bookmarks
+       chrome.bookmarks.getTree((chromeBookmarkTree) => {
+         const chromeBookmark = processBookmarkTree(chromeBookmarkTree[0]);
+       // Mark bookmarks by source
+      const markedChromeBookmarks = chromeBookmark.map(b => ({
+        ...b,
+        isExtensionBookmark: true,
+        category: guessCategory(b.url) // Add this helper function
+      })) ?? [];
+
+      const markedExtensionBookmarks = customBookmarks.map(b => ({
+        ...b,
+        isExtensionBookmark: false
+      })) ?? [];
+      const chromeFolders = chromeBookmark.folders || [];
+      // Combine and filter bookmarks/folders
+      const allBookmarks = [...markedChromeBookmarks, ...markedExtensionBookmarks];
+
+      const allFolders = [...customFolders, ...chromeFolders].filter(Boolean);
+
+
+
+        renderBookmarks(allBookmarks, allFolders, searchBookmarks.value);
+
+
+
+    });
+  });
+}
+
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
   setupEventListeners();
@@ -2715,13 +2881,14 @@ document.addEventListener('DOMContentLoaded', function() {
       getWeatherData();
       setInterval(getWeatherData, 30 * 60 * 1000);
     }
-    fetchGitHubActivity(settings.githubUsername || 'github');
+
+
     if (settings.autoRotateBackgrounds) {
       startAutoRotate();
     }
   });
 
   loadNotes();
-  updateTimerDisplay();
+
   initializeDevTools();
 });

@@ -59,6 +59,14 @@
       <div class="bookmarks-header">
         <h2>Quick Access</h2>
         <div class="bookmarks-actions">
+          <!-- toggle for Most visited and bookmarks -->
+          <div class="toggle-container">
+            <label class="switch">
+              <input type="checkbox" id="toggleMostVisited">
+              <span class="slider round"></span>
+            </label>
+            <span class="toggle-label">Most Visited</span>
+          </div>
           <div class="search-bookmarks">
             <input type="text" id="searchBookmarks" placeholder="Search..." class="search-input">
             <i class="fas fa-search search-icon"></i>
@@ -75,12 +83,10 @@
 
       <div class="bookmarks-tabs">
         <div class="tab active" data-category="all">All</div>
+        <div class="tab active" data-category="chrome">Chrome</div>
         <div class="tab" data-category="dev">Development</div>
         <div class="tab" data-category="prod">Productivity</div>
-        <div class="tab" data-category="social">Social</div>
-
         <div class="tab" data-category="ai">AI</div>
-
         <div class="tab" data-category="social">Social</div> <!-- Social media platforms -->
         <div class="tab" data-category="shopping">Shopping</div> <!-- E-commerce and online shopping -->
         <div class="tab" data-category="entertainment">Entertainment</div> <!-- Media, music, video streaming -->

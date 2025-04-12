@@ -1,16 +1,18 @@
 {
     "manifest_version": 3,
-    "name": "Developer Home",
+    "name": "Developer Workspace",
     "author": "Rajeshwar Kashyap",
     "version": "1.0.1",
     "version_name": "1.0.1",
-    "description": "A customizable new tab page for developers",
+    "description": "All-in-one developer productivity suite featuring customizable bookmarks, Pomodoro timer, weather updates, GitHub activity tracking, search shortcuts, dark mode, developer tools panel, and terminal notes with syntax highlighting.",
     "permissions": [
         "storage",
         "bookmarks",
         "geolocation",
         "notifications",
-        "search"
+        "search",
+        "history",
+        "topSites"
     ],
     "host_permissions": [
         "https://api.github.com/*",

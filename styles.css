@@ -2827,6 +2827,16 @@ select::-webkit-scrollbar-thumb {
   transition: width 0.3s var(--animation-easing);
 }
 
+.toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.toggle-container label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
 /* Toast message styles */
 .toast-message {
     position: fixed;

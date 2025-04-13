@@ -232,6 +232,32 @@ body {
   opacity: 0.85;
 }
 
+.timezone {
+  font-size: 0.9rem;
+  margin-top: 8px;
+  color: var(--text-secondary);
+  text-shadow: var(--text-shadow);
+  font-weight: 400;
+  opacity: 0.7;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.timezone i {
+  font-size: 0.85rem;
+}
+
+.timezone span {
+  transition: color 0.3s var(--animation-easing);
+}
+
+.timezone:hover span {
+  color: var(--text-color);
+}
+
 /* Extra styling for seconds - add after your existing clock styles */
 
 .clock .seconds {
@@ -2872,4 +2898,25 @@ select::-webkit-scrollbar-thumb {
         opacity: 1;
         transform: translate(-50%, 0);
     }
+}
+
+/* Add after .bookmark-category styles */
+.visit-count {
+    position: absolute;
+    bottom: -5px;
+    right: -5px;
+    background-color: var(--btn-bg);
+    color: white;
+    border-radius: 10px;
+    padding: 2px 6px;
+    font-size: 0.6rem;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.3s var(--animation-easing);
+
+}
+
+.bookmark-item:hover .visit-count {
+    opacity: 1;
+    transform: scale(1);
 }

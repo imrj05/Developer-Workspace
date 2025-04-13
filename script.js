@@ -18,10 +18,12 @@ const DEFAULT_SETTINGS = {
   showGitHubActivity: true,
   showApiStatus: true,
   showQuickDocs: true,
-  showPomodoroTimer: true
+  showPomodoroTimer: true,
+  showBookmarks: false,
 };
 
 const resetDefaultBtn = document.getElementById('resetDefaultBtn');
+const WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000;
 
 // Update the checkApiStatus function
 async function checkApiStatus() {
@@ -220,32 +222,97 @@ let timeLeft = 25 * 60; // 25 minutes in seconds
 
 // Default Bookmarks and Folders for Developers
 const DEFAULT_BOOKMARKS = [
-  // Essential Productivity
-  { title: 'Gmail', url: 'https://mail.google.com', icon: 'M', color: '#ffffff0f', category: 'prod' },
-  { title: 'Google', url: 'https://www.google.com', icon: 'G', color: '##ffffff0f', category: 'other' },
-
-  // Development Essential
-  { title: 'GitHub', url: 'https://www.github.com', icon: 'GH', color: '#ffffff0f', category: 'dev' },
+  // Development Category
+  { title: 'GitHub', url: 'https://github.com', icon: 'GH', color: '#ffffff0f', category: 'dev' },
   { title: 'Stack Overflow', url: 'https://stackoverflow.com', icon: 'SO', color: '#ffffff0f', category: 'dev' },
-  { title: 'VSCode', url: 'https://vscode.dev', icon: '<i class="fas fa-code"></i>', color: '#ffffff0f', iconIsHtml: true, category: 'dev' },
+  { title: 'GeeksforGeeks', url: 'https://geeksforgeeks.org', icon: 'GFG', color: '#ffffff0f', category: 'dev' },
+  { title: 'InterviewBit', url: 'https://www.interviewbit.com', icon: 'IB', color: '#ffffff0f', category: 'dev' },
+  { title: 'LeetCode', url: 'https://leetcode.com', icon: 'LC', color: '#ffffff0f', category: 'dev' },
+  { title: 'HackerRank', url: 'https://hackerrank.com', icon: 'HR', color: '#ffffff0f', category: 'dev' },
+  { title: 'CodeChef', url: 'https://codechef.com', icon: 'CC', color: '#ffffff0f', category: 'dev' },
+  { title: 'HackerEarth', url: 'https://hackerearth.com', icon: 'HE', color: '#ffffff0f', category: 'dev' },
+  { title: 'Dev.to', url: 'https://dev.to', icon: 'DT', color: '#ffffff0f', category: 'dev' },
+  { title: 'Hashnode', url: 'https://hashnode.com', icon: 'HN', color: '#ffffff0f', category: 'dev' },
 
-  // Web Development Resources
-  { title: 'Tailwind CSS', url: 'https://tailwindcss.com', icon: 'TW', color: '#ffffff0f', category: 'dev' },
-  { title: 'MDN Web Docs', url: 'https://developer.mozilla.org', icon: 'MDN', color: '#ffffff0f', category: 'dev' },
+  // Productivity Category
 
-  // AI Resources
-  { title: 'Claude', url: 'https://claude.ai', icon: 'CL', color: '#ffffff0f', category: 'ai' },
+
+  { title: 'Gmail', url: 'https://mail.google.com', icon: 'GM', color: '#ffffff0f', category: 'prod' },
+  { title: 'Zoho Mail', url: 'https://mail.zoho.in', icon: 'ZH', color: '#ffffff0f', category: 'prod' },
+  { title: 'Notion', url: 'https://notion.so', icon: 'N', color: '#ffffff0f', category: 'prod' },
+  { title: 'Calendly', url: 'https://calendly.com', icon: 'CL', color: '#ffffff0f', category: 'prod' },
+  { title: 'Microsoft Teams', url: 'https://teams.microsoft.com', icon: 'MT', color: '#ffffff0f', category: 'prod' },
+  { title: 'Google Meet', url: 'https://meet.google.com', icon: 'GM', color: '#ffffff0f', category: 'prod' },
+  { title: 'Google Drive', url: 'https://drive.google.com', icon: 'GD', color: '#ffffff0f', category: 'prod' },
+  { title: 'Trello', url: 'https://trello.com', icon: 'TR', color: '#ffffff0f', category: 'prod' },
+
+  // AI Category
   { title: 'ChatGPT', url: 'https://chat.openai.com', icon: 'AI', color: '#ffffff0f', category: 'ai' },
+  { title: 'Claude', url: 'https://claude.ai', icon: 'CL', color: '#ffffff0f', category: 'ai' },
+  { title: 'Bard', url: 'https://bard.google.com', icon: 'BA', color: '#ffffff0f', category: 'ai' },
+  { title: 'Bing Chat', url: 'https://bing.com/chat', icon: 'BC', color: '#ffffff0f', category: 'ai' },
+  { title: 'Hugging Face', url: 'https://huggingface.co', icon: 'HF', color: '#ffffff0f', category: 'ai' },
+  { title: 'Midjourney', url: 'https://www.midjourney.com', icon: 'MJ', color: '#ffffff0f', category: 'ai' },
+  { title: 'RunwayML', url: 'https://runwayml.com', icon: 'RW', color: '#ffffff0f', category: 'ai' },
+  { title: 'Jasper', url: 'https://www.jasper.ai', icon: 'JP', color: '#ffffff0f', category: 'ai' },
 
-  // Social and Learning
-  { title: 'YouTube', url: 'https://www.youtube.com', icon: 'Y', color: '#ffffff0f', category: 'social' },
-  { title: 'Dev.to', url: 'https://dev.to', icon: 'D', color: '#ffffff0f', category: 'dev' }
+  // Social Category
+  { title: 'WhatsApp Web', url: 'https://web.whatsapp.com', icon: 'WA', color: '#ffffff0f', category: 'social' },
+  { title: 'LinkedIn', url: 'https://linkedin.com', icon: 'LI', color: '#ffffff0f', category: 'social' },
+  { title: 'Instagram', url: 'https://instagram.com', icon: 'IG', color: '#ffffff0f', category: 'social' },
+  { title: 'Twitter', url: 'https://twitter.com', icon: 'TW', color: '#ffffff0f', category: 'social' },
+  { title: 'Telegram', url: 'https://web.telegram.org', icon: 'TG', color: '#ffffff0f', category: 'social' },
+  { title: 'Reddit', url: 'https://reddit.com', icon: 'RD', color: '#ffffff0f', category: 'social' },
+  { title: 'Discord', url: 'https://discord.com', icon: 'DC', color: '#ffffff0f', category: 'social' },
+  { title: 'Slack', url: 'https://slack.com', icon: 'SL', color: '#ffffff0f', category: 'social' },
+
+  // Shopping Category
+  { title: 'Amazon.in', url: 'https://amazon.in', icon: 'AZ', color: '#ffffff0f', category: 'shopping' },
+  { title: 'Flipkart', url: 'https://flipkart.com', icon: 'FK', color: '#ffffff0f', category: 'shopping' },
+  { title: 'Myntra', url: 'https://myntra.com', icon: 'MY', color: '#ffffff0f', category: 'shopping' },
+  { title: 'Nykaa', url: 'https://nykaa.com', icon: 'NK', color: '#ffffff0f', category: 'shopping' },
+  { title: 'Meesho', url: 'https://meesho.com', icon: 'ME', color: '#ffffff0f', category: 'shopping' },
+  { title: 'Ajio', url: 'https://ajio.com', icon: 'AJ', color: '#ffffff0f', category: 'shopping' },
+  { title: 'Tata CLiQ', url: 'https://tatacliq.com', icon: 'TC', color: '#ffffff0f', category: 'shopping' },
+  { title: 'Reliance Digital', url: 'https://reliancedigital.in', icon: 'RD', color: '#ffffff0f', category: 'shopping' },
+
+  // Entertainment Category
+  { title: 'YouTube', url: 'https://youtube.com', icon: 'YT', color: '#ffffff0f', category: 'entertainment' },
+  { title: 'Hotstar', url: 'https://hotstar.com', icon: 'HS', color: '#ffffff0f', category: 'entertainment' },
+  { title: 'Prime Video', url: 'https://primevideo.com', icon: 'PV', color: '#ffffff0f', category: 'entertainment' },
+  { title: 'SonyLIV', url: 'https://sonyliv.com', icon: 'SL', color: '#ffffff0f', category: 'entertainment' },
+  { title: 'Netflix', url: 'https://netflix.com', icon: 'NF', color: '#ffffff0f', category: 'entertainment' },
+  { title: 'Zee5', url: 'https://zee5.com', icon: 'Z5', color: '#ffffff0f', category: 'entertainment' },
+  { title: 'Voot', url: 'https://voot.com', icon: 'VT', color: '#ffffff0f', category: 'entertainment' },
+  { title: 'MX Player', url: 'https://mxplayer.in', icon: 'MX', color: '#ffffff0f', category: 'entertainment' },
+
+  // Education Category
+  { title: 'NPTEL', url: 'https://nptel.ac.in', icon: 'NP', color: '#ffffff0f', category: 'education' },
+  { title: 'Coursera', url: 'https://coursera.org', icon: 'CO', color: '#ffffff0f', category: 'education' },
+  { title: 'Unacademy', url: 'https://unacademy.com', icon: 'UA', color: '#ffffff0f', category: 'education' },
+  { title: 'BYJU\'S', url: 'https://byjus.com', icon: 'BJ', color: '#ffffff0f', category: 'education' },
+  { title: 'upGrad', url: 'https://upgrad.com', icon: 'UG', color: '#ffffff0f', category: 'education' },
+  { title: 'Vedantu', url: 'https://vedantu.com', icon: 'VD', color: '#ffffff0f', category: 'education' },
+  { title: 'Great Learning', url: 'https://greatlearning.in', icon: 'GL', color: '#ffffff0f', category: 'education' },
+  { title: 'Simplilearn', url: 'https://simplilearn.com', icon: 'SL', color: '#ffffff0f', category: 'education' },
+
+  // Other Category
+  { title: 'IRCTC', url: 'https://irctc.co.in', icon: 'IR', color: '#ffffff0f', category: 'other' },
+  { title: 'Paytm', url: 'https://paytm.com', icon: 'PT', color: '#ffffff0f', category: 'other' },
+  { title: 'PhonePe', url: 'https://phonepe.com', icon: 'PP', color: '#ffffff0f', category: 'other' },
+  { title: 'Aarogya Setu', url: 'https://aarogyasetu.gov.in', icon: 'AS', color: '#ffffff0f', category: 'other' },
+  { title: 'DigiLocker', url: 'https://digilocker.gov.in', icon: 'DL', color: '#ffffff0f', category: 'other' },
+  { title: 'Google Pay', url: 'https://pay.google.com', icon: 'GP', color: '#ffffff0f', category: 'other' },
+  { title: 'MMT', url: 'https://makemytrip.com', icon: 'MT', color: '#ffffff0f', category: 'other' },
+  { title: 'Swiggy', url: 'https://swiggy.com', icon: 'SW', color: '#ffffff0f', category: 'other' },
+  { title: 'Zomato', url: 'https://zomato.com', icon: 'ZM', color: '#ffffff0f', category: 'other' },
+  { title: 'Uber', url: 'https://uber.com', icon: 'UB', color: '#ffffff0f', category: 'other' }
 ];
 
 const DEFAULT_FOLDERS = [
   {
     id: 'dev-tools',
-    name: 'Development Tools',
+    name: 'Dev Tools',
     color: '#007ACC',
     category: 'dev',
     items: [
@@ -262,7 +329,22 @@ const DEFAULT_FOLDERS = [
     items: [
       { title: 'React', url: 'https://react.dev', icon: 'R', color: '#ffffff0f' },
       { title: 'Next.js', url: 'https://nextjs.org', icon: 'NX', color: '#ffffff0f' },
-      { title: 'TypeScript', url: 'https://www.typescriptlang.org', icon: 'TS', color: '#ffffff0f' }
+      { title: 'TypeScript', url: 'https://www.typescriptlang.org', icon: 'TS', color: '#ffffff0f' },
+      { title: 'Tailwind CSS', url: 'https://tailwindcss.com', icon: 'TW', color: '#ffffff0f' },
+      { title: 'Bootstrap', url: 'https://getbootstrap.com', icon: 'BS', color: '#ffffff0f' },
+      { title: 'Material UI', url: 'https://mui.com', icon: 'MUI', color: '#ffffff0f' },
+      { title: 'Vue.js', url: 'https://vuejs.org', icon: 'V', color: '#ffffff0f' },
+      { title: 'Angular', url: 'https://angular.io', icon: 'A', color: '#ffffff0f' },
+      { title: 'Svelte', url: 'https://svelte.dev', icon: 'SV', color: '#ffffff0f' },
+      { title: 'Ember.js', url: 'https://emberjs.com', icon: 'E', color: '#ffffff0f' },
+      { title: 'Django', url: 'https://www.djangoproject.com', icon: 'DJ', color: '#ffffff0f' },
+      { title: 'Flask', url: 'https://flask.palletsprojects.com', icon: 'FL', color: '#ffffff0f' },
+      { title: 'Ruby on Rails', url: 'https://rubyonrails.org', icon: 'RR', color: '#ffffff0f' },
+      { title: 'Spring', url: 'https://spring.io', icon: 'SP', color: '#ffffff0f' },
+      { title: 'Laravel', url: 'https://laravel.com', icon: 'L', color: '#ffffff0f' },
+      { title: 'ASP.NET', url: 'https://dotnet.microsoft.com/apps/aspnet', icon: 'ASPNET', color: '#ffffff0f' },
+      { title: 'Express.js', url: 'https://expressjs.com', icon: 'EX', color: '#ffffff0f' }
+
     ]
   },
   {
@@ -272,8 +354,18 @@ const DEFAULT_FOLDERS = [
     category: 'ai',
     items: [
       { title: 'Claude', url: 'https://claude.ai', icon: 'CL', color: '#ffffff0f' },
+      { title: 'ChatGPT', url: 'https://chat.openai.com', icon: 'AI', color: '#ffffff0f' },
       { title: 'Hugging Face', url: 'https://huggingface.co', icon: 'HF', color: '#ffffff0f' },
-      { title: 'Kaggle', url: 'https://www.kaggle.com', icon: 'K', color: '#ffffff0f' }
+      { title: 'Google AI', url: 'https://ai.google', icon: 'GA', color: '#ffffff0f' },
+      { title: 'v0 by Vercel', url: 'https://v0.dev', icon: 'V0', color: '#ffffff0f' },
+      { title: 'Bolt AI', url: 'https://bolt.ai', icon: 'BA', color: '#ffffff0f' },
+      { title: 'Perplexity', url: 'https://perplexity.ai', icon: 'PP', color: '#ffffff0f' },
+      { title: 'Midjourney', url: 'https://midjourney.com', icon: 'MJ', color: '#ffffff0f' },
+      { title: 'Runway', url: 'https://runwayml.com', icon: 'RW', color: '#ffffff0f' },
+      { title: 'Anthropic', url: 'https://anthropic.com', icon: 'AN', color: '#ffffff0f' },
+      { title: 'Cohere', url: 'https://cohere.com', icon: 'CH', color: '#ffffff0f' },
+      { title: 'Stability AI', url: 'https://stability.ai', icon: 'SA', color: '#ffffff0f' },
+      { title: 'GPT-4 API', url: 'https://openai.com/api', icon: 'G4', color: '#ffffff0f' }
     ]
   }
 ];
@@ -307,6 +399,7 @@ function getCategoryLabel(category) {
     case 'entertainment': return 'Entertainment';
     case 'education': return 'Education';
     case 'other': return 'Other';
+    case 'chrome': return 'Chrome';
     default: return 'Other';
   }
 }
@@ -439,29 +532,6 @@ function showToast(message) {
   }, 100);
 }
 
-// function toggleDevPanelHeader() {
-//   devPanel.classList.toggle('collapsed');
-//   devPanelHeaderToggle.classList.toggle('collapsed');
-//   githubActivity.classList.toggle('hidden');
-//   if (githubActivity.classList.contains('hidden')) {
-//     devPanelHeaderToggle.innerHTML = '<i class="fas fa-chevron-down"></i>';
-//     devPanel.classList.add('collapsed');
-//   } else {
-//     devPanelHeaderToggle.innerHTML = '<i class="fas fa-chevron-up"></i>';
-//     devPanel.classList.remove('collapsed');
-//   }
-
-//   // if (githubActivity.classList.contains('hidden')) {
-//   //     devPanelHeaderToggle.innerHTML = '<i class="fas fa-chevron-down"></i>';
-//   //     devPanel.classList.add('collapsed');
-//   //   } else {
-//   //     devPanelHeaderToggle.innerHTML = '<i class="fas fa-chevron-up"></i>';
-//   //     devPanel.classList.remove('collapsed');
-//   //   }
-// }
-
-
-
 
 // Settings Functions
 function loadSettings() {
@@ -472,30 +542,24 @@ function loadSettings() {
     const showBookmarks = settings.showBookmarks;
 
     // Get Chrome bookmarks
-
        chrome.bookmarks.getTree((chromeBookmarkTree) => {
-         const processedChromeBookmarks = processChromeBookmarks(chromeBookmarkTree[0]);
          const chromeBookmark = processBookmarkTree(chromeBookmarkTree[0]);
        // Mark bookmarks by source
       const markedChromeBookmarks = chromeBookmark.map(b => ({
         ...b,
         isExtensionBookmark: true,
-        category: guessCategory(b.url) // Add this helper function
+        category: 'chrome' // Add this helper function
       })) ?? [];
 
       const markedExtensionBookmarks = customBookmarks.map(b => ({
         ...b,
         isExtensionBookmark: false
       })) ?? [];
-
-
-
-      const chromeFolders = chromeBookmark.folders || [];
-
-
+      console.log('markedExtensionBookmarks', markedExtensionBookmarks)
       // Combine and filter bookmarks/folders
       const allBookmarks = [...markedChromeBookmarks, ...markedExtensionBookmarks];
 
+      const chromeFolders = chromeBookmark.folders || [];
       const allFolders = [...customFolders, ...chromeFolders].filter(Boolean);
       applySettings(settings);
 
@@ -506,6 +570,7 @@ function loadSettings() {
         showMostVisitedView();
       } else {
         viewToggle.checked = false;
+
 
         renderBookmarks(allBookmarks, allFolders, searchBookmarks.value);
         showBookmarksView();
@@ -541,8 +606,7 @@ function processChromeBookmarks(node, path = '', result = { bookmarks: [], folde
             url: child.url,
             id: child.id,
             isExtensionBookmark: true,
-            category: guessCategory(child.url),
-            path: currentPath.split('/')
+            category: 'chrome' // Add this helper function
           };
           folderBookmarks.push(bookmark);
         } else if (child) {
@@ -574,7 +638,7 @@ function processChromeBookmarks(node, path = '', result = { bookmarks: [], folde
       url: node.url,
       id: node.id,
       isExtensionBookmark: true,
-      category: guessCategory(node.url)
+      category: 'chrome',
     });
   }
 
@@ -715,7 +779,6 @@ function renderBookmarks(bookmarks = [], folders = [], filter = '') {
   bookmarksContainer.innerHTML = '';
 
 
-
   // Ensure we have arrays and filter out any undefined/null values
   bookmarks = (Array.isArray(bookmarks) ? bookmarks : []).filter(Boolean);
   folders = (Array.isArray(folders) ? folders : []).filter(Boolean);
@@ -747,14 +810,16 @@ function renderBookmarks(bookmarks = [], folders = [], filter = '') {
   if (activeCategory !== 'all') {
     filteredBookmarks = filteredBookmarks.filter(bookmark =>
       bookmark &&
-      (activeCategory === 'chrome' ? bookmark.isExtensionBookmark : bookmark.category === activeCategory)
+      (activeCategory === 'imported' ? bookmark.isExtensionBookmark : bookmark.category === activeCategory)
     );
   }
 
 
+
+
   // Render folders first
   folders.forEach(folder => {
-    if (activeCategory !== 'all' && activeCategory !== 'chrome' && folder.category !== activeCategory) {
+    if (activeCategory !== 'all' && activeCategory !== 'imported' && folder.category !== activeCategory) {
       return;
     }
 
@@ -1099,6 +1164,15 @@ function createBookmarkElement(bookmark, deleteCallback) {
   bookmarkEl.appendChild(iconEl);
   bookmarkEl.appendChild(titleEl);
 
+  if (bookmark.isMostVisited) {
+    getVisitCount(bookmark.url).then(count => {
+      const visitCountEl = document.createElement('div');
+      visitCountEl.className = 'visit-count';
+      visitCountEl.textContent = `${count} visits`;
+      bookmarkEl.appendChild(visitCountEl);
+    });
+  }
+
   return bookmarkEl;
 }
 
@@ -1141,6 +1215,7 @@ function deleteBookmark(index) {
     chrome.storage.sync.get(['bookmarks', 'folders'], function(data) {
         const bookmarks = data.bookmarks || DEFAULT_BOOKMARKS;
         const bookmark = bookmarks[index];
+        console.log('bookmark', bookmark)
 
         if (bookmark.isExtensionBookmark) {
             // Delete from Chrome bookmarks
@@ -1528,7 +1603,43 @@ function refreshGitHubActivity() {
 
 function filterBookmarks() {
   const searchTerm = this.value.trim();
-  chrome.storage.sync.get(['bookmarks', 'folders'], function(data) {
+  const isMostVisited = document.getElementById('toggleMostVisited').checked;
+
+  if (isMostVisited) {
+    // Filter most visited sites
+    chrome.topSites.get((sites) => {
+      const mostVisitedBookmarks = sites.map(site => ({
+        title: site.title || new URL(site.url).hostname,
+        url: site.url,
+        icon: site.title ? site.title[0].toUpperCase() : new URL(site.url).hostname[0].toUpperCase(),
+        color: '#ffffff0f',
+        category: 'most-visited',
+        isMostVisited: true
+      }));
+
+      // Filter most visited sites based on search term
+      const filteredSites = mostVisitedBookmarks.filter(site =>
+        site.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        site.url.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+
+      // Get visit counts and render
+      Promise.all(filteredSites.map(async site => {
+        const visits = await getVisitCount(site.url);
+        const lastVisit = await getLastVisit(site.url);
+        return {
+          ...site,
+          lastVisitDate: lastVisit !== 'Never' ? new Date(lastVisit).getTime() : 0,
+          recentVisits: lastVisit
+        };
+      })).then(sitesWithVisits => {
+        // Sort by lastVisitDate - most recent first
+        sitesWithVisits.sort((a, b) => b.lastVisitDate - a.lastVisitDate);
+        renderBookmarks(sitesWithVisits, []);
+      });
+    });
+  } else {
+    chrome.storage.sync.get(['bookmarks', 'folders'], function(data) {
     const extensionBookmarks = data.bookmarks || DEFAULT_BOOKMARKS;
     const folders = data.folders || DEFAULT_FOLDERS;
 
@@ -1540,7 +1651,7 @@ function filterBookmarks() {
       const markedChromeBookmarks = chromeBookmarks.map(b => ({
         ...b,
         isExtensionBookmark: true,
-        category: guessCategory(b.url) // Add this helper function
+        category:'chrome' // Add this helper function
       }));
 
       const markedExtensionBookmarks = extensionBookmarks.map(b => ({
@@ -1550,6 +1661,22 @@ function filterBookmarks() {
 
       const allBookmarks = [...markedChromeBookmarks, ...markedExtensionBookmarks];
       renderBookmarks(allBookmarks, folders, searchTerm);
+    });
+  });
+  }
+}
+
+// Update getLastVisit to return timestamp
+async function getLastVisit(url) {
+  return new Promise((resolve) => {
+    chrome.history.getVisits({ url: url }, (visits) => {
+      if (visits && visits.length > 0) {
+        // Sort visits by time and get the most recent
+        const latestVisit = Math.max(...visits.map(v => v.visitTime));
+        resolve(latestVisit);
+      } else {
+        resolve('Never');
+      }
     });
   });
 }
@@ -1572,7 +1699,7 @@ function switchBookmarkTab() {
       const markedChromeBookmarks = chromeBookmarks.map(b => ({
         ...b,
         isExtensionBookmark: true,
-        category: guessCategory(b.url) // Add this helper function
+        category: 'chrome'
       }));
 
       const markedExtensionBookmarks = extensionBookmarks.map(b => ({
@@ -1680,9 +1807,10 @@ function guessCategory(url) {
   }
 
   // Food
-  if (lowerUrl.includes('zomato.com') ||
-      lowerUrl.includes('swiggy.com') ||
-      lowerUrl.includes('ubereats.com')) {
+  if (lowerUrl.includes('food') ||
+      lowerUrl.includes('restaurant') ||
+      lowerUrl.includes('cafe') ||
+      lowerUrl.includes('zomato')) {
     return 'food';
   }
 
@@ -1825,16 +1953,40 @@ function updateClock() {
     const timeZoneSetting = settings.timeZone || 'local';
     let timeToShow = now;
 
+    // Update timezone display
+    const timezoneElement = document.querySelector('#timezone span');
+    if (timeZoneSetting === 'local') {
+      const localTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      timezoneElement.textContent = `${localTz.replace('_', ' ')}`;
+    } else {
+      timezoneElement.textContent = timeZoneSetting;
+    }
+
     if (timeZoneSetting !== 'local') {
       const timeZoneOffsets = {
         'UTC': 0,
         'EST': -5,
         'PST': -8,
+        'CST': -6,
+        'MST': -7,
+        'AST': -4,
+        'IST': 5.5,
+        'CET': 1,
         'JST': 9,
-        'GMT': 0
+        'GMT': 0,
+        'GMT+1': 1,
+        'GMT+2': 2,
+        'GMT+3': 3,
+        'GMT+4': 4
       };
+
       const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
-      timeToShow = new Date(utcTime + (3600000 * timeZoneOffsets[timeZoneSetting]));
+
+      // Handle fractional hours (like IST which is UTC+5:30)
+      const offsetHours = Math.floor(timeZoneOffsets[timeZoneSetting]);
+      const offsetMinutes = (timeZoneOffsets[timeZoneSetting] % 1) * 60;
+
+      timeToShow = new Date(utcTime + (3600000 * offsetHours) + (60000 * offsetMinutes));
     }
 
     let hours = timeToShow.getHours();
@@ -1843,7 +1995,7 @@ function updateClock() {
     if (format === '12') {
       ampm = hours >= 12 ? ' PM' : ' AM';
       hours = hours % 12;
-      hours = hours ? hours : 12;
+      hours = hours ? hours : 12; // Fixed the bug: hours should be hours, not 12
     }
 
     const hoursStr = hours.toString().padStart(2, '0');
@@ -2707,7 +2859,9 @@ function processChromeBookmarks(node, path = '', result = { bookmarks: [], folde
             url: child.url,
             id: child.id,
             isExtensionBookmark: true,
-            category: guessCategory(child.url),
+            category: 'chrome',
+            isExtensionFolder: true,
+            folder: folderId,
             path: currentPath.split('/')
           };
           folderBookmarks.push(bookmark);
@@ -2740,7 +2894,7 @@ function processChromeBookmarks(node, path = '', result = { bookmarks: [], folde
       url: node.url,
       id: node.id,
       isExtensionBookmark: true,
-      category: guessCategory(node.url)
+      category: 'chrome',
     });
   }
 
@@ -2804,24 +2958,36 @@ function renderChromeBookmarks(bookmarks) {
   });
 }
 
-function showMostVisitedView() {
+async function showMostVisitedView() {
   // Hide bookmark categories
   const bookmarksTabs = document.querySelector('.bookmarks-tabs');
   if (bookmarksTabs) {
     bookmarksTabs.style.display = 'none';
   }
 
-  chrome.topSites.get((sites) => {
-    const mostVisitedBookmarks = sites.map(site => ({
-      title: site.title || new URL(site.url).hostname,
-      url: site.url,
-      icon: site.title ? site.title[0].toUpperCase() : new URL(site.url).hostname[0].toUpperCase(),
-      color: '#ffffff0f',
-      category: 'most-visited',
-      isMostVisited: true
-    }));
+  const mostVisitedURLs = await chrome.topSites.get();
+  console.log('mostVisitedURLs', mostVisitedURLs)
 
-    renderBookmarks(mostVisitedBookmarks, []);
+  chrome.topSites.get((sites) => {
+    Promise.all(sites.map(async site => {
+      const visitCount = await getVisitCount(site.url);
+      const lastVisit = await getLastVisit(site.url);
+      return {
+        title: site.title || new URL(site.url).hostname,
+        url: site.url,
+        icon: site.title ? site.title[0].toUpperCase() : new URL(site.url).hostname[0].toUpperCase(),
+        color: '#ffffff0f',
+        category: 'most-visited',
+        isMostVisited: true,
+        lastVisitDate: new Date(lastVisit),
+        recentVisits: new Date(lastVisit).toLocaleString(),
+      };
+    })).then(sitesWithVisits => {
+        // Sort by last visit date (most recent first)
+        sitesWithVisits.sort((a, b) => b.lastVisitDate - a.lastVisitDate);
+
+        renderBookmarks(sitesWithVisits, []);
+      });
   });
 }
 
@@ -2845,7 +3011,7 @@ function showBookmarksView() {
       const markedChromeBookmarks = chromeBookmark.map(b => ({
         ...b,
         isExtensionBookmark: true,
-        category: guessCategory(b.url) // Add this helper function
+        category: 'chrome' // Add this helper function
       })) ?? [];
 
       const markedExtensionBookmarks = customBookmarks.map(b => ({
@@ -2892,3 +3058,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
   initializeDevTools();
 });
+
+async function getVisitCount(url) {
+  const oneWeekAgo = new Date().getTime() - WEEK_IN_MS;
+  return new Promise((resolve) => {
+    chrome.history.getVisits({ url: url }, (visits) => {
+      const recentVisits = visits.filter(v => v.visitTime > oneWeekAgo).length;
+      resolve(recentVisits);
+    });
+  });
+}
+
+// function for get time of last visited date
+async function getLastVisit(url) {
+  const oneWeekAgo = new Date().getTime() - WEEK_IN_MS;
+  return new Promise((resolve) => {
+    chrome.history.getVisits({ url: url }, (visits) => {
+      if (visits && visits.length > 0) {
+        // Sort visits by time and get the most recent
+        const latestVisit = Math.max(...visits.map(v => v.visitTime));
+        resolve(latestVisit);
+      } else {
+        resolve('Never');
+      }
+    });
+  });
+}

@@ -1143,13 +1143,14 @@ function createBookmarkElement(bookmark, deleteCallback) {
   }
 
   // Remove delete button for most visited items
-  if (!bookmark.isMostVisited && !bookmark.isExtensionBookmark) {
+  if (!bookmark.isMostVisited) {
     const deleteBtn = document.createElement('div');
     deleteBtn.className = 'bookmark-delete';
     deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
     deleteBtn.addEventListener('click', e => {
       e.preventDefault();
-      deleteCallback();
+      e.stopPropagation();
+      deleteBookmark(bookmark);
     });
     bookmarkEl.appendChild(deleteBtn);
   }
@@ -1211,25 +1212,63 @@ function deleteBookmarkFromFolder(folderId, itemIndex) {
   });
 }
 
-function deleteBookmark(index) {
-    chrome.storage.sync.get(['bookmarks', 'folders'], function(data) {
-        const bookmarks = data.bookmarks || DEFAULT_BOOKMARKS;
-        const bookmark = bookmarks[index];
-        console.log('bookmark', bookmark)
+function deleteBookmark(bookmark) {
+  if (confirm('Are you sure you want to delete this bookmark?')) {
+    if (bookmark.isExtensionBookmark) {
+      // Delete from Chrome bookmarks
+      chrome.bookmarks.remove(bookmark.id, () => {
+        chrome.storage.sync.get(['bookmarks', 'folders'], function(data) {
+          // Get Chrome bookmarks
+          chrome.bookmarks.getTree((chromeBookmarkTree) => {
+            const chromeBookmarks = processBookmarkTree(chromeBookmarkTree[0]);
+            const markedChromeBookmarks = chromeBookmarks.map(b => ({
+              ...b,
+              isExtensionBookmark: true,
+              category: 'chrome'
+            }));
 
-        if (bookmark.isExtensionBookmark) {
-            // Delete from Chrome bookmarks
-            chrome.bookmarks.remove(bookmark.id, () => {
-                refreshBookmarks();
-            });
-        } else {
-            // Delete custom bookmark
-            bookmarks.splice(index, 1);
-            chrome.storage.sync.set({ bookmarks: bookmarks }, () => {
-                renderBookmarks(bookmarks, data.folders || DEFAULT_FOLDERS, searchBookmarks ? searchBookmarks.value : '');
-            });
-        }
-    });
+            const markedExtensionBookmarks = (data.bookmarks || []).map(b => ({
+              ...b,
+              isExtensionBookmark: false
+            }));
+
+            const allBookmarks = [...markedChromeBookmarks, ...markedExtensionBookmarks];
+            renderBookmarks(allBookmarks, data.folders || [], searchBookmarks?.value || '');
+            showToast('Bookmark deleted successfully');
+          });
+        });
+      });
+    } else {
+      // Delete custom bookmark
+      chrome.storage.sync.get(['bookmarks', 'folders'], function(data) {
+        const bookmarks = data.bookmarks || [];
+        const updatedBookmarks = bookmarks.filter(b =>
+          !(b.url === bookmark.url && b.title === bookmark.title)
+        );
+
+        chrome.storage.sync.set({ bookmarks: updatedBookmarks }, () => {
+          // Get Chrome bookmarks for complete refresh
+          chrome.bookmarks.getTree((chromeBookmarkTree) => {
+            const chromeBookmarks = processBookmarkTree(chromeBookmarkTree[0]);
+            const markedChromeBookmarks = chromeBookmarks.map(b => ({
+              ...b,
+              isExtensionBookmark: true,
+              category: 'chrome'
+            }));
+
+            const markedExtensionBookmarks = updatedBookmarks.map(b => ({
+              ...b,
+              isExtensionBookmark: false
+            }));
+
+            const allBookmarks = [...markedChromeBookmarks, ...markedExtensionBookmarks];
+            renderBookmarks(allBookmarks, data.folders || [], searchBookmarks?.value || '');
+            showToast('Bookmark deleted successfully');
+          });
+        });
+      });
+    }
+  }
 }
 
 function refreshBookmarks() {

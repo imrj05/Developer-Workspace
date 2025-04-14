@@ -35,6 +35,11 @@
   --border-radius-xl: 12px;
   --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   --glow: 0 0 10px rgba(59, 130, 246, 0.4);
+  --success-color: #4ade80;
+  --error-color: #f87171;
+  --warning-color: #fbbf24;
+  --info-color: #3b82f6;
+  --border-color: rgba(255, 255, 255, 0.1);
 }
 
 .light-mode {
@@ -55,6 +60,11 @@
   --glow: 0 0 10px rgba(59, 130, 246, 0.25);
   --card-overlay: rgba(0, 0, 0, 0.03);
   --card-overlay-hover: rgba(0, 0, 0, 0.05);
+  --success-color: #4ade80;
+  --error-color: #f87171;
+  --warning-color: #fbbf24;
+  --info-color: #3b82f6;
+  --border-color: rgba(0, 0, 0, 0.1);
 }
 
 body {
@@ -71,6 +81,30 @@ body {
   overflow: hidden;
   transition: all 0.5s var(--animation-easing);
 }
+/* Text Class */
+.text-success {
+  color: var(--success-color);
+}
+.text-error {
+  color: var(--error-color);
+}
+.text-warning {
+  color: var(--warning-color);
+}
+.text-info {
+  color: var(--info-color);
+}
+.bg-success {
+  background-color:var(--success-color);
+
+}
+.bg-error {
+  background-color:var(--error-color);
+}
+.bg-warning {
+  background-color:var(--warning-color);
+}
+
 
 .container {
   width: 92%;
@@ -1511,12 +1545,22 @@ select::-webkit-scrollbar-thumb {
 .terminal-output {
   margin-top: 10px;
 }
+.note-icon {
+  font-size: 1.2rem;
+  margin-right: 10px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
 
 .note-index {
   color: var(--btn-bg);
   margin-right: 10px;
   min-width: 30px;
 }
+
+
 
 .note-content {
   color: var(--text-color);
@@ -2780,7 +2824,7 @@ select::-webkit-scrollbar-thumb {
 .commit-item {
   background-color: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: var(--border-radius-md);
+  border-radius: var (--border-radius-md);
   padding: 12px;
   margin-bottom: 8px;
   transition: all 0.2s var(--animation-easing);
@@ -2919,4 +2963,45 @@ select::-webkit-scrollbar-thumb {
 .bookmark-item:hover .visit-count {
     opacity: 1;
     transform: scale(1);
+}
+
+/* API management styles */
+.api-management {
+  margin-top: 18px;
+  background: var(--card-overlay);
+  border-radius: var(--border-radius-md);
+  padding: 12px;
+  border: 1px solid var(--border-color);
+}
+.api-management h4 {
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+}
+#customApiList {
+  margin-top: 8px;
+}
+.api-edit-btn, .api-delete-btn, .api-save-btn, .api-cancel-btn {
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--text-color);
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 0.8rem;
+  margin-left: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.api-edit-btn:hover, .api-delete-btn:hover, .api-save-btn:hover, .api-cancel-btn:hover {
+  background: var(--btn-bg);
+  color: #fff;
+}
+.api-editing input {
+  margin-right: 4px;
+  padding: 2px 6px;
+  font-size: 0.85em;
+  border-radius: 3px;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: var(--input-text);
 }

@@ -4,566 +4,334 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Developer Workspace</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Space+Grotesk:wght@300..700&display=swap"
-    rel="stylesheet">
+
+  <!-- Primary Meta Tags -->
+  <title>Developer Workspace - Enhance Your Development Workflow</title>
+  <meta name="title" content="Developer Workspace - Enhance Your Development Workflow">
+  <meta name="description"
+    content="Boost your productivity with Developer Workspace Chrome extension. Smart bookmarks, productivity tools, and customizable workspace for developers.">
+  <meta name="keywords"
+    content="developer tools, chrome extension, productivity, bookmarks manager, developer workspace, coding tools">
+  <meta name="author" content="Rajeshwar Kashyap">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://developer-workspace.blogspot.com">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://developer-workspace.blogspot.com">
+  <meta property="og:title" content="Developer Workspace - Enhance Your Development Workflow">
+  <meta property="og:description"
+    content="Boost your productivity with Developer Workspace Chrome extension. Smart bookmarks, productivity tools, and customizable workspace for developers.">
+  <meta property="og:image" content="https://developer-workspace.blogspot.com/assets/og-image.png">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://developer-workspace.blogspot.com">
+  <meta property="twitter:title" content="Developer Workspace - Enhance Your Development Workflow">
+  <meta property="twitter:description"
+    content="Boost your productivity with Developer Workspace Chrome extension. Smart bookmarks, productivity tools, and customizable workspace for developers.">
+  <meta property="twitter:image" content="https://developer-workspace.blogspot.com/assets/og-image.png">
+
+  <!-- Favicon -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+
+  <!-- existing stylesheets and scripts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="theme.js"></script>
 </head>
 
 <body>
-  <div class="weather-widget">
-    <div class="weather-icon">
-      <i class="fas fa-cloud-sun"></i>
-    </div>
-    <div class="weather-info">
-      <div class="weather-temp">--°C</div>
-      <div class="weather-location">Weather</div>
-    </div>
-  </div>
-  <div class="container">
-    <!-- Settings button -->
-    <div class="settings-icon" id="settingsToggle">
-      <i class="fas fa-cog"></i>
-    </div>
+  <header class="main-header">
+    <nav class="nav-container">
+      <div class="logo">
+        <a href="#hero" class="logo-link">
 
-    <div class="clock-container">
-      <div id="clock" class="clock">
-        <span class="time-part hours">00</span>
-        <span class="time-separator">:</span>
-        <span class="time-part minutes">00</span>
-        <span class="time-separator">:</span>
-        <span class="time-part seconds">00</span>
-        <span class="ampm"></span>
+          <img src="assets/logo.png" class="logo-img" alt="Logo" />
+          <!-- <span>DevWo÷rkspace</span> -->
+        </a>
       </div>
-      <div id="date" class="date"></div>
-      <div id="timezone" class="timezone">
-        <i class="fas fa-globe"></i>
-        <span></span>
-      </div>
-    </div>
-
-    <!-- Replace the existing search-container with this simplified version -->
-    <div class="search-container">
-      <form id="searchForm" class="search-form">
-        <div class="search-input-container">
-          <input type="text" id="searchInput" class="search-engine-input" placeholder="Search the web..."
-            autocomplete="off">
-          <button type="submit" class="search-button">
-            <i class="fas fa-search"></i>
+      <div class="nav-links">
+        <a href="#hero">Home</a>
+        <a href="#features">Features</a>
+        <a href="#showcase">Showcase</a>
+        <a href="#details">Details</a>
+        <a href="#benefits">Benefits</a>
+        <a href="#contact">Contact</a>
+        <a href="https://git.new/dev-workspace-gh" target="_blank">
+          <i class="fab fa-github"></i> GitHub
+        </a>
+        <div class="theme-toggle">
+          <button id="themeToggle" aria-label="Toggle theme">
+            <i class="fas fa-moon"></i>
           </button>
         </div>
-      </form>
+      </div>
+    </nav>
+  </header>
+
+  <section class="hero" id="hero">
+    <h1>Developer Workspace</h1>
+    <p>Enhance your developer productivity with a customizable new tab page</p>
+    <div class="rating">
+      <div class="stars">
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+      </div>
+      <span>5.0 (1 rating) • 4 users</span>
     </div>
+    <a href="https://ggl.link/dev-workspace" class="cta-button">Add to Chrome</a>
+  </section>
 
-    <div class="bookmarks-container">
-      <div class="bookmarks-header">
-        <h2>Quick Access</h2>
-        <div class="bookmarks-actions">
-          <!-- toggle for Most visited and bookmarks -->
-          <div class="toggle-container">
-            <label class="switch">
-              <input type="checkbox" id="toggleMostVisited">
-              <span class="slider round"></span>
-            </label>
-            <span class="toggle-label">Most Visited</span>
-          </div>
-          <div class="search-bookmarks">
-            <input type="text" id="searchBookmarks" placeholder="Search..." class="search-input">
-            <i class="fas fa-search search-icon"></i>
-          </div>
-          <button id="addBookmarkFolder" class="folder-btn" title="Add Folder">
-            <i class="fas fa-folder-plus"></i>
-          </button>
-          <button id="addBookmark" class="add-bookmark-btn">
-            <i class="fas fa-plus"></i> Add
-          </button>
-
-        </div>
+  <main class="container">
+    <section class="features" id="features">
+      <div class="feature-card">
+        <i class="fas fa-bookmark"></i>
+        <h2>Smart Bookmarks</h2>
+        <p>Organize bookmarks into custom categories with intelligent categorization and syncing.</p>
       </div>
-
-      <div class="bookmarks-tabs">
-        <div class="tab active" data-category="all">All</div>
-        <div class="tab active" data-category="chrome">Chrome</div>
-        <div class="tab" data-category="dev">Development</div>
-        <div class="tab" data-category="prod">Productivity</div>
-        <div class="tab" data-category="ai">AI</div>
-        <div class="tab" data-category="social">Social</div> <!-- Social media platforms -->
-        <div class="tab" data-category="shopping">Shopping</div> <!-- E-commerce and online shopping -->
-        <div class="tab" data-category="entertainment">Entertainment</div> <!-- Media, music, video streaming -->
-        <div class="tab" data-category="education">Education</div> <!-- Learning platforms, online courses -->
-        <div class="tab" data-category="other">Other</div>
+      <div class="feature-card">
+        <i class="fas fa-bolt"></i>
+        <h2>Quick Access Tools</h2>
+        <p>Intelligent search bar and quick access to frequently used developer resources.</p>
       </div>
-      <div class="bookmarks-content">
-        <div id="bookmarks" class="bookmarks-grid">
-          <!-- Bookmarks will be loaded dynamically from storage -->
-        </div>
+      <div class="feature-card">
+        <i class="fas fa-code"></i>
+        <h2>Developer Activity</h2>
+        <p>Track GitHub activity and monitor API status in real-time.</p>
       </div>
-    </div>
-  </div>
-
-  <!-- Settings panel -->
-  <div class="settings-panel" id="settingsPanel">
-    <div class="settings-header">
-      <h2>Settings</h2>
-      <button id="closeSettings" class="close-settings-btn">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-
-    <div class="settings-section">
-      <h3>Appearance</h3>
-      <div class="theme-toggle">
-        <span>Light</span>
-        <label class="switch">
-          <input type="checkbox" id="darkModeToggle">
-          <span class="slider round"></span>
-        </label>
-        <span>Dark</span>
+      <div class="feature-card">
+        <i class="fas fa-clock"></i>
+        <h2>Productivity Tools</h2>
+        <p>Pomodoro timer and terminal-style note-taking interface.</p>
       </div>
-    </div>
-
-    <div class="settings-section">
-      <h3>Background</h3>
-      <div class="background-options">
-        <div class="background-option"
-          data-bg="https://images.unsplash.com/photo-1572270907014-c31da1c54124?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2089&q=80">
-          <div class="bg-preview default-bg"></div>
-          <span>Default</span>
-        </div>
-        <div class="background-option"
-          data-bg="https://images.unsplash.com/photo-1485470733090-0aae1788d5af?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjI0MX0&auto=format&fit=crop&w=1991&q=80">
-          <div class="bg-preview mountains-bg"></div>
-          <span>Mountains</span>
-        </div>
-        <div class="background-option"
-          data-bg="https://images.unsplash.com/photo-1499623838158-29acea518eaa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2000&q=80">
-          <div class="bg-preview ocean-bg"></div>
-          <span>Ocean</span>
-        </div>
-        <div class="background-option"
-          data-bg="https://images.unsplash.com/photo-1494806812796-244fe51b774d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2000&q=80">
-          <div class="bg-preview forest-bg"></div>
-          <span>Forest</span>
-        </div>
-        <div class="background-option"
-          data-bg="https://images.unsplash.com/photo-1519501025264-65ba15a82390?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2000&q=80">
-          <div class="bg-preview night-city-bg"></div>
-          <span>Night City</span>
-        </div>
-        <div class="background-option"
-          data-bg="https://images.unsplash.com/photo-1531366936337-7c912a4589a7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2000&q=80">
-          <div class="bg-preview aurora-bg"></div>
-          <span>Aurora</span>
-        </div>
-        <div class="background-option"
-          data-bg="https://images.unsplash.com/photo-1550859492-d5da9d8e45f3?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2000&q=80">
-          <div class="bg-preview abstract-bg"></div>
-          <span>Abstract</span>
-        </div>
-
-        <div class="background-option"
-          data-bg="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
-          <div class="bg-preview code-bg"></div>
-          <span>Code</span>
-        </div>
-        <div class="background-option"
-          data-bg="https://images.unsplash.com/photo-1484417894907-623942c8ee29?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
-          <div class="bg-preview dark-office-bg"></div>
-          <span>Dark Office</span>
-        </div>
-        <div class="background-option"
-          data-bg="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
-          <div class="bg-preview tech-bg"></div>
-          <span>Tech</span>
-        </div>
-        <div class="background-option"
-          data-bg="https://images.unsplash.com/photo-1483401757487-2ced3fa77952?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
-          <div class="bg-preview galaxy-bg"></div>
-          <span>Galaxy</span>
-        </div>
-        <div class="background-option"
-          data-bg="https://images.unsplash.com/photo-1520034475321-cbe63696469a?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
-          <div class="bg-preview data-bg"></div>
-          <span>Data</span>
-        </div>
-        <div class="background-option"
-          data-bg="https://images.unsplash.com/photo-1506477331477-33d5d8b3dc85?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
-          <div class="bg-preview dark-ocean-bg"></div>
-          <span>Dark Ocean</span>
-        </div>
-        <div class="background-option"
-          data-bg="https://images.unsplash.com/photo-1498036882173-b41c28a8ba34?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
-          <div class="bg-preview cityscape-bg"></div>
-          <span>Cityscape</span>
-        </div>
-        <div class="background-option"
-          data-bg="https://images.unsplash.com/photo-1504639725590-34d0984388bd?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
-          <div class="bg-preview nebula-bg"></div>
-          <span>Nebula</span>
-        </div>
-        <div class="background-option"
-          data-bg="https://images.unsplash.com/photo-1489861518096-4d12b732e831?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
-          <div class="bg-preview gradient-bg"></div>
-          <span>Gradient</span>
-        </div>
-        <div class="background-option"
-          data-bg="https://images.unsplash.com/photo-1536599018102-9f803c140fc1?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
-          <div class="bg-preview coding-desk-bg"></div>
-          <span>Coding Desk</span>
-        </div>
-
-        <div class="background-option" data-bg="random">
-          <div class="bg-preview random-bg">
-            <i class="fas fa-random"></i>
-          </div>
-          <span>Random</span>
-        </div>
-        <div class="background-option" data-bg="custom">
-          <div class="bg-preview custom-bg">
-            <i class="fas fa-upload"></i>
-          </div>
-          <span>Custom</span>
-        </div>
+      <div class="feature-card">
+        <i class="fas fa-cloud-sun"></i>
+        <h2>Smart Features</h2>
+        <p>Weather updates, multiple timezone support, and dark/light mode.</p>
       </div>
-      <input type="file" id="customBgInput" accept="image/*" style="display: none;">
-    </div>
-
-    <div class="settings-section">
-      <h3>Clock Format</h3>
-      <select id="clockFormat" class="select-format">
-        <option value="12">12-hour (AM/PM)</option>
-        <option value="24">24-hour</option>
-      </select>
-    </div>
-
-    <div class="settings-section">
-      <h3>Time Settings</h3>
-      <div class="form-group">
-        <label for="timeZone">Time Zone</label>
-        <select id="timeZone" class="select-format">
-          <option value="local">Local Time</option>
-          <option value="GMT">GMT</option>
-          <option value="UTC">UTC</option>
-          <option value="EST">EST</option>
-          <option value="CST">CST</option>
-          <option value="MST">MST</option>
-          <option value="PST">PST</option>
-          <option value="AST">AST</option>
-          <option value="IST">IST</option>
-          <option value="CET">CET</option>
-          <option value="JST">JST</option>
-          <option value="GMT+1">GMT+1</option>
-          <option value="GMT+2">GMT+2</option>
-          <option value="GMT+3">GMT+3</option>
-          <option value="GMT+4">GMT+4</option>
-        </select>
+      <div class="feature-card">
+        <i class="fas fa-paint-brush"></i>
+        <h2>Customization</h2>
+        <p>Multiple themes, custom backgrounds, and adjustable components.</p>
       </div>
-      <div class="form-group time-options">
-        <label>
-          <input type="checkbox" id="showSeconds" checked>
-          <span>Show Seconds</span>
-        </label>
-        <label>
-          <input type="checkbox" id="tempUnitToggle">
-          <span>Use Fahrenheit</span>
-        </label>
+    </section>
+
+    <section class="showcase" id="showcase">
+      <div class="showcase-header">
+        <h2>Powerful Features in Action</h2>
+        <p>Experience the tools that will transform your development workflow</p>
       </div>
-    </div>
-
-    <div class="settings-section">
-      <h3>Developer Settings</h3>
-      <div class="form-group">
-        <label for="githubUsername">GitHub Username</label>
-        <input type="text" id="githubUsername" placeholder="Your GitHub username" class="input-text">
-      </div>
-      <div class="form-group">
-        <button id="refreshGitHub" class="refresh-btn">
-          <i class="fas fa-sync-alt"></i> Refresh Activity
-        </button>
-      </div>
-    </div>
-
-    <!-- Add new Components settings section -->
-    <div class="settings-section">
-      <h3>Components</h3>
-      <p class="settings-description">Toggle which components you want to display</p>
-
-      <div class="component-toggles">
-        <div class="toggle-item">
-          <span>Weather Widget</span>
-          <label class="switch">
-            <input type="checkbox" id="weatherWidgetToggle" checked>
-            <span class="slider round"></span>
-          </label>
-        </div>
-
-        <div class="toggle-item">
-          <span>Bookmarks</span>
-          <label class="switch">
-            <input type="checkbox" id="bookmarksToggle" checked>
-            <span class="slider round"></span>
-          </label>
-        </div>
-
-        <div class="toggle-item">
-          <span>Developer Activity Panel</span>
-          <label class="switch">
-            <input type="checkbox" id="devPanelToggle" checked>
-            <span class="slider round"></span>
-          </label>
-        </div>
-
-        <div class="toggle-item">
-          <span>Terminal Notes</span>
-          <label class="switch">
-            <input type="checkbox" id="terminalNotesToggle" checked>
-            <span class="slider round"></span>
-          </label>
-        </div>
-      </div>
-    </div>
-
-    <div class="settings-section">
-      <h3>Developer Panel Features</h3>
-      <div class="component-toggles">
-        <div class="toggle-item">
-          <span>GitHub Activity</span>
-          <label class="switch">
-            <input type="checkbox" id="githubActivityToggle" checked>
-            <span class="slider round"></span>
-          </label>
-        </div>
-        <div class="toggle-item">
-          <span>API Status</span>
-          <label class="switch">
-            <input type="checkbox" id="apiStatusToggle" checked>
-            <span class="slider round"></span>
-          </label>
-        </div>
-        <div class="toggle-item">
-          <span>Quick Documentation</span>
-          <label class="switch">
-            <input type="checkbox" id="quickDocsToggle" checked>
-            <span class="slider round"></span>
-          </label>
-        </div>
-        <div class="toggle-item">
-          <span>Pomodoro Timer</span>
-          <label class="switch">
-            <input type="checkbox" id="pomodoroToggle" checked>
-            <span class="slider round"></span>
-          </label>
-        </div>
-      </div>
-    </div>
-
-    <div class="settings-section">
-      <h3>Reset Settings</h3>
-      <p class="settings-description">Reset all settings and bookmarks to default values</p>
-      <button id="resetDefaultBtn" class="reset-btn">
-        <i class="fas fa-undo-alt"></i> Reset to Default
-      </button>
-    </div>
-  </div>
-
-  <!-- Add bookmark modal -->
-  <div class="modal" id="bookmarkModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Add Bookmark</h3>
-        <button id="closeModal" class="close-modal-btn">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label for="bookmarkTitle">Title</label>
-          <input type="text" id="bookmarkTitle" placeholder="Google">
-        </div>
-        <div class="form-group">
-          <label for="bookmarkUrl">URL</label>
-          <input type="text" id="bookmarkUrl" placeholder="https://www.google.com">
-        </div>
-        <div class="form-group">
-          <label for="bookmarkIcon">Icon (Letter or Emoji)</label>
-          <input type="text" id="bookmarkIcon" placeholder="G" maxlength="2">
-          <div class="icon-selector">
-            <div class="icon-option" data-icon=""><i class="fab fa-chrome"></i></div>
-            <div class="icon-option" data-icon=""><i class="fab fa-youtube"></i></div>
-            <div class="icon-option" data-icon=""><i class="fab fa-github"></i></div>
-            <div class="icon-option" data-icon=""><i class="fab fa-twitter"></i></div>
-            <div class="icon-option" data-icon=""><i class="fab fa-instagram"></i></div>
-            <div class="icon-option" data-icon=""><i class="fab fa-linkedin"></i></div>
-            <div class="icon-option" data-icon=""><i class="fas fa-envelope"></i></div>
-            <div class="icon-option" data-icon=""><i class="fas fa-shopping-cart"></i></div>
+      <div class="showcase-grid">
+        <div class="showcase-item">
+          <div class="showcase-content">
+            <div class="showcase-text">
+              <h3><i class="fas fa-bookmark"></i> Smart Bookmarks Manager</h3>
+              <p>Organize your development resources with intelligent categorization and quick access to your most-used
+                tools.</p>
+              <ul class="feature-list">
+                <li><i class="fas fa-check"></i> Custom categories</li>
+                <li><i class="fas fa-check"></i> Smart URL detection</li>
+                <li><i class="fas fa-check"></i> Quick search functionality</li>
+              </ul>
+            </div>
+            <div class="showcase-image">
+              <img src="assets/bookmark-manager.png" alt="Bookmark Manager" />
+            </div>
           </div>
         </div>
-        <div class="form-group">
-          <label for="bookmarkColor">Icon Background Color</label>
-          <input type="color" id="bookmarkColor" value="#4285f4">
-        </div>
-        <div class="form-group">
-          <label for="bookmarkCategory">Category</label>
-          <select id="bookmarkCategory" class="select-format">
-            <option value="dev">Development</option>
-            <option value="prod">Productivity</option>
-            <option value="social">Social</option>
-            <option value="ai">AI</option>
-            <option value="shopping">Shopping</option>
-            <option value="entertainment">Entertainment</option>
-            <option value="education">Education</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="bookmarkFolder">Add to Folder (Optional)</label>
-          <select id="bookmarkFolder" class="select-format">
-            <option value="none">No folder</option>
-            <!-- Folders will be loaded dynamically -->
-          </select>
+        <div class="showcase-item reverse">
+          <div class="showcase-content">
+            <div class="showcase-text">
+              <h3><i class="fas fa-clock"></i> Productivity Tools</h3>
+              <p>Stay focused and organized with integrated productivity features designed for developers.</p>
+              <ul class="feature-list">
+                <li><i class="fas fa-check"></i> Pomodoro timer</li>
+                <li><i class="fas fa-check"></i> Task management</li>
+                <li><i class="fas fa-check"></i> Quick notes</li>
+              </ul>
+            </div>
+            <div class="showcase-image">
+              <img src="assets/productivity-tools.png" alt="Productivity Tools" />
+            </div>
+          </div>
         </div>
       </div>
-      <div class="modal-footer">
-        <button id="saveBookmark" class="save-btn">Save Bookmark</button>
+    </section>
+
+    <section class="feature-details" id="details">
+      <h2 class="section-title">Detailed Features</h2>
+
+      <div class="feature-detail-item">
+        <div class="feature-icon">
+          <i class="fas fa-bookmark"></i>
+        </div>
+        <div class="feature-info">
+          <h3>Smart Bookmarks Management</h3>
+          <div class="feature-grid">
+            <div class="feature-point">
+              <i class="fas fa-folder"></i>
+              <h4>Custom Categories</h4>
+              <p>Create and manage bookmark folders with custom colors and icons</p>
+            </div>
+            <div class="feature-point">
+              <i class="fas fa-tags"></i>
+              <h4>Smart Categorization</h4>
+              <p>Automatic URL categorization based on content analysis</p>
+            </div>
+            <div class="feature-point">
+              <i class="fas fa-sync"></i>
+              <h4>Chrome Sync</h4>
+              <p>Seamlessly sync with Chrome bookmarks across devices</p>
+            </div>
+            <div class="feature-point">
+              <i class="fas fa-search"></i>
+              <h4>Quick Search</h4>
+              <p>Instant bookmark search with filtering capabilities</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-detail-item reverse">
+        <div class="feature-icon">
+          <i class="fas fa-clock"></i>
+        </div>
+        <div class="feature-info">
+          <h3>Productivity Tools</h3>
+          <div class="feature-grid">
+            <div class="feature-point">
+              <i class="fas fa-hourglass"></i>
+              <h4>Pomodoro Timer</h4>
+              <p>Customizable work/break intervals with notifications</p>
+            </div>
+            <div class="feature-point">
+              <i class="fas fa-tasks"></i>
+              <h4>Task Manager</h4>
+              <p>Quick task creation and management in terminal style</p>
+            </div>
+            <div class="feature-point">
+              <i class="fas fa-sticky-note"></i>
+              <h4>Quick Notes</h4>
+              <p>Instant note-taking with markdown support</p>
+            </div>
+            <div class="feature-point">
+              <i class="fas fa-bell"></i>
+              <h4>Reminders</h4>
+              <p>Set quick reminders with desktop notifications</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-detail-item">
+        <div class="feature-icon">
+          <i class="fas fa-cloud"></i>
+        </div>
+        <div class="feature-info">
+          <h3>Smart Features</h3>
+          <div class="feature-grid">
+            <div class="feature-point">
+              <i class="fas fa-sun"></i>
+              <h4>Weather Updates</h4>
+              <p>Real-time weather information with location detection</p>
+            </div>
+            <div class="feature-point">
+              <i class="fas fa-globe"></i>
+              <h4>Multiple Timezones</h4>
+              <p>Track time across different locations easily</p>
+            </div>
+            <div class="feature-point">
+              <i class="fas fa-moon"></i>
+              <h4>Theme Options</h4>
+              <p>Switch between light and dark modes effortlessly</p>
+            </div>
+            <div class="feature-point">
+              <i class="fas fa-image"></i>
+              <h4>Custom Backgrounds</h4>
+              <p>Set your own backgrounds or use dynamic wallpapers</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="benefits" id="benefits">
+      <h2>Why Choose Developer Workspace?</h2>
+      <ul>
+        <li>
+          <i class="fas fa-rocket"></i>
+          <span>Enhanced developer productivity</span>
+        </li>
+        <li>
+          <i class="fas fa-layer-group"></i>
+          <span>Streamlined workflow organization</span>
+        </li>
+        <li>
+          <i class="fas fa-bolt"></i>
+          <span>Quick access to essential tools</span>
+        </li>
+        <li>
+          <i class="fas fa-palette"></i>
+          <span>Customizable workspace environment</span>
+        </li>
+        <li>
+          <i class="fas fa-plug"></i>
+          <span>Integrated development resources</span>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="main-footer" id="contact">
+    <div class="footer-container">
+      <div class="footer-section">
+        <h3>Developer Workspace</h3>
+        <p>Enhance your development workflow with our powerful Chrome extension.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Connect</h3>
+        <div class="social-links">
+          <a href="https://git.new/rj-github" target="_blank" title="GitHub">
+            <i class="fab fa-github"></i>
+          </a>
+          <a href="mailto:hello@rajeshwarkashyap.in" title="Email">
+            <i class="fas fa-envelope"></i>
+          </a>
+          <a href="https://developer-workspace.blogspot.com" target="_blank" title="Blog">
+            <i class="fas fa-blog"></i>
+          </a>
+          <a href="https://twitter.com/yourusername" target="_blank" title="Twitter">
+            <i class="fab fa-twitter"></i>
+          </a>
+          <a href="https://linkedin.com/in/yourusername" target="_blank" title="LinkedIn">
+            <i class="fab fa-linkedin"></i>
+          </a>
+          <a href="https://dev.to/yourusername" target="_blank" title="Dev.to">
+            <i class="fab fa-dev"></i>
+          </a>
+        </div>
+      </div>
+      <div class="footer-section">
+        <h3>Contact</h3>
+        <a href="mailto:hello@rajeshwarkashyap.in" class="contact-link">
+          <i class="fas fa-envelope"></i> hello@rajeshwarkashyap.in
+        </a>
       </div>
     </div>
-  </div>
-
-  <!-- Add folder modal -->
-  <div class="modal" id="folderModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Add Folder</h3>
-        <button id="closeFolderModal" class="close-modal-btn">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label for="folderName">Folder Name</label>
-          <input type="text" id="folderName" placeholder="Development Resources">
-        </div>
-        <div class="form-group">
-          <label for="folderColor">Folder Color</label>
-          <input type="color" id="folderColor" value="#4285f4">
-        </div>
-        <div class="form-group">
-          <label for="folderCategory">Category</label>
-          <select id="folderCategory" class="select-format">
-            <option value="dev">Development</option>
-            <option value="prod">Productivity</option>
-            <option value="social">Social</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button id="saveFolder" class="save-btn">Save Folder</button>
-      </div>
+    <div class="footer-bottom">
+      <p>&copy; <span id="currentYear"></span> Developer Workspace. All rights reserved.</p>
     </div>
-  </div>
-
-  <!-- Overlay for modals and panels -->
-  <div class="overlay" id="overlay"></div>
-
-  <div class="dev-panel" id="devPanel">
-    <!-- GitHub Activity Section -->
-    <div id="githubActivitySection" class="section">
-      <div class="section-header" data-target="githubActivity">
-        <h3><i class="fab fa-github"></i> Developer Activity</h3>
-        <button class="collapse-btn">
-          <i class="fas fa-chevron-up"></i>
-        </button>
-      </div>
-      <div class="section-content" id="githubActivity">
-        <div class="loading">Loading commits...</div>
-      </div>
-    </div>
-
-    <!-- API Status Section -->
-    <div id="apiStatusSection" class="section">
-      <div class="section-header" data-target="apiStatus">
-        <h3><i class="fas fa-server"></i> API Status</h3>
-        <button class="collapse-btn">
-          <i class="fas fa-chevron-up"></i>
-        </button>
-      </div>
-      <div class="section-content" id="apiStatus">
-        <div class="api-list">
-          <!-- API items will be dynamically populated -->
-        </div>
-      </div>
-    </div>
-
-    <!-- Documentation Section -->
-    <div id="quickDocsSection" class="section">
-      <div class="section-header" data-target="quickDocs">
-        <h3><i class="fas fa-book"></i> Quick Documentation</h3>
-        <button class="collapse-btn">
-          <i class="fas fa-chevron-up"></i>
-        </button>
-      </div>
-      <div class="section-content" id="quickDocs">
-        <div class="docs-search">
-          <i class="fas fa-search"></i>
-          <input type="text" id="docsSearch" placeholder="Search documentation...">
-        </div>
-        <div class="docs-links">
-          <!-- Documentation links will be dynamically populated -->
-        </div>
-      </div>
-    </div>
-
-    <!-- Timer section -->
-    <div id="pomodoroSection" class="section">
-      <div class="dev-timer">
-        <div class="timer-display" id="timerDisplay">25:00</div>
-        <div class="timer-controls">
-          <button class="timer-btn" id="timerStart" title="Start/Pause Timer">
-            <i class="fas fa-play"></i>
-          </button>
-          <button class="timer-btn" id="timerReset" title="Reset Timer">
-            <i class="fas fa-redo-alt"></i>
-          </button>
-          <button class="timer-btn active" id="pomodoroMode" title="Pomodoro Mode">
-            <i class="fas fa-brain"></i>
-          </button>
-          <button class="timer-btn" id="breakMode" title="Break Mode">
-            <i class="fas fa-coffee"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Add a terminal-like notes section -->
-  <div class="terminal-notes" id="terminalNotes">
-    <div class="terminal-header">
-      <div class="terminal-buttons">
-        <div class="term-btn term-close"></div>
-        <div class="term-btn term-minimize"></div>
-        <div class="term-btn term-expand"></div>
-      </div>
-      <div class="terminal-title">Developer Notes</div>
-      <button class="terminal-toggle" id="terminalToggle">
-        <i class="fas fa-terminal"></i>
-      </button>
-    </div>
-    <div class="terminal-content">
-      <div class="terminal-line">
-        <span class="prompt">$</span>
-        <span class="command-input" id="terminalInput" contenteditable="true" spellcheck="false"></span>
-      </div>
-      <div class="terminal-output" id="terminalOutput"></div>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+  </footer>
+  <script>
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+  </script>
 </body>
 
 </html>

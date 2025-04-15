@@ -49,22 +49,31 @@
     <nav class="nav-container">
       <div class="logo">
         <a href="#hero" class="logo-link">
-
           <img src="assets/logo.png" class="logo-img" alt="Logo" />
-          <!-- <span>DevWo÷rkspace</span> -->
         </a>
       </div>
+      <div class="mobile-controls">
+        <button class="mobile-menu-toggle" aria-label="Toggle mobile menu">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="theme-toggle mobile-only">
+          <button id="themeToggleMobile" aria-label="Toggle theme">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </div>
       <div class="nav-links">
-        <a href="#hero">Home</a>
-        <a href="#features">Features</a>
-        <a href="#showcase">Showcase</a>
-        <a href="#details">Details</a>
-        <a href="#benefits">Benefits</a>
-        <a href="#contact">Contact</a>
-        <a href="https://git.new/dev-workspace-gh" target="_blank">
+        <a href="#hero" style="--i: 1">Home</a>
+        <a href="#features" style="--i: 2">Features</a>
+        <a href="#showcase" style="--i: 3">Showcase</a>
+        <a href="#details" style="--i: 4">Details</a>
+        <a href="#benefits" style="--i: 5">Benefits</a>
+        <a href="#contact" style="--i: 6">Contact</a>
+        <a href="https://git.new/dev-workspace-gh" target="_blank" style="--i: 7">
           <i class="fab fa-github"></i> GitHub
         </a>
-        <div class="theme-toggle">
+        <!-- Fix desktop theme toggle -->
+        <div class="theme-toggle desktop-only">
           <button id="themeToggle" aria-label="Toggle theme">
             <i class="fas fa-moon"></i>
           </button>
@@ -74,19 +83,29 @@
   </header>
 
   <section class="hero" id="hero">
-    <h1>Developer Workspace</h1>
-    <p>Enhance your developer productivity with a customizable new tab page</p>
-    <div class="rating">
-      <div class="stars">
-        <i class="fas fa-star"></i>
-        <i class="fas fa-star"></i>
-        <i class="fas fa-star"></i>
-        <i class="fas fa-star"></i>
-        <i class="fas fa-star"></i>
+    <div class="hero-content">
+      <h1>Developer Workspace</h1>
+      <p>Enhance your developer productivity with a customizable new tab page</p>
+      <div class="rating">
+        <div class="stars">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+        </div>
+        <span>5.0 (1 rating) • 4 users</span>
       </div>
-      <span>5.0 (1 rating) • 4 users</span>
+      <a href="https://ggl.link/dev-workspace" class="cta-button">
+        <i class="fab fa-chrome"></i>
+        <span>Add to Chrome</span>
+        <i class="fas fa-arrow-right"></i>
+      </a>
     </div>
-    <a href="https://ggl.link/dev-workspace" class="cta-button">Add to Chrome</a>
+    <div class="hero-images">
+      <img src="assets/screenshot-dark.png" alt="Developer Workspace Dark Theme" class="hero-img dark-img" />
+      <img src="assets/screenshot-light.png" alt="Developer Workspace Light Theme" class="hero-img light-img" />
+    </div>
   </section>
 
   <main class="container">

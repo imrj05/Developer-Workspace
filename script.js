@@ -25,81 +25,6 @@ const resetDefaultBtn = document.getElementById('resetDefaultBtn');
 const WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000;
 // Declare and initialize the notes variable
 let notes = [];
-// Update the checkApiStatus function
-async function checkApiStatus() {
-  const apiList = document.querySelector('.api-list');
-  apiList.innerHTML = ''; // Clear existing statuses
-  for (const api of DEFAULT_APIS) {
-    try {
-      // Create API item element
-      const apiItem = document.createElement('div');
-      apiItem.className = 'api-item';
-      // Add loading state
-      apiItem.innerHTML = `
-        <div class="api-name">
-          <i class="${api.icon}"></i>
-          ${api.name}
-        </div>
-        <div class="api-status-indicator status-loading"></div>
-      `;
-      apiList.appendChild(apiItem);
-      const response = await fetch(api.url, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-        },
-        timeout: 5000 // 5 second timeout
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const data = await response.json();
-      // Determine status based on indicator field
-      let status = 'up';
-      if (data.status && data.status.indicator) {
-        // Map the indicator values to your status classes
-        switch (data.status.indicator) {
-          case 'none':
-            status = 'up';  // All Systems Operational
-            break;
-          case 'minor':
-            status = 'degraded';  // Minor issues
-            break;
-          case 'major':
-          case 'critical':
-            status = 'down';  // Major issues or outage
-            break;
-          default:
-            status = 'unknown';
-        }
-      } else if (data.page && data.page.status) {
-        status = data.page.status;
-      }
-      // Update status indicator
-      const statusIndicator = apiItem.querySelector('.api-status-indicator');
-      statusIndicator.className = `api-status-indicator status-${status}`;
-      // Add tooltip with status description
-      let tooltipText = "Unknown status";
-      if (data.status && data.status.description) {
-        tooltipText = data.status.description;
-      }
-      statusIndicator.title = tooltipText;
-    } catch (error) {
-      console.error(`Error checking ${api.name} status:`, error);
-      // Show error state
-      const apiItem = document.createElement('div');
-      apiItem.className = 'api-item';
-      apiItem.innerHTML = `
-        <div class="api-name">
-          <i class="${api.icon}"></i>
-          ${api.name}
-        </div>
-        <div class="api-status-indicator status-down" title="Unable to fetch status"></div>
-      `;
-      apiList.appendChild(apiItem);
-    }
-  }
-}
 const DEFAULT_APIS = [
   {
     name: 'GitHub',
@@ -489,11 +414,12 @@ function showToast(message) {
 }
 // Settings Functions
 function loadSettings() {
-  chrome.storage.sync.get(['settings', 'bookmarks', 'folders'], function (data) {
+  chrome.storage.sync.get(['settings', 'bookmarks', 'folders', 'apiList', 'showBookmarks'], function (data) {
     const settings = data.settings || DEFAULT_SETTINGS;
     const customBookmarks = data.bookmarks || [];
     const customFolders = data.folders || [];
-    const showBookmarks = settings.showBookmarks;
+    const showBookmarks = settings.showBookmarks !== undefined ? settings.showBookmarks : false;
+    const apiList = settings.apiList || DEFAULT_APIS;
     // Get Chrome bookmarks
     chrome.bookmarks.getTree((chromeBookmarkTree) => {
       const chromeBookmark = processBookmarkTree(chromeBookmarkTree[0]);
@@ -2307,78 +2233,102 @@ function setupApiStatus() {
 }
 // Update the checkApiStatus function
 async function checkApiStatus() {
-  const apiList = document.querySelector('.api-list');
-  apiList.innerHTML = ''; // Clear existing statuses
-  for (const api of DEFAULT_APIS) {
-    try {
-      // Create API item element
-      const apiItem = document.createElement('div');
-      apiItem.className = 'api-item';
-      // Add loading state
-      apiItem.innerHTML = `
+  chrome.storage.sync.get('apiList', async function (data) {
+
+    const ApisList = data.apiList || DEFAULT_APIS;
+    const apiList = document.querySelector('.api-list');
+    apiList.innerHTML = ''; // Clear existing statuses
+    for (const api of ApisList) {
+      try {
+        // Create API item element
+        const apiItem = document.createElement('div');
+        apiItem.className = 'api-item';
+        // Add loading state
+        apiItem.innerHTML = `
         <div class="api-name">
           <i class="${api.icon}"></i>
           ${api.name}
         </div>
         <div class="api-status-indicator status-loading"></div>
+
+        <div class="api-status-delete"><i class="fas fa-times delete-api-status"></i></div>
       `;
-      apiList.appendChild(apiItem);
-      const response = await fetch(api.url, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-        },
-        timeout: 5000 // 5 second timeout
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const data = await response.json();
-      // Determine status based on indicator field
-      let status = 'up';
-      if (data.status && data.status.indicator) {
-        // Map the indicator values to your status classes
-        switch (data.status.indicator) {
-          case 'none':
-            status = 'up';  // All Systems Operational
-            break;
-          case 'minor':
-            status = 'degraded';  // Minor issues
-            break;
-          case 'major':
-          case 'critical':
-            status = 'down';  // Major issues or outage
-            break;
-          default:
-            status = 'unknown';
+        apiList.appendChild(apiItem);
+        const response = await fetch(api.url, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+          },
+          timeout: 5000 // 5 second timeout
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
-      } else if (data.page && data.page.status) {
-        status = data.page.status;
-      }
-      // Update status indicator
-      const statusIndicator = apiItem.querySelector('.api-status-indicator');
-      statusIndicator.className = `api-status-indicator status-${status}`;
-      // Add tooltip with status description
-      let tooltipText = "Unknown status";
-      if (data.status && data.status.description) {
-        tooltipText = data.status.description;
-      }
-      statusIndicator.title = tooltipText;
-    } catch (error) {
-      console.error(`Error checking ${api.name} status:`, error);
-      // Show error state
-      const apiItem = document.createElement('div');
-      apiItem.className = 'api-item';
-      apiItem.innerHTML = `
+        const data = await response.json();
+        // Determine status based on indicator field
+        let status = 'up';
+        if (data.status && data.status.indicator) {
+          // Map the indicator values to your status classes
+          switch (data.status.indicator) {
+            case 'none':
+              status = 'up';  // All Systems Operational
+              break;
+            case 'minor':
+              status = 'degraded';  // Minor issues
+              break;
+            case 'major':
+            case 'critical':
+              status = 'down';  // Major issues or outage
+              break;
+            default:
+              status = 'unknown';
+          }
+        } else if (data.page && data.page.status) {
+          status = data.page.status;
+        }
+        // Update status indicator
+        const statusIndicator = apiItem.querySelector('.api-status-indicator');
+        statusIndicator.className = `api-status-indicator status-${status}`;
+        // Add tooltip with status description
+        let tooltipText = "Unknown status";
+        if (data.status && data.status.description) {
+          tooltipText = data.status.description;
+        }
+        statusIndicator.title = tooltipText;
+        // handle the delete button
+        const deleteButton = apiItem.querySelector('.delete-api-status');
+        deleteButton.addEventListener('click', () => {
+          apiList.removeChild(apiItem);
+          // Remove the API from the list
+          const index = ApisList.findIndex(item => item.name === api.name);
+          if (index !== -1) {
+            ApisList.splice(index, 1);
+            chrome.storage.sync.set({ apiList: ApisList });
+          }
+          showNotification(`API status for ${api.name} removed`, 'info');
+          // render the api status
+
+        }
+        );
+        // Update details
+
+      } catch (error) {
+        console.error(`Error checking ${api.name} status:`, error);
+        // Show error state
+        const apiItem = document.createElement('div');
+        apiItem.className = 'api-item';
+        apiItem.innerHTML = `
         <div class="api-name">
           <i class="${api.icon}"></i>
           ${api.name}
         </div>
         <div class="api-status-indicator status-down" title="Unable to fetch status"></div>
       `;
-      apiList.appendChild(apiItem);
+        apiList.appendChild(apiItem);
+      }
     }
-  }
+  });
+
 }
 // Helper function to check a single API status
 async function checkSingleApiStatus(api, apiItemElement) {
@@ -2520,7 +2470,8 @@ function resetToDefault() {
     chrome.storage.sync.set({
       settings: DEFAULT_SETTINGS,
       bookmarks: DEFAULT_BOOKMARKS,
-      folders: DEFAULT_FOLDERS
+      folders: DEFAULT_FOLDERS,
+      apiList: DEFAULT_APIS
     }, function () {
       // Apply default settings
       applySettings(DEFAULT_SETTINGS);

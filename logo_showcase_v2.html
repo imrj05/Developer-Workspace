@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer Workspace — Advanced Logo Exploration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background: #0A0A0B;
+            color: #F4F4F5;
+            overflow-x: hidden;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+        }
+
+        /* Subtle grain texture */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Logo hover effects */
+        .logo-card {
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .logo-card:hover {
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .logo-canvas {
+            position: relative;
+            transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Aura effect on hover */
+        .logo-aura {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: scale(0.5);
+            opacity: 0;
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+            filter: blur(40px);
+            pointer-events: none;
+        }
+
+        .logo-card:hover .logo-aura {
+            transform: scale(1.2);
+            opacity: 1;
+        }
+
+        /* Divider animation */
+        .divider-line {
+            width: 20%;
+            height: 1px;
+            background: #3b82f6;
+            opacity: 0.3;
+            transition: width 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .logo-card:hover .divider-line {
+            width: 80%;
+            opacity: 0.6;
+        }
+
+        /* Typography refinements */
+        .tracking-ultra-wide {
+            letter-spacing: 0.3em;
+        }
+
+        .text-balance {
+            text-wrap: balance;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const SynthesizedLens = () => (
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <mask id="lens-mask">
+                <rect width="100" height="100" fill="white" />
+                <circle cx="50" cy="50" r="25" fill="black" />
+              </mask>
+            </defs>
+            {/* Background Dot Grid */}
+            <g fill="currentColor" opacity="0.1" mask="url(#lens-mask)">
+              {[...Array(9)].map((_, i) => 
+                [...Array(9)].map((_, j) => (
+                  <circle key={`${i}-${j}`} cx={10 + i * 10} cy={10 + j * 10} r="1" />
+                ))
+              )}
+            </g>
+            {/* Outer Container */}
+            <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.2" />
+            {/* Focus Lens */}
+            <circle cx="50" cy="50" r="25" fill="none" stroke="#3b82f6" strokeWidth="3" />
+            {/* Magnified Content */}
+            <g fill="#3b82f6">
+              <circle cx="50" cy="50" r="4" />
+              <line x1="50" y1="35" x2="50" y2="42" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" />
+              <line x1="50" y1="58" x2="50" y2="65" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" />
+              <line x1="35" y1="50" x2="42" y2="50" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" />
+              <line x1="58" y1="50" x2="65" y2="50" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" />
+            </g>
+          </svg>
+        );
+
+        const NeuralWorkspace = () => (
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            {/* Background Network */}
+            <g stroke="currentColor" strokeWidth="0.5" opacity="0.1">
+              <path d="M20,20 L80,80 M20,80 L80,20 M50,10 L50,90 M10,50 L90,50" />
+              <circle cx="50" cy="50" r="35" fill="none" strokeDasharray="2 4" />
+            </g>
+            {/* Primary Connections */}
+            <g stroke="#3b82f6" strokeWidth="2" fill="none" strokeLinecap="round">
+              <path d="M30,70 Q50,70 50,50" />
+              <path d="M50,50 Q50,30 70,30" />
+              <path d="M30,70 Q20,40 35,35" opacity="0.4" />
+              <path d="M35,35 Q50,35 50,50" opacity="0.4" />
+            </g>
+            {/* Nodes */}
+            <circle cx="30" cy="70" r="5" fill="currentColor" />
+            <circle cx="70" cy="30" r="5" fill="currentColor" />
+            <circle cx="35" cy="35" r="3" fill="currentColor" opacity="0.6" />
+            {/* Focus Node */}
+            <circle cx="50" cy="50" r="8" fill="#3b82f6" />
+            <circle cx="50" cy="50" r="12" fill="none" stroke="#3b82f6" strokeWidth="1" opacity="0.3">
+              <animate attributeName="r" values="8;14;8" dur="3s" repeatCount="indefinite" />
+              <animate attributeName="opacity" values="0.3;0;0.3" dur="3s" repeatCount="indefinite" />
+            </circle>
+          </svg>
+        );
+
+        const RecursiveBracket = () => (
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <g fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              {/* Outer Brackets */}
+              <path d="M30,20 L15,50 L30,80" opacity="0.2" />
+              <path d="M70,20 L85,50 L70,80" opacity="0.2" />
+              {/* Middle Brackets */}
+              <path d="M40,30 L30,50 L40,70" stroke="#3b82f6" opacity="0.5" />
+              <path d="M60,30 L70,50 L60,70" stroke="#3b82f6" opacity="0.5" />
+              {/* Inner Focus */}
+              <path d="M45,40 L40,50 L45,60" stroke="#3b82f6" />
+              <path d="M55,40 L60,50 L55,60" stroke="#3b82f6" />
+              <circle cx="50" cy="50" r="4" fill="#3b82f6" stroke="none" />
+            </g>
+            {/* Vertical Cursor */}
+            <line x1="50" y1="30" x2="50" y2="70" stroke="currentColor" strokeWidth="1" opacity="0.1" />
+          </svg>
+        );
+
+        const FlowState = () => (
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="flow-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="currentColor" stopOpacity="0" />
+                <stop offset="50%" stopColor="#3b82f6" stopOpacity="1" />
+                <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            <g fill="none" strokeWidth="2" strokeLinecap="round">
+              <path d="M10,50 Q30,20 50,50 T90,50" stroke="url(#flow-grad)" />
+              <path d="M10,50 Q30,80 50,50 T90,50" stroke="url(#flow-grad)" opacity="0.5" />
+              <path d="M10,50 Q30,35 50,50 T90,50" stroke="currentColor" opacity="0.1" />
+              <path d="M10,50 Q30,65 50,50 T90,50" stroke="currentColor" opacity="0.1" />
+            </g>
+            {/* Intersection Focus */}
+            <circle cx="50" cy="50" r="6" fill="#3b82f6" />
+            <g fill="currentColor">
+              <circle cx="30" cy="35" r="2" opacity="0.4" />
+              <circle cx="70" cy="65" r="2" opacity="0.4" />
+              <circle cx="30" cy="65" r="2" opacity="0.2" />
+              <circle cx="70" cy="35" r="2" opacity="0.2" />
+            </g>
+          </svg>
+        );
+
+        const MonolithGrid = () => (
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            {/* Base Dot Grid */}
+            <g fill="currentColor" opacity="0.15">
+              {[...Array(8)].map((_, i) => 
+                [...Array(8)].map((_, j) => (
+                  <circle key={`${i}-${j}`} cx={15 + i * 10} cy={15 + j * 10} r="1.5" />
+                ))
+              )}
+            </g>
+            {/* The Monolith (Hexagonal Cutout) */}
+            <g transform="translate(50, 50)">
+              <polygon points="0,-30 26,-15 26,15 0,30 -26,15 -26,-15" fill="#0A0A0B" stroke="#3b82f6" strokeWidth="2" />
+              {/* Internal Structure */}
+              <line x1="0" y1="-30" x2="0" y2="30" stroke="#3b82f6" strokeWidth="1" opacity="0.3" />
+              <line x1="-26" y1="-15" x2="26" y2="15" stroke="#3b82f6" strokeWidth="1" opacity="0.3" />
+              <line x1="26" y1="-15" x2="-26" y2="15" stroke="#3b82f6" strokeWidth="1" opacity="0.3" />
+              {/* Core Focus */}
+              <circle cx="0" cy="0" r="6" fill="#3b82f6" />
+            </g>
+          </svg>
+        );
+
+        const PrismLogic = () => (
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            {/* Background "Code" Lines */}
+            <g stroke="currentColor" strokeWidth="1" strokeLinecap="round" opacity="0.1">
+              <line x1="10" y1="20" x2="25" y2="20" />
+              <line x1="10" y1="25" x2="35" y2="25" />
+              <line x1="70" y1="75" x2="90" y2="75" />
+              <line x1="65" y1="80" x2="90" y2="80" />
+            </g>
+            {/* Overlapping Prism Shards */}
+            <g fill="#3b82f6">
+              <path d="M50,20 L80,70 L20,70 Z" opacity="0.1" />
+              <path d="M50,80 L20,30 L80,30 Z" opacity="0.1" />
+              {/* Intersection Focus Area */}
+              <path d="M50,35 L65,60 L35,60 Z" opacity="0.4" />
+              <path d="M50,65 L35,40 L65,40 Z" opacity="0.4" />
+              {/* Central Core */}
+              <circle cx="50" cy="50" r="5" opacity="1" />
+            </g>
+            {/* Geometric Accents */}
+            <g stroke="#3b82f6" strokeWidth="1.5" fill="none">
+              <circle cx="50" cy="50" r="35" strokeDasharray="4 8" opacity="0.2" />
+              <circle cx="50" cy="50" r="15" opacity="0.5" />
+            </g>
+          </svg>
+        );
+
+        const LogoShowcase = () => {
+            const logos = [
+                {
+                    Component: SynthesizedLens,
+                    title: "Synthesized Lens",
+                    subtitle: "Clarity in Complexity",
+                    philosophy: "Represents the developer's ability to find focus and clarity within vast systems. The blue lens magnifies the core logic while the surrounding grid signifies the complex data environment."
+                },
+                {
+                    Component: NeuralWorkspace,
+                    title: "Neural Workspace",
+                    subtitle: "Connected Intelligence",
+                    philosophy: "Visualizes the mental model of a developer. A network of ideas and tools converging into a single, pulsing point of focus. It suggests an active, living workspace."
+                },
+                {
+                    Component: RecursiveBracket,
+                    title: "Recursive Bracket",
+                    subtitle: "The DNA of Code",
+                    philosophy: "Abstracts the fundamental syntax of programming into a nested, recursive structure. It places the developer (the central dot) at the heart of the logic, protected by layers of structure."
+                },
+                {
+                    Component: FlowState,
+                    title: "Flow State",
+                    subtitle: "Harmonic Productivity",
+                    philosophy: "Captures the 'Flow State' where tasks and tools align perfectly. Overlapping waves of productivity converge at a central focus point, creating a sense of rhythm and ease."
+                },
+                {
+                    Component: MonolithGrid,
+                    title: "Monolith Grid",
+                    subtitle: "Solid Foundations",
+                    philosophy: "Shows the creation of solid, meaningful architecture out of discrete elements. A strong hexagonal 'monolith' emerges from a background grid of potential, centered on a core of focus."
+                },
+                {
+                    Component: PrismLogic,
+                    title: "Prism Logic",
+                    subtitle: "Multifaceted Focus",
+                    philosophy: "Reflects the multifaceted nature of problem-solving. Overlapping logical 'shards' intersect to create a brilliant center of focus, suggesting that clarity comes from multiple perspectives."
+                }
+            ];
+
+            return (
+                <div className="min-h-screen flex flex-col items-center py-20 px-6">
+
+                    {/* Header */}
+                    <div className="text-center mb-24 max-w-3xl">
+                        <h1 className="text-5xl md:text-6xl font-light tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-500">
+                            Developer Workspace
+                        </h1>
+                        <p className="font-mono text-[10px] text-blue-400 uppercase tracking-ultra-wide mb-12">
+                            Advanced Identity Exploration
+                        </p>
+                        <div className="w-16 h-[1px] bg-blue-500 mx-auto opacity-50"></div>
+                    </div>
+
+                    {/* Logo Grid */}
+                    <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-32">
+                        {logos.map((logo, index) => (
+                            <div key={index} className="flex flex-col items-center p-12 logo-card cursor-pointer">
+
+                                {/* Logo Canvas */}
+                                <div className="w-48 h-48 mb-12 flex items-center justify-center relative">
+                                    <div className="logo-aura"></div>
+                                    <div className="w-32 h-32 relative z-10 logo-canvas">
+                                        <logo.Component />
+                                    </div>
+                                </div>
+
+                                {/* Text Description */}
+                                <div className="text-center w-full">
+                                    <h2 className="text-lg font-semibold tracking-wide mb-1 text-white">
+                                        {logo.title}
+                                    </h2>
+                                    <h3 className="text-[10px] font-mono text-blue-400 opacity-80 tracking-widest mb-6 uppercase">
+                                        {logo.subtitle}
+                                    </h3>
+                                    <p className="text-xs leading-relaxed text-gray-400 font-light text-balance px-4">
+                                        {logo.philosophy}
+                                    </p>
+                                </div>
+
+                                {/* Bottom Divider */}
+                                <div className="divider-line mt-10 mx-auto"></div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Footer */}
+                    <div className="mt-32 max-w-2xl text-center">
+                        <p className="font-mono text-[10px] text-gray-600 uppercase tracking-ultra-wide leading-loose">
+                            System Identity Design<br/>
+                            v2.0.0 — 2026
+                        </p>
+                    </div>
+
+                </div>
+            );
+        };
+
+        ReactDOM.render(<LogoShowcase />, document.getElementById('root'));
+    </script>
+
+</body>
+</html>

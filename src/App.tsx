@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Route, Routes, useLocation } from 'react-router-dom'
 import Hero from './components/Hero'
 import Features from './components/Features'
 import Cta from './components/Cta'
@@ -27,15 +28,73 @@ function ThemeToggle({ dark, onToggle }: { dark: boolean, onToggle: () => void }
   )
 }
 
-function getRoute() {
-  const route = window.location.hash.replace(/^#/, '')
+function HomePage() {
+  return (
+    <>
+      <Hero />
+      <Features />
+      <Cta />
+      <Footer />
+    </>
+  )
+}
 
-  return route || '/'
+function AppRoutes() {
+  const location = useLocation()
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+
+    if (location.pathname === '/privacy-policy') {
+      document.title = 'Privacy Policy | Developer Workspace'
+      return
+    }
+
+    if (location.pathname === '/terms-and-conditions') {
+      document.title = 'Terms & Conditions | Developer Workspace'
+      return
+    }
+
+    document.title = 'Developer Workspace — Enhance Your Development Workflow'
+  }, [location.pathname])
+
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route
+        path="/privacy-policy"
+        element={
+          <LegalPage
+            eyebrow="Privacy Policy"
+            title="Privacy Policy"
+            effectiveDate="March 2025"
+            intro="This page explains what information Developer Workspace uses, why it uses those permissions, and how your data stays under your control."
+            sections={privacySections}
+            contactEmail="rajeshwarkashyap5@gmail.com"
+            lastUpdated="March 2025"
+          />
+        }
+      />
+      <Route
+        path="/terms-and-conditions"
+        element={
+          <LegalPage
+            eyebrow="Terms & Conditions"
+            title="Terms & Conditions"
+            effectiveDate="March 2025"
+            intro="These terms govern your use of the Developer Workspace Chrome extension and describe the responsibilities, limitations, and conditions associated with using it."
+            sections={termsSections}
+            contactEmail="rajeshwarkashyap5@gmail.com"
+            lastUpdated="March 2025"
+          />
+        }
+      />
+    </Routes>
+  )
 }
 
 function App() {
   const [dark, setDark] = useState(true)
-  const [route, setRoute] = useState(getRoute)
 
   useEffect(() => {
     const stored = localStorage.getItem('theme')
@@ -51,71 +110,10 @@ function App() {
     localStorage.setItem('theme', dark ? 'dark' : 'light')
   }, [dark])
 
-  useEffect(() => {
-    const handleHashChange = () => setRoute(getRoute())
-
-    window.addEventListener('hashchange', handleHashChange)
-
-    return () => window.removeEventListener('hashchange', handleHashChange)
-  }, [])
-
-  useEffect(() => {
-    window.scrollTo(0, 0)
-
-    if (route === '/privacy-policy') {
-      document.title = 'Privacy Policy | Developer Workspace'
-      return
-    }
-
-    if (route === '/terms-and-conditions') {
-      document.title = 'Terms & Conditions | Developer Workspace'
-      return
-    }
-
-    document.title = 'Developer Workspace — Enhance Your Development Workflow'
-  }, [route])
-
-  let content = (
-    <>
-      <Hero />
-      <Features />
-      <Cta />
-      <Footer />
-    </>
-  )
-
-  if (route === '/privacy-policy') {
-    content = (
-      <LegalPage
-        eyebrow="Privacy Policy"
-        title="Privacy Policy"
-        effectiveDate="March 2025"
-        intro="This page explains what information Developer Workspace uses, why it uses those permissions, and how your data stays under your control."
-        sections={privacySections}
-        contactEmail="rajeshwarkashyap5@gmail.com"
-        lastUpdated="March 2025"
-      />
-    )
-  }
-
-  if (route === '/terms-and-conditions') {
-    content = (
-      <LegalPage
-        eyebrow="Terms & Conditions"
-        title="Terms & Conditions"
-        effectiveDate="March 2025"
-        intro="These terms govern your use of the Developer Workspace Chrome extension and describe the responsibilities, limitations, and conditions associated with using it."
-        sections={termsSections}
-        contactEmail="rajeshwarkashyap5@gmail.com"
-        lastUpdated="March 2025"
-      />
-    )
-  }
-
   return (
     <>
       <ThemeToggle dark={dark} onToggle={() => setDark((value) => !value)} />
-      {content}
+      <AppRoutes />
     </>
   )
 }

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import type { LegalSection } from '../legalContent'
 
 type LegalPageProps = {
@@ -22,10 +23,10 @@ export default function LegalPage({
   return (
     <main className="legal-page">
       <div className="legal-shell">
-        <a href="#/" className="legal-back-link">
+        <Link to="/" className="legal-back-link">
           <span aria-hidden="true">&larr;</span>
           <span>Back to home</span>
-        </a>
+        </Link>
 
         <header className="legal-header">
           <div className="hero-badge">{eyebrow}</div>

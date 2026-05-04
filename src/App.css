@@ -288,6 +288,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+   flex-wrap: wrap;
   gap: 1rem;
 }
 
@@ -301,6 +302,24 @@ body {
   gap: 1.25rem;
 }
 
+.footer-legal-links {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.footer-legal-links a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.footer-legal-links a:hover {
+  color: var(--accent);
+}
+
 .footer-links a {
   color: var(--muted);
   transition: color 0.2s;
@@ -310,6 +329,101 @@ body {
 
 .footer-links a:hover {
   color: var(--accent);
+}
+
+/* ── Legal Pages ── */
+
+.legal-page {
+  min-height: 100vh;
+  padding: 6rem 1.5rem 4rem;
+}
+
+.legal-shell {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.legal-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  transition: color 0.2s ease;
+}
+
+.legal-back-link:hover {
+  color: var(--accent);
+}
+
+.legal-header {
+  margin-bottom: 2rem;
+}
+
+.legal-header h1 {
+  font-size: 2.75rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 0.75rem;
+}
+
+.legal-meta,
+.legal-intro,
+.legal-updated,
+.legal-section p,
+.legal-section li {
+  color: var(--muted);
+}
+
+.legal-meta {
+  margin-bottom: 0.85rem;
+  font-weight: 600;
+}
+
+.legal-intro {
+  max-width: 680px;
+}
+
+.legal-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 4px);
+  box-shadow: var(--shadow-sm);
+  padding: 2rem;
+}
+
+.legal-section + .legal-section {
+  margin-top: 2rem;
+}
+
+.legal-section h2 {
+  font-size: 1.2rem;
+  margin-bottom: 0.75rem;
+}
+
+.legal-section p + p {
+  margin-top: 0.9rem;
+}
+
+.legal-section ul {
+  margin-top: 0.9rem;
+  padding-left: 1.25rem;
+}
+
+.legal-section li + li {
+  margin-top: 0.65rem;
+}
+
+.legal-section a {
+  color: var(--accent);
+}
+
+.legal-updated {
+  margin-top: 2rem;
+  font-size: 0.95rem;
 }
 
 /* ── Animation ── */
@@ -348,6 +462,18 @@ body {
 
   .cta h2 {
     font-size: 1.6rem;
+  }
+
+  .legal-page {
+    padding: 5rem 1.25rem 3rem;
+  }
+
+  .legal-header h1 {
+    font-size: 2.1rem;
+  }
+
+  .legal-card {
+    padding: 1.5rem;
   }
 
   .footer-inner {

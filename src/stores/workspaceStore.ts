@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { getStorage, setStorage } from '../lib/chrome'
+import { getStorageWithFallback, setStorage } from '../lib/chrome'
 import type { PinnedApp, TaskItem } from '../lib/types'
 
 interface WorkspaceState {
@@ -35,10 +35,10 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
 
   loadWorkspace: async () => {
     try {
-      const data = await getStorage<{
+      const data = await getStorageWithFallback<{
         pinnedApps: PinnedApp[]
         tasks: TaskItem[]
-      }>(['pinnedApps', 'tasks'])
+      }>(['pinnedApps', 'tasks'], 'local', 'sync')
 
       const pinnedApps = data?.pinnedApps?.length ? data.pinnedApps : DEFAULT_PINNED_APPS
       const tasks = data?.tasks || []
@@ -46,7 +46,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       set({ pinnedApps, tasks })
 
       if (!data?.pinnedApps?.length) {
-        await setStorage({ pinnedApps })
+        await setStorage({ pinnedApps }, 'local')
       }
     } catch {
       set({ pinnedApps: DEFAULT_PINNED_APPS, tasks: [] })
@@ -56,19 +56,19 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   addPinnedApp: async (app) => {
     const pinnedApps = [...get().pinnedApps, { id: generateId(), ...app }]
     set({ pinnedApps })
-    await setStorage({ pinnedApps })
+    await setStorage({ pinnedApps }, 'local')
   },
 
   updatePinnedApp: async (id, partial) => {
     const pinnedApps = get().pinnedApps.map((app) => app.id === id ? { ...app, ...partial } : app)
     set({ pinnedApps })
-    await setStorage({ pinnedApps })
+    await setStorage({ pinnedApps }, 'local')
   },
 
   deletePinnedApp: async (id) => {
     const pinnedApps = get().pinnedApps.filter((app) => app.id !== id)
     set({ pinnedApps })
-    await setStorage({ pinnedApps })
+    await setStorage({ pinnedApps }, 'local')
   },
 
   reorderPinnedApps: async (activeId, targetId) => {
@@ -84,30 +84,30 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     pinnedApps.splice(toIndex, 0, moved)
 
     set({ pinnedApps })
-    await setStorage({ pinnedApps })
+    await setStorage({ pinnedApps }, 'local')
   },
 
   resetPinnedApps: async () => {
     const pinnedApps = DEFAULT_PINNED_APPS
     set({ pinnedApps })
-    await setStorage({ pinnedApps })
+    await setStorage({ pinnedApps }, 'local')
   },
 
   addTask: async (title) => {
     const tasks = [{ id: generateId(), title: title.trim(), completed: false, createdAt: Date.now() }, ...get().tasks]
     set({ tasks })
-    await setStorage({ tasks })
+    await setStorage({ tasks }, 'local')
   },
 
   toggleTask: async (id) => {
     const tasks = get().tasks.map((task) => task.id === id ? { ...task, completed: !task.completed } : task)
     set({ tasks })
-    await setStorage({ tasks })
+    await setStorage({ tasks }, 'local')
   },
 
   deleteTask: async (id) => {
     const tasks = get().tasks.filter((task) => task.id !== id)
     set({ tasks })
-    await setStorage({ tasks })
+    await setStorage({ tasks }, 'local')
   }
 }))

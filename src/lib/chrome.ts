@@ -1,22 +1,61 @@
-export function getStorage<T>(keys: string[]): Promise<T | null> {
-  return new Promise((resolve) => {
+type StorageAreaName = 'sync' | 'local'
+
+function getStorageArea(area: StorageAreaName) {
+  return chrome.storage[area]
+}
+
+export function getStorage<T>(keys: string[], area: StorageAreaName = 'sync'): Promise<T | null> {
+  return new Promise((resolve, reject) => {
     if (typeof chrome === 'undefined' || !chrome.storage) {
       resolve(null)
       return
     }
-    chrome.storage.sync.get(keys, (data) => {
+
+    getStorageArea(area).get(keys, (data) => {
+      if (chrome.runtime.lastError) {
+        reject(new Error(chrome.runtime.lastError.message))
+        return
+      }
+
       resolve(data as T || null)
     })
   })
 }
 
-export function setStorage<T extends Record<string, unknown>>(data: T): Promise<void> {
-  return new Promise((resolve) => {
+export async function getStorageWithFallback<T>(keys: string[], primary: StorageAreaName, fallback: StorageAreaName): Promise<T | null> {
+  const primaryData = await getStorage<Record<string, unknown>>(keys, primary) || {}
+  const missingKeys = keys.filter((key) => primaryData[key] === undefined)
+
+  if (missingKeys.length === 0) {
+    return primaryData as T
+  }
+
+  const fallbackData = await getStorage<Record<string, unknown>>(missingKeys, fallback) || {}
+  const migratedKeys = Object.keys(fallbackData)
+
+  if (migratedKeys.length > 0) {
+    await setStorage(fallbackData, primary)
+  }
+
+  return {
+    ...fallbackData,
+    ...primaryData,
+  } as T
+}
+
+export function setStorage<T extends Record<string, unknown>>(data: T, area: StorageAreaName = 'sync'): Promise<void> {
+  return new Promise((resolve, reject) => {
     if (typeof chrome === 'undefined' || !chrome.storage) {
       resolve()
       return
     }
-    chrome.storage.sync.set(data, () => {
+
+    getStorageArea(area).set(data, () => {
+      if (chrome.runtime.lastError) {
+        reject(new Error(chrome.runtime.lastError.message))
+        return
+      }
+
       resolve()
     })
   })

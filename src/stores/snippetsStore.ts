@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { getStorage, setStorage } from '../lib/chrome'
+import { getStorageWithFallback, setStorage } from '../lib/chrome'
 import type { Snippet } from '../lib/types'
 
 interface SnippetsState {
@@ -25,11 +25,11 @@ export const useSnippetsStore = create<SnippetsState>((set, get) => ({
 
   loadSnippets: async () => {
     try {
-      const data = await getStorage<{ snippets: Snippet[] }>(['snippets'])
+      const data = await getStorageWithFallback<{ snippets: Snippet[] }>(['snippets'], 'local', 'sync')
       const snippets = data?.snippets?.length ? data.snippets : DEFAULT_SNIPPETS
       set({ snippets })
       if (!data?.snippets?.length) {
-        await setStorage({ snippets })
+        await setStorage({ snippets }, 'local')
       }
     } catch {
       set({ snippets: DEFAULT_SNIPPETS })
@@ -39,18 +39,18 @@ export const useSnippetsStore = create<SnippetsState>((set, get) => ({
   addSnippet: async (snippet) => {
     const snippets = [{ id: generateId(), ...snippet, createdAt: Date.now() }, ...get().snippets]
     set({ snippets })
-    await setStorage({ snippets })
+    await setStorage({ snippets }, 'local')
   },
 
   updateSnippet: async (id, partial) => {
     const snippets = get().snippets.map((s) => s.id === id ? { ...s, ...partial } : s)
     set({ snippets })
-    await setStorage({ snippets })
+    await setStorage({ snippets }, 'local')
   },
 
   deleteSnippet: async (id) => {
     const snippets = get().snippets.filter((s) => s.id !== id)
     set({ snippets })
-    await setStorage({ snippets })
+    await setStorage({ snippets }, 'local')
   }
 }))

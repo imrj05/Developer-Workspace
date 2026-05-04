@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { getStorage, setStorage } from '../lib/chrome'
+import { getStorageWithFallback, setStorage } from '../lib/chrome'
 import type { Bookmark, Folder, ApiStatus, DevNote } from '../lib/types'
 
 type DefaultBookmarkSeed = {
@@ -271,12 +271,12 @@ export const useBookmarksStore = create<BookmarksState>((set, get) => ({
 
   loadAll: async () => {
     try {
-      const data = await getStorage<{
+      const data = await getStorageWithFallback<{
         bookmarks: Bookmark[]
         folders: Folder[]
         apiList: ApiStatus[]
         devNotes: DevNote[]
-      }>(['bookmarks', 'folders', 'apiList', 'devNotes'])
+      }>(['bookmarks', 'folders', 'apiList', 'devNotes'], 'local', 'sync')
       const hasStoredBookmarks = Array.isArray(data?.bookmarks) && data.bookmarks.length > 0
       const hasStoredFolders = Array.isArray(data?.folders) && data.folders.length > 0
       const defaults = !hasStoredBookmarks && !hasStoredFolders ? createDefaultBookmarkData() : null
@@ -292,7 +292,7 @@ export const useBookmarksStore = create<BookmarksState>((set, get) => ({
       })
 
       if (defaults || bookmarksMigrated) {
-        await setStorage({ bookmarks, folders })
+        await setStorage({ bookmarks, folders }, 'local')
       }
     } catch {
       // Keep defaults
@@ -302,7 +302,7 @@ export const useBookmarksStore = create<BookmarksState>((set, get) => ({
   addBookmark: async (bookmark) => {
     const bookmarks = [...get().bookmarks, bookmark]
     set({ bookmarks })
-    await setStorage({ bookmarks })
+    await setStorage({ bookmarks }, 'local')
   },
 
   updateBookmark: async (id, partial) => {
@@ -310,19 +310,19 @@ export const useBookmarksStore = create<BookmarksState>((set, get) => ({
       b.id === id ? { ...b, ...partial } : b
     )
     set({ bookmarks })
-    await setStorage({ bookmarks })
+    await setStorage({ bookmarks }, 'local')
   },
 
   deleteBookmark: async (id) => {
     const bookmarks = get().bookmarks.filter(b => b.id !== id)
     set({ bookmarks })
-    await setStorage({ bookmarks })
+    await setStorage({ bookmarks }, 'local')
   },
 
   addFolder: async (folder) => {
     const folders = [...get().folders, folder]
     set({ folders })
-    await setStorage({ folders })
+    await setStorage({ folders }, 'local')
   },
 
   deleteFolder: async (id) => {
@@ -331,7 +331,7 @@ export const useBookmarksStore = create<BookmarksState>((set, get) => ({
       b.folderId === id ? { ...b, folderId: undefined } : b
     )
     set({ folders, bookmarks })
-    await setStorage({ folders, bookmarks })
+    await setStorage({ folders, bookmarks }, 'local')
   },
 
   addApi: async (api) => {
@@ -339,13 +339,13 @@ export const useBookmarksStore = create<BookmarksState>((set, get) => ({
     if (exists) return
     const apiList = [...get().apiList, api]
     set({ apiList })
-    await setStorage({ apiList })
+    await setStorage({ apiList }, 'local')
   },
 
   deleteApi: async (id) => {
     const apiList = get().apiList.filter(a => a.id !== id)
     set({ apiList })
-    await setStorage({ apiList })
+    await setStorage({ apiList }, 'local')
   },
 
   updateApiStatus: async (id, status) => {
@@ -353,13 +353,13 @@ export const useBookmarksStore = create<BookmarksState>((set, get) => ({
       a.id === id ? { ...a, status, lastChecked: Date.now() } : a
     )
     set({ apiList })
-    await setStorage({ apiList })
+    await setStorage({ apiList }, 'local')
   },
 
   addNote: async (note) => {
     const devNotes = [note, ...get().devNotes]
     set({ devNotes })
-    await setStorage({ devNotes })
+    await setStorage({ devNotes }, 'local')
   },
 
   toggleNote: async (id) => {
@@ -367,17 +367,17 @@ export const useBookmarksStore = create<BookmarksState>((set, get) => ({
       n.id === id ? { ...n, completed: !n.completed } : n
     )
     set({ devNotes })
-    await setStorage({ devNotes })
+    await setStorage({ devNotes }, 'local')
   },
 
   deleteNote: async (id) => {
     const devNotes = get().devNotes.filter(n => n.id !== id)
     set({ devNotes })
-    await setStorage({ devNotes })
+    await setStorage({ devNotes }, 'local')
   },
 
   clearNotes: async () => {
     set({ devNotes: [] })
-    await setStorage({ devNotes: [] })
+    await setStorage({ devNotes: [] }, 'local')
   }
 }))

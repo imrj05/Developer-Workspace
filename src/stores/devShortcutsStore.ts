@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { getStorage, setStorage } from '../lib/chrome'
+import { getStorageWithFallback, setStorage } from '../lib/chrome'
 import type { DevShortcut } from '../lib/types'
 
 interface DevShortcutsState {
@@ -27,11 +27,11 @@ export const useDevShortcutsStore = create<DevShortcutsState>((set, get) => ({
 
   loadDevShortcuts: async () => {
     try {
-      const data = await getStorage<{ devShortcuts: DevShortcut[] }>(['devShortcuts'])
+      const data = await getStorageWithFallback<{ devShortcuts: DevShortcut[] }>(['devShortcuts'], 'local', 'sync')
       const shortcuts = data?.devShortcuts?.length ? data.devShortcuts : DEFAULT_SHORTCUTS
       set({ shortcuts })
       if (!data?.devShortcuts?.length) {
-        await setStorage({ devShortcuts: shortcuts })
+        await setStorage({ devShortcuts: shortcuts }, 'local')
       }
     } catch {
       set({ shortcuts: DEFAULT_SHORTCUTS })
@@ -41,18 +41,18 @@ export const useDevShortcutsStore = create<DevShortcutsState>((set, get) => ({
   addShortcut: async (shortcut) => {
     const shortcuts = [...get().shortcuts, { id: generateId(), ...shortcut }]
     set({ shortcuts })
-    await setStorage({ devShortcuts: shortcuts })
+    await setStorage({ devShortcuts: shortcuts }, 'local')
   },
 
   updateShortcut: async (id, partial) => {
     const shortcuts = get().shortcuts.map((s) => s.id === id ? { ...s, ...partial } : s)
     set({ shortcuts })
-    await setStorage({ devShortcuts: shortcuts })
+    await setStorage({ devShortcuts: shortcuts }, 'local')
   },
 
   deleteShortcut: async (id) => {
     const shortcuts = get().shortcuts.filter((s) => s.id !== id)
     set({ shortcuts })
-    await setStorage({ devShortcuts: shortcuts })
+    await setStorage({ devShortcuts: shortcuts }, 'local')
   }
 }))

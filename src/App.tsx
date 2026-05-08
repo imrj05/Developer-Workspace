@@ -30,12 +30,12 @@ function ThemeToggle({ dark, onToggle }: { dark: boolean, onToggle: () => void }
 
 function HomePage() {
   return (
-    <>
+    <main className="min-h-screen overflow-hidden bg-[var(--bg)] text-[var(--text)]">
       <Hero />
       <Features />
       <Cta />
       <Footer />
-    </>
+    </main>
   )
 }
 

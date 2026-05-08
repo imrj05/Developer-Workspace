@@ -6,7 +6,8 @@ const features = [
       </svg>
     ),
     title: 'Smart Bookmarks',
-    description: 'Organize your dev resources into custom categories with smart URL detection and instant search.',
+    description: 'Organize dev resources into folders, categories, and fast-launch shortcuts without the usual bookmark sprawl.',
+    eyebrow: 'Find anything faster',
   },
   {
     icon: (
@@ -15,7 +16,8 @@ const features = [
       </svg>
     ),
     title: 'Productivity Tools',
-    description: 'Pomodoro timer, terminal-style notes, and task management to keep you in the flow.',
+    description: 'Use the built-in Pomodoro timer, terminal notes, and quick tasks to keep execution moving.',
+    eyebrow: 'Protect focus',
   },
   {
     icon: (
@@ -24,7 +26,8 @@ const features = [
       </svg>
     ),
     title: 'Smart Features',
-    description: 'Weather updates, multiple timezones, and real-time GitHub activity at a glance.',
+    description: 'See GitHub activity, weather, and time data right when you open a tab instead of chasing separate tools.',
+    eyebrow: 'Live context',
   },
   {
     icon: (
@@ -33,25 +36,60 @@ const features = [
       </svg>
     ),
     title: 'Customization',
-    description: 'Dark/light themes, custom backgrounds, and adjustable components to make it yours.',
+    description: 'Tune the layout with themes, backgrounds, and visibility controls so the dashboard matches how you work.',
+    eyebrow: 'Make it yours',
   },
+]
+
+const proofPoints = [
+  { label: 'New tab utility', value: 'All-in-one', detail: 'Bookmarks, notes, timers, weather, and developer signals in one surface.' },
+  { label: 'Setup time', value: '< 2 min', detail: 'Install, pin your tools, and turn the default new tab into a real workspace.' },
+  { label: 'Built for', value: 'Builders', detail: 'Designed for developers who open dozens of tabs and need signal fast.' },
 ]
 
 export default function Features() {
   return (
-    <section className="features" id="features">
-      <div className="features-header">
-        <h2>Everything a developer needs</h2>
-        <p>Your new tab page, packed with tools to streamline your workflow.</p>
-      </div>
-      <div className="features-grid">
-        {features.map((f, i) => (
-          <div className="feature-card" key={i}>
-            <div className="feature-icon">{f.icon}</div>
-            <h3>{f.title}</h3>
-            <p>{f.description}</p>
+    <section className="relative px-5 py-20 sm:px-8 sm:py-24 lg:px-12" id="features">
+      <div className="absolute inset-x-0 top-0 -z-10 h-px bg-gradient-to-r from-transparent via-[var(--border)] to-transparent" />
+      <div className="mx-auto max-w-7xl">
+        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+          <div>
+            <div className="mb-5 inline-flex rounded-full border border-[var(--border)] bg-[color:color-mix(in_srgb,var(--surface)_78%,transparent)] px-3 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-[var(--accent)]">Why it hits harder</div>
+            <h2 className="max-w-lg text-3xl font-black leading-[1.02] tracking-[-0.055em] text-[var(--text)] sm:text-5xl">
+              Built like a startup product, not a utility page.
+            </h2>
+            <p className="mt-5 max-w-xl text-base leading-8 text-[var(--muted)] sm:text-lg">
+              Every panel is tuned to reduce friction in the first 30 seconds of your browsing session.
+              Less hunting, less tab drift, more shipping.
+            </p>
+
+            <div className="mt-8 grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
+              {proofPoints.map((point) => (
+                <div key={point.label} className="rounded-[1.5rem] border border-[var(--border)] bg-[color:color-mix(in_srgb,var(--surface)_90%,transparent)] p-5 shadow-[var(--shadow-sm)] backdrop-blur">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">{point.label}</p>
+                  <p className="mt-2 text-2xl font-black tracking-[-0.05em] text-[var(--text)] sm:text-3xl">{point.value}</p>
+                  <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{point.detail}</p>
+                </div>
+              ))}
+            </div>
           </div>
-        ))}
+
+          <div className="grid gap-5 sm:grid-cols-2">
+            {features.map((feature) => (
+              <div
+                className="group rounded-[1.5rem] border border-[var(--border)] bg-[color:color-mix(in_srgb,var(--surface)_92%,transparent)] p-6 shadow-[var(--shadow-sm)] backdrop-blur transition hover:-translate-y-1 hover:border-[var(--accent)]/45 hover:shadow-[var(--shadow-lg)] sm:rounded-[1.75rem]"
+                key={feature.title}
+              >
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--accent)]/20 to-fuchsia-500/15 text-[var(--accent)] transition group-hover:scale-105">
+                  {feature.icon}
+                </div>
+                <p className="mt-5 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{feature.eyebrow}</p>
+                <h3 className="mt-2 text-xl font-bold tracking-[-0.03em] text-[var(--text)]">{feature.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-[var(--muted)]">{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   )

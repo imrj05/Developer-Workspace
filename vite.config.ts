@@ -1,14 +1,20 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-
+import tailwindcss from '@tailwindcss/vite'
+import path from 'path'
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
+  server: {
+    host: '0.0.0.0',
+    allowedHosts: true
+  },
   preview: {
-    allowedHosts: ['developer-workspace.rajeshwarkashyap.in'],
+    host: '0.0.0.0',
+    allowedHosts: true
   },
-  build: {
-    rollupOptions: {
-      input: ['index.html', '404.html'],
-    },
-  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src')
+    }
+  }
 })

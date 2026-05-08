@@ -1,8 +1,8 @@
 {
-  "name": "password-generator-extension",
+  "name": "developer-workspace",
   "type": "module",
   "version": "1.0.1",
-  "description": "Landing page for a privacy-first password generator",
+  "description": "Customizable Chrome new-tab developer workspace with bookmarks, weather, GitHub activity, notes, and focus tools.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

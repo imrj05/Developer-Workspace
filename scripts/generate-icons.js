@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Generates PNG icon files for the extension at 16, 32, 48, and 128 px.
- * The icon is a dark rounded square with a bold white "P" — no external deps,
+ * Generates PNG icon files for the extension at 16, 32, 48, 128, and 512 px.
+ * The icon is a dark workspace tile with a terminal prompt and status dots — no external deps,
  * only Node built-ins (zlib, fs, path).
  */
 
@@ -143,75 +143,51 @@ function fillRoundRect(ctx, x, y, w, h, r, R, G, B, A) {
   }
 }
 
-// ── "P" glyph renderer ─────────────────────────────────────────────────────
-/**
- * Draws a bold geometric "P" into the canvas.
- * All measurements are relative to the canvas size.
- *
- * Strategy:
- *   1. Vertical stem: a thick rounded rectangle on the left side.
- *   2. Bowl: a filled half-circle on the right side of the top half.
- *   3. Subtract the inner hollow of the bowl with the background colour.
- */
-function drawP(ctx, size) {
+// ── Developer Workspace icon renderer ───────────────────────────────────────
+function drawWorkspaceIcon(ctx, size) {
   const S = size
-  // colour palette
-  const BG  = [22,  22,  26,  255]  // near-black #16161a
-  const FG  = [255, 255, 255, 255]  // white
+  const BG = [12, 17, 29, 255]
+  const PANEL = [22, 31, 49, 255]
+  const ACCENT = [56, 189, 248, 255]
+  const ACCENT_2 = [168, 85, 247, 255]
+  const FG = [248, 250, 252, 255]
+  const MUTED = [148, 163, 184, 255]
 
-  // background rounded square
   const radius = Math.round(S * 0.18)
   fillRoundRect(ctx, 0, 0, S, S, radius, ...BG)
 
-  // --- Glyph geometry (tuned for visual balance) ---
-  const padL  = Math.round(S * 0.22)   // left edge of stem
-  const padT  = Math.round(S * 0.15)   // top of P
-  const padB  = Math.round(S * 0.15)   // bottom of P
-  const stemW = Math.round(S * 0.18)   // width of vertical stem
-  const glyphH = S - padT - padB
+  const pad = Math.round(S * 0.15)
+  fillRoundRect(ctx, pad, pad, S - pad * 2, S - pad * 2, Math.round(S * 0.08), ...PANEL)
 
-  // Outer bowl: semicircle centred on the right of the top half
-  const bowlCY  = padT + Math.round(glyphH * 0.30)
-  const bowlR   = Math.round(glyphH * 0.295)
-  const bowlCX  = padL + stemW          // centre X at stem right edge
+  const barH = Math.max(1, Math.round(S * 0.035))
+  fillRect(ctx, pad, Math.round(S * 0.31), S - pad * 2, barH, ...MUTED)
 
-  // 1. Draw full outer bowl (solid white circle, right half)
-  for (let py = padT; py <= bowlCY + bowlR + 1; py++) {
-    for (let px = bowlCX; px <= bowlCX + bowlR + 1; px++) {
-      const dx = px - bowlCX, dy = py - bowlCY
-      const dist = Math.sqrt(dx * dx + dy * dy)
-      const alpha = Math.max(0, Math.min(1, bowlR - dist + 0.5))
-      if (alpha > 0) ctx.set(px, py, ...FG.slice(0, 3), Math.round(255 * alpha))
-    }
-  }
+  fillCircleAA(ctx, Math.round(S * 0.27), Math.round(S * 0.23), Math.max(1, S * 0.025), ...ACCENT)
+  fillCircleAA(ctx, Math.round(S * 0.35), Math.round(S * 0.23), Math.max(1, S * 0.025), ...ACCENT_2)
+  fillCircleAA(ctx, Math.round(S * 0.43), Math.round(S * 0.23), Math.max(1, S * 0.025), ...MUTED)
 
-  // 2. Fill the rectangle bridging stem to bowl centre (top chunk)
-  fillRect(ctx, padL, padT, stemW + 1, bowlR * 2 + 1, ...FG)
+  const stroke = Math.max(2, Math.round(S * 0.07))
+  const x1 = Math.round(S * 0.29)
+  const y1 = Math.round(S * 0.48)
+  const x2 = Math.round(S * 0.43)
+  const y3 = Math.round(S * 0.68)
 
-  // 3. Hollow: inner bowl (background colour)
-  const holeR  = Math.round(bowlR * 0.52)
-  for (let py = padT; py <= bowlCY + bowlR + 1; py++) {
-    for (let px = bowlCX; px <= bowlCX + bowlR + 1; px++) {
-      const dx = px - bowlCX, dy = py - bowlCY
-      const dist = Math.sqrt(dx * dx + dy * dy)
-      const alpha = Math.max(0, Math.min(1, holeR - dist + 0.5))
-      if (alpha > 0) ctx.set(px, py, ...BG.slice(0, 3), Math.round(255 * alpha))
-    }
-  }
+  fillRect(ctx, x1, y1, stroke, stroke, ...FG)
+  fillRect(ctx, x1 + stroke, y1 + stroke, stroke, stroke, ...FG)
+  fillRect(ctx, x1, y3, stroke, stroke, ...FG)
+  fillRect(ctx, x1 + stroke, y3 - stroke, stroke, stroke, ...FG)
 
-  // 4. Vertical stem (drawn last so it's always solid)
-  const stemR = Math.round(stemW * 0.5)
-  fillRoundRect(ctx, padL, padT, stemW, glyphH, stemR, ...FG)
+  fillRect(ctx, x2 + Math.round(S * 0.08), y3, Math.round(S * 0.22), stroke, ...ACCENT)
 }
 
 // ── Main ───────────────────────────────────────────────────────────────────
-const SIZES = [16, 32, 48, 128]
+const SIZES = [16, 32, 48, 128, 512]
 
 fs.mkdirSync(OUT_DIR, { recursive: true })
 
 for (const size of SIZES) {
   const ctx = createCanvas(size, size)
-  drawP(ctx, size)
+  drawWorkspaceIcon(ctx, size)
   const png = encodePNG(size, size, ctx.pixels)
   const outPath = path.join(OUT_DIR, `icon${size}.png`)
   fs.writeFileSync(outPath, png)

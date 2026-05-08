@@ -1,68 +1,67 @@
 import React, { useEffect, useState } from 'react'
 import {
-  ClipboardCheck,
-  DatabaseZap,
-  Fingerprint,
+  Bookmark,
+  Chrome,
+  Clock,
+  CloudSun,
   Github,
-  KeyRound,
-  LockKeyhole,
   Moon,
-  RefreshCw,
-  ShieldCheck,
+  Palette,
+  Search,
   Sparkles,
   Sun,
-  WandSparkles
+  Terminal
 } from 'lucide-react'
 import appIcon from '../icons/icon128.png'
 
 const product = {
-  name: 'SecurePass Generator',
-  description: 'Generate strong random passwords, memorable passphrases, and PINs locally with a privacy-first design.'
+  name: 'Developer Workspace',
+  description: 'Transform your Chrome new tab into a focused developer dashboard with bookmarks, tools, weather, and customization.'
 }
 
 const featureGroups = [
   {
-    icon: ShieldCheck,
-    title: 'Cryptographic Generation',
-    description: 'Creates passwords locally with the Web Crypto API and rejection sampling, avoiding weak randomness and modulo bias.'
+    icon: Clock,
+    title: 'Clock And Weather',
+    description: 'Customizable digital clock with 12/24-hour formats, optional seconds, multiple timezones, and local weather with Celsius or Fahrenheit.'
   },
   {
-    icon: WandSparkles,
-    title: 'Multiple Password Modes',
-    description: 'Supports random passwords, memorable passphrases, and numeric PINs for different sign-in and recovery scenarios.'
+    icon: Bookmark,
+    title: 'Smart Bookmarks',
+    description: 'Organize Chrome bookmarks by category, add custom folders, search quickly, and surface most-visited sites with favicons.'
   },
   {
-    icon: RefreshCw,
-    title: 'Custom Controls',
-    description: 'Tune length, numbers, capitalization, symbols, and curated or custom symbol sets before generating credentials.'
+    icon: Terminal,
+    title: 'Developer Tools Panel',
+    description: 'Track GitHub activity, monitor API status, jump to docs, take terminal-style notes, and keep focus with a Pomodoro timer.'
   },
   {
-    icon: ClipboardCheck,
-    title: 'Copy-Ready Output',
-    description: 'Presents generated credentials clearly so users can copy and use them only when they choose.'
+    icon: Palette,
+    title: 'Deep Customization',
+    description: 'Switch dark or light mode, choose backgrounds, upload your own image, collapse sections, and toggle components on or off.'
   },
   {
-    icon: DatabaseZap,
-    title: 'Local History Ready',
-    description: 'Designed around local credential workflows, with room for encrypted history and clear-on-close controls.'
+    icon: Chrome,
+    title: 'Chrome Integration',
+    description: 'Uses Chrome bookmarks, history, most-visited data, search, notifications, and storage sync for a native extension workflow.'
   },
   {
-    icon: Fingerprint,
-    title: 'Privacy-First Foundation',
-    description: 'Keeps the product focused on local execution, browser security APIs, and minimal data handling.'
+    icon: Search,
+    title: 'Fast New-Tab Search',
+    description: 'Filter bookmarks, switch between bookmarks and most-visited sites, and search through Chrome’s default search engine.'
   }
 ]
 
 const stats = [
-  { value: '3', label: 'Generator modes' },
-  { value: '4-50', label: 'Random password length' },
-  { value: '4-12', label: 'PIN digits' }
+  { value: '5', label: 'Workspace modules' },
+  { value: 'Sync', label: 'Chrome storage' },
+  { value: 'New tab', label: 'Extension surface' }
 ]
 
 const privacyPoints = [
-  'No analytics, telemetry, or remote password processing',
-  'Preferences stay on the local device',
-  'Clipboard writes only happen after an explicit user action'
+  'Built as a Chrome new-tab replacement',
+  'Uses Chrome APIs for bookmarks, history, search, and sync',
+  'Vanilla JavaScript foundation for fast extension performance'
 ]
 
 const legalDocuments = {
@@ -70,27 +69,27 @@ const legalDocuments = {
     eyebrow: 'Privacy Policy',
     title: 'Privacy Policy',
     updated: 'Last updated: May 07, 2026',
-    intro: 'SecurePass Generator is designed to generate credentials locally in your browser. This policy explains what information the website handles and how it is protected.',
+    intro: 'Developer Workspace is designed to personalize your Chrome new tab with developer-focused tools, bookmarks, weather, and settings. This policy explains what information the extension handles and how it is protected.',
     sections: [
       {
         title: 'Information We Handle',
-        body: 'The website may store your preferences and password generation settings locally if those features are enabled. Generated passwords are not sent to us or any external server.'
+        body: 'The extension may store workspace preferences, bookmark organization, notes, background choices, and enabled feature settings locally or through Chrome sync when those features are enabled.'
       },
       {
-        title: 'Local Storage And Encryption',
-        body: 'Settings are intended to stay on your device. Any future history or saved credential features should be local-first and encrypted before being saved.'
+        title: 'Local Storage And Sync',
+        body: 'Settings are intended to stay in your browser profile and may sync through Chrome storage depending on your browser configuration.'
       },
       {
         title: 'Network Activity',
-        body: 'The website does not use analytics, telemetry, advertising trackers, or remote password processing. Password generation runs locally with browser cryptography APIs.'
+        body: 'The extension is designed around browser APIs and does not require analytics or advertising trackers. Weather, GitHub, or API-status integrations may request data only when those features are configured or enabled.'
       },
       {
-        title: 'Clipboard And Autofill',
-        body: 'Clipboard actions happen only after you explicitly use the related controls. The website does not need account passwords to leave your browser.'
+        title: 'Chrome Data Access',
+        body: 'Bookmark, history, most-visited, search, notification, and storage features use Chrome extension APIs so the workspace can show and organize your browser data.'
       },
       {
         title: 'Your Control',
-        body: 'You can clear locally stored website data from your browser at any time. If optional local history features are added, they should remain user-controlled.'
+        body: 'You can disable workspace components, reset settings, remove custom data, or clear extension storage through Chrome at any time.'
       },
       {
         title: 'Contact',
@@ -102,23 +101,23 @@ const legalDocuments = {
     eyebrow: 'Terms And Conditions',
     title: 'Terms and Conditions',
     updated: 'Last updated: May 07, 2026',
-    intro: 'These terms describe the conditions for using SecurePass Generator. By using this website, you agree to use it responsibly and understand its limitations.',
+    intro: 'These terms describe the conditions for using Developer Workspace. By using this extension, you agree to use it responsibly and understand its limitations.',
     sections: [
       {
-        title: 'Use Of The Website',
-        body: 'SecurePass Generator is provided to help create strong credentials locally. You are responsible for deciding where and how to use generated passwords.'
+        title: 'Use Of The Extension',
+        body: 'Developer Workspace is provided to help organize your new tab, bookmarks, notes, and developer utilities. You are responsible for deciding which integrations and browser permissions to enable.'
       },
       {
         title: 'No Warranty',
-        body: 'The website is provided as-is without warranties of any kind. We do not guarantee uninterrupted operation, compatibility with every browser, or complete protection from all security risks.'
+        body: 'The extension is provided as-is without warranties of any kind. We do not guarantee uninterrupted operation, compatibility with every browser, or availability of third-party data sources.'
       },
       {
         title: 'User Responsibility',
-        body: 'You are responsible for keeping your device, browser profile, operating system, and online accounts secure. Strong passwords are only one part of account security.'
+        body: 'You are responsible for keeping your device, browser profile, operating system, and connected accounts secure.'
       },
       {
         title: 'Acceptable Use',
-        body: 'Do not use the website for illegal activity, unauthorized access, credential theft, or any activity that violates another service provider’s terms.'
+        body: 'Do not use the extension for illegal activity, unauthorized access, scraping, abuse of third-party services, or any activity that violates another service provider’s terms.'
       },
       {
         title: 'Changes To These Terms',
@@ -138,7 +137,7 @@ const LegalPage = ({ document }) => (
       <header className="flex items-center justify-between gap-4 border-b border-border/80 pb-6">
         <a href="/" className="flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-sm border border-border/80 bg-card shadow-sm">
-            <img src={appIcon} alt="SecurePass Generator" className="h-7 w-7 object-contain" />
+            <img src={appIcon} alt="Developer Workspace" className="h-7 w-7 object-contain" />
           </div>
           <div>
             <p className="text-sm font-semibold tracking-tight">{product.name}</p>
@@ -210,11 +209,11 @@ const App = () => {
         <header className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-sm border border-border/80 bg-card shadow-sm">
-              <img src={appIcon} alt="SecurePass Generator" className="h-7 w-7 object-contain" />
+              <img src={appIcon} alt="Developer Workspace" className="h-7 w-7 object-contain" />
             </div>
             <div>
               <p className="text-sm font-semibold tracking-tight">{product.name}</p>
-              <p className="text-xs text-muted-foreground">Privacy-first password landing page</p>
+              <p className="text-xs text-muted-foreground">Developer new-tab workspace</p>
             </div>
           </div>
 
@@ -231,16 +230,16 @@ const App = () => {
         <div className="grid flex-1 items-center gap-10 py-12 lg:grid-cols-[1.08fr_0.92fr] lg:py-16">
           <div className="space-y-8">
             <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary">
-              <LockKeyhole size={14} />
-              Local-first password security
+              <CloudSun size={14} />
+              Productive new-tab dashboard
             </div>
 
             <div className="max-w-3xl space-y-5">
               <h1 className="text-4xl font-semibold tracking-[-0.06em] text-foreground sm:text-5xl lg:text-6xl">
-                Generate, save, and autofill strong passwords without sending them anywhere.
+                Turn every new tab into a focused developer workspace.
               </h1>
               <p className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-                SecurePass Generator is a privacy-first password tool concept for creating random passwords, memorable passphrases, and PINs with local-only security principles.
+                Developer Workspace brings clocks, weather, bookmarks, GitHub activity, API status, notes, Pomodoro focus, and Chrome search into one customizable dashboard.
               </p>
             </div>
 
@@ -259,7 +258,7 @@ const App = () => {
               <div className="mb-5 flex items-center justify-between gap-3">
                 <div>
                   <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">Feature Overview</p>
-                  <h2 className="mt-1 text-xl font-semibold tracking-[-0.04em]">Built for everyday credentials</h2>
+                  <h2 className="mt-1 text-xl font-semibold tracking-[-0.04em]">Extension features</h2>
                 </div>
                 <Sparkles className="text-primary" size={22} />
               </div>
@@ -286,11 +285,11 @@ const App = () => {
         <section className="grid gap-4 border-t border-border/80 py-6 md:grid-cols-[0.9fr_1.1fr] md:items-center">
           <div>
             <div className="flex items-center gap-2 text-sm font-semibold">
-              <KeyRound size={17} className="text-primary" />
-              Privacy And Security
+              <Chrome size={17} className="text-primary" />
+              Chrome-Native Workspace
             </div>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              The website is designed around local execution, explicit user actions, and minimal persisted data.
+              The extension is built around Chrome APIs, sync-friendly settings, fast local UI, and a responsive new-tab experience.
             </p>
           </div>
 
@@ -309,7 +308,7 @@ const App = () => {
             <a href="/privacy" className="text-foreground transition-colors hover:text-primary">Privacy Policy</a>
             <a href="/terms" className="text-foreground transition-colors hover:text-primary">Terms</a>
             <a
-              href="https://github.com/work-rjkashyap/password-ganerator"
+              href="https://github.com/imrj05/Developer-Workspace"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-foreground transition-colors hover:text-primary"

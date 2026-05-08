@@ -11,12 +11,16 @@ export default function Preview() {
         <div className="p-2 sm:p-3">
           <img
             src="/assets/screenshot-light.png"
-            alt="Developer Workspace screenshot"
+            alt="Developer Workspace light theme screenshot showing bookmarks, GitHub context, notes, and weather widgets"
+            width={2936}
+            height={1420}
             className="w-full rounded-xl border border-border object-cover dark:hidden"
           />
           <img
             src="/assets/screenshot-dark.png"
-            alt="Developer Workspace screenshot"
+            alt="Developer Workspace dark theme screenshot showing bookmarks, GitHub context, notes, and weather widgets"
+            width={2936}
+            height={1420}
             className="hidden w-full rounded-xl border border-white/10 object-cover dark:block"
           />
         </div>

@@ -14,17 +14,28 @@
     <meta property="og:url" content="https://developer-workspace.blogspot.com" />
     <meta property="og:title" content="Developer Workspace — Enhance Your Development Workflow" />
     <meta property="og:description" content="Boost your productivity with Developer Workspace Chrome extension." />
-    <meta property="og:image" content="https://developer-workspace.blogspot.com/assets/og-image.png" />
-
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Developer Workspace — Enhance Your Development Workflow" />
     <meta name="twitter:description" content="Boost your productivity with Developer Workspace Chrome extension." />
-    <meta name="twitter:image" content="https://developer-workspace.blogspot.com/assets/og-image.png" />
 
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png" />
     <link rel="manifest" href="/site.webmanifest" />
+    <script>
+      (function () {
+        try {
+          var theme = localStorage.getItem('theme');
+          if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {
+          // localStorage may be restricted; leave class as-is
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

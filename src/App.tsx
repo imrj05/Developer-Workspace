@@ -28,21 +28,14 @@ function ThemeToggle({ dark, onToggle }: { dark: boolean; onToggle: () => void }
 }
 
 function App() {
-  const [dark, setDark] = useState(true)
-
-  useEffect(() => {
-    const stored = localStorage.getItem('theme')
-    if (stored) {
-      setDark(stored === 'dark')
-    } else {
-      setDark(window.matchMedia('(prefers-color-scheme: dark)').matches)
-    }
-  }, [])
+  const [dark, setDark] = useState(() => {
+    if (typeof document === 'undefined') return true
+    return document.documentElement.classList.contains('dark')
+  })
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark)
     localStorage.setItem('theme', dark ? 'dark' : 'light')
-    document.title = 'Developer Workspace — Enhance Your Development Workflow'
   }, [dark])
 
   return (

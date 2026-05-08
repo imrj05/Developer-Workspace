@@ -41,54 +41,36 @@ const features = [
   },
 ]
 
-const proofPoints = [
-  { label: 'New tab utility', value: 'All-in-one', detail: 'Bookmarks, notes, timers, weather, and developer signals in one surface.' },
-  { label: 'Setup time', value: '< 2 min', detail: 'Install, pin your tools, and turn the default new tab into a real workspace.' },
-  { label: 'Built for', value: 'Builders', detail: 'Designed for developers who open dozens of tabs and need signal fast.' },
-]
-
 export default function Features() {
   return (
-    <section className="relative px-5 py-20 sm:px-8 sm:py-24 lg:px-12" id="features">
-      <div className="absolute inset-x-0 top-0 -z-10 h-px bg-gradient-to-r from-transparent via-[var(--border)] to-transparent" />
-      <div className="mx-auto max-w-7xl">
-        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+    <section className="px-5 py-16 sm:px-8 sm:py-20 lg:px-12" id="features">
+      <div className="mx-auto max-w-6xl border-t border-border pt-16 sm:pt-20">
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <div className="mb-5 inline-flex rounded-full border border-[var(--border)] bg-[color:color-mix(in_srgb,var(--surface)_78%,transparent)] px-3 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-[var(--accent)]">Why it hits harder</div>
-            <h2 className="max-w-lg text-3xl font-black leading-[1.02] tracking-[-0.055em] text-[var(--text)] sm:text-5xl">
-              Built like a startup product, not a utility page.
+            <p className="text-xs font-medium uppercase tracking-[0.28em] text-accent">Features</p>
+            <h2 className="mt-4 max-w-xl text-3xl font-semibold leading-tight tracking-[-0.055em] text-foreground sm:text-5xl">
+              Everything useful, nothing noisy.
             </h2>
-            <p className="mt-5 max-w-xl text-base leading-8 text-[var(--muted)] sm:text-lg">
-              Every panel is tuned to reduce friction in the first 30 seconds of your browsing session.
-              Less hunting, less tab drift, more shipping.
-            </p>
-
-            <div className="mt-8 grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
-              {proofPoints.map((point) => (
-                <div key={point.label} className="rounded-[1.5rem] border border-[var(--border)] bg-[color:color-mix(in_srgb,var(--surface)_90%,transparent)] p-5 shadow-[var(--shadow-sm)] backdrop-blur">
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">{point.label}</p>
-                  <p className="mt-2 text-2xl font-black tracking-[-0.05em] text-[var(--text)] sm:text-3xl">{point.value}</p>
-                  <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{point.detail}</p>
-                </div>
-              ))}
-            </div>
           </div>
+          <p className="max-w-md text-sm leading-7 text-muted sm:text-base">
+            A focused workspace for the first minute of every browsing session: open, orient, and keep moving.
+          </p>
+        </div>
 
-          <div className="grid gap-5 sm:grid-cols-2">
-            {features.map((feature) => (
-              <div
-                className="group rounded-[1.5rem] border border-[var(--border)] bg-[color:color-mix(in_srgb,var(--surface)_92%,transparent)] p-6 shadow-[var(--shadow-sm)] backdrop-blur transition hover:-translate-y-1 hover:border-[var(--accent)]/45 hover:shadow-[var(--shadow-lg)] sm:rounded-[1.75rem]"
-                key={feature.title}
-              >
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--accent)]/20 to-fuchsia-500/15 text-[var(--accent)] transition group-hover:scale-105">
-                  {feature.icon}
-                </div>
-                <p className="mt-5 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{feature.eyebrow}</p>
-                <h3 className="mt-2 text-xl font-bold tracking-[-0.03em] text-[var(--text)]">{feature.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-[var(--muted)]">{feature.description}</p>
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:mt-12">
+          {features.map((feature) => (
+            <div
+              className="group rounded-2xl border border-border bg-surface p-6 transition hover:border-accent/50 sm:p-7"
+              key={feature.title}
+            >
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-border text-accent transition group-hover:border-accent/50">
+                {feature.icon}
               </div>
-            ))}
-          </div>
+              <p className="mt-6 text-xs font-medium uppercase tracking-[0.2em] text-muted">{feature.eyebrow}</p>
+              <h3 className="mt-2 text-xl font-semibold tracking-[-0.035em] text-foreground">{feature.title}</h3>
+              <p className="mt-3 text-sm leading-7 text-muted">{feature.description}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>

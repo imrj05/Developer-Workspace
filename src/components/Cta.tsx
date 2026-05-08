@@ -1,27 +1,29 @@
 export default function Cta() {
   return (
-    <section className="px-5 pb-20 sm:px-8 sm:pb-24 lg:px-12" id="cta">
-      <div className="mx-auto max-w-7xl">
-        <div className="relative overflow-hidden rounded-[1.75rem] border border-[var(--border)] bg-[linear-gradient(135deg,rgba(99,102,241,0.18),rgba(236,72,153,0.14),rgba(34,211,238,0.12))] px-6 py-12 shadow-[var(--shadow-lg)] sm:rounded-[2rem] sm:px-10 sm:py-14 lg:px-14">
-          <div className="absolute inset-y-0 right-0 hidden w-1/3 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.24),_transparent_60%)] lg:block" />
-          <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-            <div className="max-w-2xl">
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--accent)]">Ready to switch on</p>
-              <h2 className="mt-3 text-3xl font-black leading-[1.02] tracking-[-0.055em] text-[var(--text)] sm:text-5xl">
-                Turn every new tab into your team's sharpest launch screen.
-              </h2>
-              <p className="mt-4 max-w-xl text-base leading-7 text-[var(--muted)] sm:text-lg">
-                Install Developer Workspace and start each session with high-value context instead of a blank page.
-              </p>
-            </div>
+    <section className="px-5 py-16 sm:px-8 sm:py-20 lg:px-12" id="cta">
+      <div className="mx-auto max-w-6xl">
+        <div className="rounded-2xl border border-border bg-surface px-6 py-10 text-center sm:px-10 sm:py-14">
+          <p className="text-xs font-medium uppercase tracking-[0.28em] text-accent">Ready when you are</p>
+          <h2 className="mx-auto mt-4 max-w-2xl text-3xl font-semibold leading-tight tracking-[-0.055em] text-foreground sm:text-5xl">
+            Make your new tab worth opening.
+          </h2>
+          <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-muted">
+            Install Developer Workspace and start each browser session with the tools you already reach for.
+          </p>
 
-            <div className="flex flex-col gap-3 sm:flex-row lg:flex-col lg:items-end">
-              <a href="https://ggl.link/dev-workspace" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[var(--text)] px-6 py-3 text-sm font-bold text-[var(--bg)] shadow-[0_20px_50px_rgba(15,23,42,0.22)] transition hover:-translate-y-0.5 dark:bg-white dark:text-slate-950" target="_blank" rel="noopener noreferrer">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z"/></svg>
-                Add to Chrome
-              </a>
-              <span className="text-sm text-[var(--muted)]">Free to install. Built for daily use.</span>
-            </div>
+          <div className="mt-8 flex flex-col items-center gap-3">
+            <a href="https://ggl.link/dev-workspace" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-page transition hover:-translate-y-0.5 hover:opacity-90" target="_blank" rel="noopener noreferrer">
+              <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="10" fill="#fff" />
+                <path fill="#ea4335" d="M12 2a10 10 0 0 1 8.66 5H12a5 5 0 0 0-4.33 2.5L4.2 3.5A9.96 9.96 0 0 1 12 2Z" />
+                <path fill="#fbbc04" d="M4.2 3.5 7.67 9.5A5 5 0 0 0 12 17l-3.46 6A10 10 0 0 1 4.2 3.5Z" />
+                <path fill="#34a853" d="M8.54 23 12 17a5 5 0 0 0 4.33-2.5h6.93A10 10 0 0 1 8.54 23Z" />
+                <path fill="#4285f4" d="M23.26 14.5h-6.93A5 5 0 0 0 12 7h8.66A9.95 9.95 0 0 1 23.26 14.5Z" />
+                <circle cx="12" cy="12" r="3" fill="#4285f4" />
+              </svg>
+              Add to Chrome
+            </a>
+            <span className="text-sm text-muted">Free install. No account required.</span>
           </div>
         </div>
       </div>

@@ -13,26 +13,23 @@ const legalLinks = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-[var(--border)] px-6 py-10 sm:px-8 lg:px-12" id="contact">
-      <div className="mx-auto flex max-w-7xl flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+    <footer className="border-t border-border px-5 py-8 sm:px-8 lg:px-12" id="contact">
+      <div className="mx-auto flex max-w-6xl flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-lg font-semibold tracking-[-0.03em] text-[var(--text)]">Developer Workspace</p>
-          <p className="mt-2 max-w-md text-sm leading-6 text-[var(--muted)]">
-            A startup-style new tab experience for developers who want speed, focus, and better defaults.
-          </p>
-          <p className="mt-3 text-sm text-[var(--muted)]">&copy; {new Date().getFullYear()} Developer Workspace.</p>
+          <p className="text-sm font-semibold tracking-[-0.02em] text-foreground">Developer Workspace</p>
+          <p className="mt-1 text-sm text-muted">&copy; {new Date().getFullYear()} Developer Workspace.</p>
         </div>
 
-        <div className="flex flex-col gap-4 lg:items-end">
-          <div className="flex flex-wrap gap-4 text-sm text-[var(--muted)]">
+        <div className="flex flex-col gap-4 sm:items-end">
+          <div className="flex flex-wrap gap-4 text-sm text-muted">
             {legalLinks.map((link) => (
-              <Link key={link.label} to={link.href} className="transition hover:text-[var(--accent)]">
+              <Link key={link.label} to={link.href} className="transition hover:text-accent">
                 {link.label}
               </Link>
             ))}
           </div>
 
-          <div className="flex items-center gap-4 text-[var(--muted)]">
+          <div className="flex items-center gap-4 text-muted">
             {socialLinks.map((link) => (
               <a
                 key={link.label}
@@ -40,7 +37,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={link.label}
-                className="transition hover:text-[var(--accent)]"
+                className="transition hover:text-accent"
               >
                 {link.icon}
               </a>

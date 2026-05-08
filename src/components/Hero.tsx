@@ -1,5 +1,11 @@
 import ChromeIcon from './icons/ChromeIcon'
 
+const stats = [
+  { value: '12/24h', label: 'Clock formats' },
+  { value: 'Chrome APIs', label: 'Bookmarks, history, search' },
+  { value: 'Focus mode', label: 'Distraction-free layout' },
+]
+
 function GitHubIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -10,42 +16,78 @@ function GitHubIcon() {
 
 export default function Hero() {
   return (
-    <section className="mx-auto max-w-6xl px-5 pt-16 pb-12 text-center sm:px-8 sm:pt-20 lg:pt-24">
-      <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-muted">
-        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-        Chrome Extension for Developers
-      </span>
+    <section className="grid items-center gap-10 py-12 lg:grid-cols-[1.08fr_0.92fr] lg:py-16">
+      <div>
+        <span className="inline-flex items-center gap-2 rounded-full border border-accent/20 bg-accent/10 px-3 py-1.5 text-xs font-medium text-accent">
+          <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+          New tab workspace for developers
+        </span>
 
-      <h1 className="mx-auto mt-6 max-w-3xl text-4xl font-semibold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-        A calmer new tab for your development workflow.
-      </h1>
+        <h1 className="mt-6 max-w-3xl text-4xl font-semibold tracking-[-0.06em] text-foreground sm:text-5xl lg:text-6xl">
+          Turn every new tab into a focused developer command center.
+        </h1>
 
-      <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
-        Developer Workspace keeps bookmarks, GitHub context, notes, weather, and focus tools in one clean start screen.
-      </p>
+        <p className="mt-5 max-w-2xl text-base leading-7 text-muted sm:text-lg">
+          Developer Workspace brings search, smart bookmarks, pinned apps, GitHub context, tasks, snippets, dev shortcuts, weather, and focus tools into one calm Chrome start screen.
+        </p>
 
-      <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-        <a
-          href="https://ggl.link/dev-workspace"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex h-10 items-center gap-2 rounded-full bg-foreground px-5 text-sm font-semibold text-page transition hover:opacity-90 hover:-translate-y-0.5"
-        >
-          <ChromeIcon />
-          Add to Chrome
-        </a>
-        <a
-          href="https://git.new/dev-workspace-gh"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex h-10 items-center gap-2 rounded-full border border-border bg-surface px-5 text-sm font-semibold text-foreground transition hover:border-accent hover:text-accent hover:-translate-y-0.5"
-        >
-          <GitHubIcon />
-          Source Code
-        </a>
+        <div className="mt-8 flex flex-wrap items-center gap-3">
+          <a
+            href="https://ggl.link/dev-workspace"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-10 items-center gap-2 rounded-sm bg-foreground px-5 text-sm font-semibold text-page transition hover:opacity-90 hover:-translate-y-0.5"
+          >
+            <ChromeIcon />
+            Add to Chrome
+          </a>
+          <a
+            href="https://github.com/imrj05/Developer-Workspace"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-10 items-center gap-2 rounded-sm border border-border bg-surface px-5 text-sm font-semibold text-foreground transition hover:border-accent hover:text-accent hover:-translate-y-0.5"
+          >
+            <GitHubIcon />
+            Source Code
+          </a>
+        </div>
+
+        <div className="mt-8 grid gap-3 sm:grid-cols-3">
+          {stats.map((item) => (
+            <div key={item.label} className="rounded-sm border border-border bg-surface/80 p-4 shadow-sm">
+              <div className="font-mono text-xl font-semibold tracking-[-0.04em] text-foreground">{item.value}</div>
+              <div className="mt-1 text-xs text-muted">{item.label}</div>
+            </div>
+          ))}
+        </div>
+
+        <p className="mt-4 text-sm text-muted">Free to install. Private by default. Built for daily developer routines.</p>
       </div>
 
-      <p className="mt-4 text-sm text-muted">Free to install. Private by default. Built for daily use.</p>
+      <div className="rounded-sm border border-border bg-surface p-4 shadow-xl shadow-black/5 dark:shadow-black/20">
+        <div className="rounded-sm border border-border bg-page/60 p-4">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted">Workspace Stack</p>
+              <h2 className="mt-1 text-xl font-semibold tracking-[-0.04em]">Everything on the first tab</h2>
+            </div>
+            <span className="rounded-sm bg-accent/10 px-2 py-1 font-mono text-xs font-semibold text-accent">/</span>
+          </div>
+          <div className="grid gap-3">
+            {[
+              ['Search + Suggestions', 'Chrome search with bookmark and pinned app suggestions.'],
+              ['Planner + Focus', 'Quick actions, focus mode, task planner, and shortcuts help.'],
+              ['Dev Utilities', 'GitHub activity, API status, quick docs, Pomodoro, and terminal notes.'],
+              ['Personal Toolkit', 'Pinned apps, snippets, dev shortcuts, recent activity, and custom backgrounds.'],
+            ].map(([title, description]) => (
+              <article key={title} className="rounded-sm border border-border bg-surface/70 p-4 transition hover:border-accent/35">
+                <h3 className="text-sm font-semibold">{title}</h3>
+                <p className="mt-1 text-sm leading-6 text-muted">{description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
     </section>
   )
 }

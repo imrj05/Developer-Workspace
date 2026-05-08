@@ -1,15 +1,21 @@
 export default function Footer() {
   return (
-    <footer className="border-t border-border px-5 py-8 sm:px-8">
-      <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
+    <footer className="border-t border-border py-5">
+      <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
         <div>
           <p className="text-sm font-semibold tracking-tight text-foreground">Developer Workspace</p>
           <p className="mt-1 text-sm text-muted">© {new Date().getFullYear()} Developer Workspace.</p>
         </div>
 
-        <div className="flex items-center gap-5 text-muted">
+        <div className="flex flex-wrap items-center gap-5 text-sm text-muted">
+          <a href="/privacy" className="transition hover:text-accent">
+            Privacy Policy
+          </a>
+          <a href="/terms" className="transition hover:text-accent">
+            Terms
+          </a>
           <a
-            href="https://git.new/rj-github"
+            href="https://github.com/imrj05/Developer-Workspace"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub"

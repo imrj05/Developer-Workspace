@@ -253,7 +253,7 @@ export function showNotification(title: string, body: string): Promise<void> {
     }
     chrome.notifications.create({
       type: 'basic',
-      iconUrl: 'icons/icon128.png',
+      iconUrl: 'icons/icon-128.png',
       title,
       message: body
     }, () => {

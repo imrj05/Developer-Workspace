@@ -72,16 +72,18 @@ export function GithubActivity() {
       </div>
 
       {!settings.githubActivityCollapsed && (
-        <div className="max-h-48 space-y-2 overflow-y-auto pr-1">
+        <div className="dev-panel-github-activity space-y-2 overflow-y-auto pr-1">
           {loading ? (
             <p className="text-xs text-[var(--muted)]">Loading…</p>
-          ) : error || !settings.githubUsername ? (
-            <p className="text-xs text-[var(--muted)]">Unable to load activity</p>
+          ) : !settings.githubUsername || settings.githubUsername === 'github' ? (
+            <p className="text-xs text-[var(--muted)]">Set your GitHub username in Settings → Integrations.</p>
+          ) : error ? (
+            <p className="text-xs text-[var(--muted)]">Unable to load activity. Check your username in settings.</p>
           ) : events.length === 0 ? (
             <p className="text-xs text-[var(--muted)]">No recent activity</p>
           ) : (
-            events.slice(0, 10).map((event, i) => (
-              <div key={i} className="rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)]/55 p-3 text-xs">
+            events.map((event, i) => (
+              <div key={i} className="rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)]/55 p-2.5 text-xs">
                 <div className="flex min-w-0 items-start justify-between gap-2">
                   <span className="min-w-0 flex-1 truncate font-medium">{event.description}</span>
                   <span className="shrink-0 text-[var(--muted)]">{event.time}</span>

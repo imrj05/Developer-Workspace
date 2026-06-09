@@ -61,6 +61,24 @@ export function setStorage<T extends Record<string, unknown>>(data: T, area: Sto
   })
 }
 
+export function removeStorage(keys: string[], area: StorageAreaName = 'sync'): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (typeof chrome === 'undefined' || !chrome.storage) {
+      resolve()
+      return
+    }
+
+    getStorageArea(area).remove(keys, () => {
+      if (chrome.runtime.lastError) {
+        reject(new Error(chrome.runtime.lastError.message))
+        return
+      }
+
+      resolve()
+    })
+  })
+}
+
 export function getBookmarks(): Promise<chrome.bookmarks.BookmarkTreeNode[]> {
   return new Promise((resolve) => {
     if (typeof chrome === 'undefined' || !chrome.bookmarks) {
@@ -90,6 +108,54 @@ interface HistoryItem {
   visitCount?: number
   title?: string
   lastVisitTime?: number
+}
+
+export interface VisitedSite {
+  url: string
+  title: string
+  visitCount: number
+}
+
+function isTrackableUrl(url?: string) {
+  if (!url) return false
+  return !url.startsWith('chrome://') && !url.startsWith('chrome-extension://') && !url.startsWith('edge://')
+}
+
+export function getMostVisitedSites(limit = 16): Promise<VisitedSite[]> {
+  return new Promise((resolve) => {
+    if (typeof chrome === 'undefined' || !chrome.history) {
+      resolve([])
+      return
+    }
+
+    try {
+      chrome.history.search({ text: '', maxResults: 250, startTime: 0 }, (results: HistoryItem[]) => {
+        const byUrl = new Map<string, VisitedSite>()
+
+        for (const item of results) {
+          if (!isTrackableUrl(item.url)) continue
+
+          const visitCount = item.visitCount ?? 0
+          const existing = byUrl.get(item.url!)
+          if (!existing || visitCount > existing.visitCount) {
+            byUrl.set(item.url!, {
+              url: item.url!,
+              title: item.title || item.url!,
+              visitCount
+            })
+          }
+        }
+
+        resolve(
+          [...byUrl.values()]
+            .sort((a, b) => b.visitCount - a.visitCount)
+            .slice(0, limit)
+        )
+      })
+    } catch {
+      resolve([])
+    }
+  })
 }
 
 export function getVisitCounts(urls: string[]): Promise<Map<string, number>> {

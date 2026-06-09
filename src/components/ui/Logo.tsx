@@ -1,15 +1,14 @@
-import React from 'react';
+import type { SVGProps } from 'react'
 
-interface LogoProps {
-  className?: string;
-}
+interface LogoProps extends SVGProps<SVGSVGElement> {}
 
-export const Logo: React.FC<LogoProps> = ({ className }) => {
+export function Logo({ className, ...props }: LogoProps) {
   return (
-    <svg 
-      viewBox="0 0 100 100" 
+    <svg
+      viewBox="0 0 100 100"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
+      {...props}
     >
       <g fill="currentColor" opacity="0.15">
         <circle cx="15" cy="15" r="1.5" /><circle cx="25" cy="15" r="1.5" /><circle cx="35" cy="15" r="1.5" /><circle cx="45" cy="15" r="1.5" /><circle cx="55" cy="15" r="1.5" /><circle cx="65" cy="15" r="1.5" /><circle cx="75" cy="15" r="1.5" /><circle cx="85" cy="15" r="1.5" />

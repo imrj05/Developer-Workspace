@@ -1,52 +1,63 @@
-import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import { useEffect, useMemo, useState } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 import { useSettingsStore } from '../../stores/settingsStore'
+import { formatTimezoneLabel, getGreeting } from '../../lib/greeting'
 
-const TIMEZONES = [
-  { value: 'local', label: 'Local' },
-  { value: 'UTC', label: 'UTC' },
-  { value: 'America/New_York', label: 'EST' },
-  { value: 'America/Chicago', label: 'CST' },
-  { value: 'America/Denver', label: 'MST' },
-  { value: 'America/Los_Angeles', label: 'PST' },
-  { value: 'Asia/Kolkata', label: 'IST' },
-  { value: 'Europe/London', label: 'GMT' },
-  { value: 'Europe/Paris', label: 'CET' },
-  { value: 'Asia/Tokyo', label: 'JST' }
-]
+const TIMEZONE_LABELS: Record<string, string> = {
+  local: 'Local',
+  UTC: 'UTC',
+  'America/New_York': 'New York',
+  'America/Chicago': 'Chicago',
+  'America/Denver': 'Denver',
+  'America/Los_Angeles': 'Los Angeles',
+  'Asia/Kolkata': 'Kolkata',
+  'Europe/London': 'London',
+  'Europe/Paris': 'Paris',
+  'Asia/Tokyo': 'Tokyo'
+}
 
-export function Clock() {
+const TICK_TRANSITION = { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const }
+const COLON_TRANSITION = { duration: 2.8, repeat: Infinity, ease: 'easeInOut' as const }
+
+interface ClockProps {
+  focusMode?: boolean
+}
+
+export function Clock({ focusMode = false }: ClockProps) {
   const { settings } = useSettingsStore()
   const [time, setTime] = useState(new Date())
+  const prefersReducedMotion = useReducedMotion()
 
   useEffect(() => {
     const interval = setInterval(() => setTime(new Date()), 1000)
     return () => clearInterval(interval)
   }, [])
 
+  const timeZone = settings.timeZone === 'local' ? undefined : settings.timeZone
+
   const getTimeOptions = () => ({
     hour: '2-digit' as const,
     minute: '2-digit' as const,
     second: settings.showSeconds ? '2-digit' as const : undefined,
     hour12: settings.clockFormat === '12',
-    timeZone: settings.timeZone === 'local' ? undefined : settings.timeZone
+    timeZone
   })
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', {
-      weekday: 'long',
-      month: 'long',
-      day: 'numeric',
-      timeZone: settings.timeZone === 'local' ? undefined : settings.timeZone
-    })
-  }
+  const greeting = useMemo(() => {
+    const hour = Number(time.toLocaleTimeString('en-US', { hour: 'numeric', hour12: false, timeZone }))
+    return getGreeting(hour)
+  }, [time, timeZone])
 
-  const formatTimezone = () => {
-    if (settings.timeZone === 'local') {
-      return Intl.DateTimeFormat().resolvedOptions().timeZone
-    }
-    return TIMEZONES.find(tz => tz.value === settings.timeZone)?.label || 'Local'
-  }
+  const dateLabel = time.toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+    timeZone
+  })
+
+  const timezoneLabel = settings.timeZone === 'local'
+    ? formatTimezoneLabel('local')
+    : TIMEZONE_LABELS[settings.timeZone] ?? formatTimezoneLabel(settings.timeZone)
 
   const timeString = time.toLocaleTimeString('en-US', getTimeOptions())
   const parts = timeString.split(/:| /)
@@ -55,80 +66,100 @@ export function Clock() {
   const seconds = parts[2]
   const ampm = parts[3]
 
+  const digitTransition = prefersReducedMotion
+    ? { duration: 0 }
+    : TICK_TRANSITION
+
+  const colonTransition = prefersReducedMotion
+    ? { duration: 0 }
+    : COLON_TRANSITION
+
+  const clockSizeClass = focusMode
+    ? 'min-h-[6.5rem] text-[clamp(4.5rem,14vw,8.5rem)] sm:min-h-[7.5rem] lg:min-h-[8.5rem]'
+    : 'min-h-[4.75rem] text-[clamp(3.25rem,9vw,5.75rem)] sm:min-h-[5.5rem] lg:min-h-[6.25rem]'
+
+  const secondsSizeClass = focusMode ? 'text-[0.5em]' : 'text-[0.46em]'
+  const suffixSizeClass = focusMode ? 'text-[0.24em]' : 'text-[0.22em]'
+
   return (
-    <section className="w-full max-w-4xl px-2 text-center sm:px-4">
-      <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-5 rounded-[2rem] border border-[var(--border)]/80 bg-[var(--surface-overlay)]/75 px-5 py-7 shadow-[var(--card-shadow-soft)] backdrop-blur-xl sm:px-8 sm:py-9 lg:px-10 lg:py-10">
-        <div className="section-heading">Focus Time</div>
-        <div className="flex min-h-[5.5rem] w-full items-end justify-center text-[clamp(3.8rem,10vw,7rem)] font-extralight leading-none tracking-[-0.06em] sm:min-h-[6.25rem] lg:min-h-[7rem]">
-          <div className="flex items-end justify-center gap-1.5 tabular-nums">
-        <motion.span
-          key={hours}
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-          className="tabular-nums"
-        >
-          {hours}
-        </motion.span>
+    <div className="relative flex w-full flex-col items-center text-center">
+      <div
+        aria-hidden="true"
+        className={`pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-full bg-[var(--accent)]/10 blur-3xl ${focusMode ? 'top-6 h-40 w-72 sm:h-48 sm:w-96' : 'top-4 h-28 w-56 sm:h-36 sm:w-72'}`}
+      />
 
-        <motion.span
-          animate={{ opacity: [1, 0.5, 1] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="mx-1 text-[var(--text-label)]"
-        >
-          :
-        </motion.span>
+      <p className={`relative z-[1] font-display font-medium tracking-tight text-[var(--text-secondary)] ${focusMode ? 'mb-4 text-base sm:text-lg' : 'mb-3 text-sm sm:text-[0.95rem]'}`}>
+        {greeting}
+      </p>
 
-        <motion.span
-          key={minutes}
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-          className="tabular-nums"
-        >
-          {minutes}
-        </motion.span>
-
-        {settings.showSeconds && (
-          <>
-            <motion.span
-              animate={{ opacity: [0.7, 0.3, 0.7] }}
-              transition={{ duration: 1, repeat: Infinity }}
-              className="mx-1 text-[var(--text-label)]"
-            >
-              :
-            </motion.span>
-            <motion.span
-              key={seconds}
-              initial={{ y: -15, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.4, ease: [0.8, 0, 0.1, 1] }}
-              className="relative -top-[0.14em] tabular-nums text-[0.36em] text-[var(--text-secondary)]"
-            >
-              {seconds}
-            </motion.span>
-          </>
-        )}
-
-        {settings.clockFormat === '12' && ampm && (
-          <span
-            className="ml-2 text-[0.22em] font-medium uppercase tracking-[0.24em] text-[var(--text-label)]"
+      <div
+        className={`relative z-[1] flex w-full items-center justify-center px-2 font-display font-light leading-none tracking-[-0.05em] ${clockSizeClass} ${settings.showSeconds ? 'pb-1' : ''}`}
+      >
+        <div className="flex items-center justify-center tabular-nums">
+          <motion.span
+            key={hours}
+            initial={prefersReducedMotion ? false : { y: -8, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={digitTransition}
+            className="leading-none"
           >
-            {ampm}
-          </span>
-        )}
-          </div>
-      </div>
+            {hours}
+          </motion.span>
 
-        <div className="flex w-full flex-col items-center justify-center gap-2 text-sm sm:flex-row sm:flex-wrap sm:gap-3">
-          <div className="inline-flex min-h-[2.4rem] items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)]/55 px-4 py-2 text-center text-[0.72rem] font-medium uppercase tracking-[0.22em] text-[var(--text-secondary)]">
-            {formatDate(time)}
-          </div>
-          <div className="inline-flex min-h-[2.4rem] items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)]/55 px-4 py-2 text-center text-[0.72rem] font-medium uppercase tracking-[0.18em] text-[var(--text-label)]">
-            {formatTimezone()}
-          </div>
+          <motion.span
+            animate={prefersReducedMotion ? { opacity: 1 } : { opacity: [1, 0.45, 1] }}
+            transition={colonTransition}
+            className="px-1 leading-none text-[var(--text-label)]"
+            aria-hidden="true"
+          >
+            :
+          </motion.span>
+
+          <motion.span
+            key={minutes}
+            initial={prefersReducedMotion ? false : { y: -8, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={digitTransition}
+            className="leading-none"
+          >
+            {minutes}
+          </motion.span>
+
+          {settings.showSeconds && (
+            <>
+              <motion.span
+                animate={prefersReducedMotion ? { opacity: 1 } : { opacity: [0.75, 0.4, 0.75] }}
+                transition={{ ...colonTransition, duration: 1.8 }}
+                className="px-1 leading-none text-[var(--text-label)]"
+                aria-hidden="true"
+              >
+                :
+              </motion.span>
+              <motion.span
+                key={seconds}
+                initial={prefersReducedMotion ? false : { opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={digitTransition}
+                className={`inline-block min-w-[2.25ch] font-light leading-none tracking-tight text-[var(--text-secondary)] ${secondsSizeClass}`}
+              >
+                {seconds}
+              </motion.span>
+            </>
+          )}
+
+          {settings.clockFormat === '12' && ampm && (
+            <span className={`ml-2 font-medium uppercase leading-none tracking-[0.18em] text-[var(--text-label)] ${suffixSizeClass}`}>
+              {ampm}
+            </span>
+          )}
         </div>
       </div>
-    </section>
+
+      <p className={`relative z-[1] mt-4 max-w-xl text-[var(--text-label)] ${focusMode ? 'text-sm sm:text-base' : 'text-xs sm:text-sm'}`}>
+        <span className="text-[var(--text-secondary)]">{dateLabel}</span>
+        <span aria-hidden="true" className="mx-2 text-[var(--border-strong)]">·</span>
+        <span>{timezoneLabel}</span>
+      </p>
+    </div>
   )
 }

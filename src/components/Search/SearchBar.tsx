@@ -12,7 +12,11 @@ function getHostnameLabel(url: string) {
   }
 }
 
-export function SearchBar() {
+interface SearchBarProps {
+  embedded?: boolean
+}
+
+export function SearchBar({ embedded = false }: SearchBarProps) {
   const [query, setQuery] = useState('')
   const [suggestionsOpen, setSuggestionsOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -76,10 +80,17 @@ export function SearchBar() {
   }, [bookmarks, pinnedApps, query])
 
   return (
-    <div className="mt-6 w-full max-w-2xl px-2 sm:px-0">
-      <form onSubmit={handleSubmit} className="card-glass relative mx-auto flex max-w-2xl items-center gap-2 rounded-[2rem] p-2 sm:p-3">
+    <div className={`w-full ${embedded ? 'max-w-md' : 'mx-auto mt-4 max-w-lg px-2 sm:px-0'}`}>
+      <form
+        onSubmit={handleSubmit}
+        className={`relative flex w-full items-center gap-1 rounded-full px-1 py-1 ${
+          embedded
+            ? 'border border-[var(--border)]/80 bg-[var(--surface)]/35 shadow-none'
+            : 'card-glass !p-1'
+        }`}
+      >
         <label htmlFor="workspace-search" className="sr-only">Search the web</label>
-        <Search aria-hidden="true" className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--muted)]" />
+        <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--muted)]" />
         <input
           ref={inputRef}
           id="workspace-search"
@@ -92,8 +103,8 @@ export function SearchBar() {
             setSuggestionsOpen(true)
           }}
           onFocus={() => setSuggestionsOpen(true)}
-          placeholder="Search the web…"
-          className="input-field h-14 w-full min-w-0 border-transparent bg-transparent pl-12 pr-3 text-left text-base shadow-none focus:border-[var(--accent)]"
+          placeholder="Search…"
+          className="input-field h-9 w-full min-w-0 border-transparent bg-transparent py-1 pl-9 pr-2 text-left text-sm shadow-none focus:border-transparent focus:shadow-none"
         />
         {query ? (
           <button
@@ -104,28 +115,17 @@ export function SearchBar() {
               inputRef.current?.focus()
               setSuggestionsOpen(false)
             }}
-            className="icon-button h-10 w-10 shrink-0"
+            className="icon-button h-7 w-7 shrink-0"
           >
-            <X aria-hidden="true" className="h-4 w-4" />
+            <X aria-hidden="true" className="h-3 w-3" />
           </button>
         ) : (
-          <div className="hidden shrink-0 rounded-full border border-[var(--border)] bg-[var(--surface)]/50 px-3 py-2 text-xs font-medium text-[var(--text-label)] sm:block">
-            Press /
-          </div>
+          <span className="hidden shrink-0 pr-2 text-[11px] font-medium text-[var(--text-label)] sm:inline">/</span>
         )}
-        <button
-          type="submit"
-          aria-label="Submit search"
-          disabled={!query.trim()}
-          className="btn-primary h-11 shrink-0 px-4 sm:px-5"
-        >
-          <Search aria-hidden="true" className="h-4 w-4" />
-          <span className="hidden sm:inline">Search</span>
-        </button>
 
         {suggestionsOpen && suggestions.length > 0 && (
-          <div className="absolute left-0 right-0 top-[calc(100%+0.5rem)] z-20 mx-2 overflow-hidden rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface-overlay)]/95 p-2 shadow-[var(--card-shadow)] backdrop-blur-xl sm:mx-3">
-            <div className="space-y-1">
+          <div className="absolute left-0 right-0 top-[calc(100%+0.375rem)] z-20 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface-overlay)]/95 p-1.5 shadow-[var(--card-shadow-soft)] backdrop-blur-xl">
+            <div className="space-y-0.5">
               {suggestions.map((suggestion) => (
                 <button
                   key={suggestion.id}
@@ -136,13 +136,13 @@ export function SearchBar() {
                     setSuggestionsOpen(false)
                     inputRef.current?.focus()
                   }}
-                  className="flex w-full items-center justify-between gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-left transition-colors hover:bg-[var(--accent)]/8"
+                  className="flex w-full items-center justify-between gap-2 rounded-[var(--radius-md)] px-2.5 py-2 text-left transition-colors hover:bg-[var(--accent)]/8"
                 >
                   <div className="min-w-0 flex-1">
-                    <div className="truncate text-sm font-medium text-[var(--text-primary)]">{suggestion.label}</div>
-                    <div className="truncate text-xs text-[var(--text-secondary)]">{suggestion.sublabel}</div>
+                    <div className="truncate text-xs font-medium text-[var(--text-primary)]">{suggestion.label}</div>
+                    <div className="truncate text-[11px] text-[var(--text-secondary)]">{suggestion.sublabel}</div>
                   </div>
-                  <span className="text-[11px] font-medium uppercase tracking-[0.16em] text-[var(--text-label)]">Use</span>
+                  <span className="text-[10px] font-medium uppercase tracking-[0.12em] text-[var(--text-label)]">Use</span>
                 </button>
               ))}
             </div>

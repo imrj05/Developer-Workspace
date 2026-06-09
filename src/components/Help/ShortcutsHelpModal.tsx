@@ -8,6 +8,7 @@ interface ShortcutsHelpModalProps {
 
 const SHORTCUTS = [
   { keys: '/', description: 'Focus the main search input' },
+  { keys: '?', description: 'Open keyboard shortcuts help' },
   { keys: 'Esc', description: 'Clear or blur the search input' },
   { keys: 'Cmd/Ctrl + K', description: 'Open the command palette' },
   { keys: 'Arrow keys', description: 'Reorder pinned apps when focused on the drag handle' }

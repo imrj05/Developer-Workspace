@@ -55,7 +55,7 @@ export function ApiStatus() {
           updateApiStatus(api.id, 'down')
         }
       } catch {
-        updateApiStatus(api.id, 'down')
+        updateApiStatus(api.id, 'unknown')
       }
     }
 

@@ -1,7 +1,11 @@
-import { X, RotateCcw } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { ImagePlus, Trash2, X, RotateCcw } from 'lucide-react'
 import * as Dialog from '@radix-ui/react-dialog'
 import { useSettingsStore } from '../../stores/settingsStore'
 import { ToggleSwitch } from '../ui/ToggleSwitch'
+import { processWallpaperFile } from '../../lib/wallpaperStorage'
+import type { LayoutPreset, SettingsTab } from '../../lib/layoutPresets'
+
 const BACKGROUNDS = [
     'https://images.unsplash.com/photo-1572270907014-c31da1c54124?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2089&q=80',
     'https://images.unsplash.com/photo-1485470733090-0aae1788d5af?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjI0MX0&auto=format&fit=crop&w=1991&q=80',
@@ -41,6 +45,7 @@ const BACKGROUNDS = [
     'https://images.unsplash.com/photo-1699417824045-5c9ffdc32740?q=80&w=1170&auto=format&fit=crop&w=2000',
     'https://images.unsplash.com/photo-1777086000918-b0f1582e222a?q=80&w=1228&auto=format&fit=crop&w=2000',
 ]
+
 const TIMEZONES = [
     { value: 'local', label: 'Local' },
     { value: 'UTC', label: 'UTC' },
@@ -53,328 +58,409 @@ const TIMEZONES = [
     { value: 'Europe/Paris', label: 'CET' },
     { value: 'Asia/Tokyo', label: 'JST' }
 ]
+
+const LAYOUT_PRESETS: { id: LayoutPreset; label: string; description: string }[] = [
+    { id: 'minimal', label: 'Minimal', description: 'Clock, search, and pinned apps only.' },
+    { id: 'developer', label: 'Developer', description: 'Balanced layout with tasks, bookmarks, and docked utilities.' },
+    { id: 'full', label: 'Full', description: 'Every widget enabled for maximum visibility.' }
+]
+
+const WIDGET_TOGGLES = [
+    { key: 'showWeatherWidget', label: 'Weather Widget' },
+    { key: 'showBookmarks', label: 'Bookmarks' },
+    { key: 'showDevPanel', label: 'Dev Panel' },
+    { key: 'showTerminalNotes', label: 'Terminal Notes' },
+    { key: 'showQuickActions', label: 'Quick Actions' },
+    { key: 'showPinnedApps', label: 'Pinned Apps' },
+    { key: 'showTaskPlanner', label: 'Task Planner' },
+    { key: 'showRecentActivity', label: 'Recent Activity' },
+    { key: 'showSnippetShelf', label: 'Snippet Shelf' },
+    { key: 'showDevShortcuts', label: 'Dev Shortcuts' }
+] as const
+
+const TABS: { id: SettingsTab; label: string }[] = [
+    { id: 'appearance', label: 'Appearance' },
+    { id: 'layout', label: 'Layout' },
+    { id: 'integrations', label: 'Integrations' }
+]
+
 interface SettingsProps {
     open: boolean
     onOpenChange: (open: boolean) => void
+    initialTab?: SettingsTab
 }
-export function Settings({ open, onOpenChange }: SettingsProps) {
-    const { settings, updateSettings, resetSettings } = useSettingsStore()
+
+export function Settings({ open, onOpenChange, initialTab = 'appearance' }: SettingsProps) {
+    const { settings, updateSettings, applyLayoutPreset, resetSettings } = useSettingsStore()
+    const [activeTab, setActiveTab] = useState<SettingsTab>(initialTab)
+    const [showAllBackgrounds, setShowAllBackgrounds] = useState(false)
+    const [wallpaperError, setWallpaperError] = useState<string | null>(null)
+    const [wallpaperUploading, setWallpaperUploading] = useState(false)
+    const wallpaperInputRef = useRef<HTMLInputElement>(null)
+
+    useEffect(() => {
+        if (open) {
+            setActiveTab(initialTab)
+        }
+    }, [open, initialTab])
+
     const handleReset = async () => {
         await resetSettings()
         onOpenChange(false)
     }
+
+    const handleCustomWallpaperUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0]
+        event.target.value = ''
+        if (!file) return
+
+        setWallpaperUploading(true)
+        setWallpaperError(null)
+
+        try {
+            const dataUrl = await processWallpaperFile(file)
+            await updateSettings({ customBackground: dataUrl })
+        } catch (error) {
+            setWallpaperError(error instanceof Error ? error.message : 'Could not upload wallpaper.')
+        } finally {
+            setWallpaperUploading(false)
+        }
+    }
+
+    const visibleBackgrounds = showAllBackgrounds ? BACKGROUNDS : BACKGROUNDS.slice(0, 9)
+
     return (
         <Dialog.Root open={open} onOpenChange={onOpenChange}>
             <Dialog.Portal>
                 <Dialog.Overlay className="fixed inset-0 z-[200] bg-black/50 backdrop-blur-sm animate-fade-in" />
-                <Dialog.Content className="fixed top-0 right-0 h-full w-full max-w-[420px] z-[201] overflow-y-auto border-l border-[var(--border)] bg-[var(--surface-overlay)]/95 px-5 py-6 shadow-[var(--card-shadow)] backdrop-blur-2xl animate-slide-in-right" aria-describedby="settings-description">
+                <Dialog.Content className="fixed top-0 right-0 h-full w-full max-w-[420px] z-[201] overflow-y-auto border-l border-[var(--border)] bg-[var(--surface-overlay)]/95 px-5 py-6 shadow-[var(--card-shadow)] backdrop-blur-2xl animate-slide-in-right">
+                    <Dialog.Description className="sr-only">
+                        Settings panel for customizing the new tab extension
+                    </Dialog.Description>
                     <div>
-                        <div className="mb-6 flex items-center justify-between gap-4 border-b border-[var(--border)] pb-5">
+                        <div className="mb-5 flex items-center justify-between gap-4 border-b border-[var(--border)] pb-5">
                             <div>
                                 <div className="section-heading mb-2">Preferences</div>
                                 <Dialog.Title className="text-2xl font-display font-semibold">Settings</Dialog.Title>
                             </div>
-                            <Dialog.Description id="settings-description" className="sr-only">Settings panel for customizing the new tab extension</Dialog.Description>
                             <Dialog.Close aria-label="Close settings" className="icon-button h-10 w-10">
                                 <X aria-hidden="true" className="h-4 w-4" />
                             </Dialog.Close>
                         </div>
+
+                        <div className="mb-5 flex gap-1 rounded-full border border-[var(--border)] bg-[var(--surface)]/50 p-1">
+                            {TABS.map((tab) => (
+                                <button
+                                    key={tab.id}
+                                    type="button"
+                                    onClick={() => setActiveTab(tab.id)}
+                                    data-active={activeTab === tab.id}
+                                    className="chip-button flex-1 justify-center px-2 py-2 text-xs"
+                                >
+                                    {tab.label}
+                                </button>
+                            ))}
+                        </div>
+
                         <div className="space-y-6">
-                            <section className="card-subtle space-y-4 p-4">
-                                <div className="space-y-1">
-                                    <h3 className="section-heading">Appearance</h3>
-                                    <p className="section-copy">Control the overall mood and background treatment of your workspace.</p>
-                                </div>
-                                <div className="setting-row">
-                                    <div className="setting-copy">
-                                        <div className="setting-label">Dark Mode</div>
-                                        <p className="setting-hint">Switch between light and dark surfaces instantly.</p>
-                                    </div>
-                                    <ToggleSwitch
-                                        pressed={settings.darkMode}
-                                        onPressedChange={(pressed) => updateSettings({ darkMode: pressed })}
-                                        ariaLabel="Toggle dark mode"
-                                    />
-                                </div>
-                            </section>
-                            <section className="card-subtle space-y-4 p-4">
-                                <div className="space-y-1">
-                                    <h3 className="section-heading">Background</h3>
-                                    <p className="section-copy">Choose a wallpaper that stays subtle behind the dashboard.</p>
-                                </div>
-                                <div className="grid grid-cols-3 gap-2">
-                                    {BACKGROUNDS.map((bg, i) => (
-                                        <button
-                                            key={i}
-                                            onClick={() => updateSettings({ background: bg, customBackground: null })}
-                                            aria-label={`Select background ${i + 1}`}
-                                            className={`aspect-[4/3] w-full rounded-[var(--radius-md)] bg-cover bg-center border ${settings.background === bg && !settings.customBackground
-                                                ? 'border-[var(--accent)] shadow-[var(--glow)]'
-                                                : 'border-transparent'
-                                                }`}
-                                            style={{ backgroundImage: `url(${bg})` }}
-                                        />
-                                    ))}
-                                </div>
-                                <div className="space-y-3 pt-1">
-                                    <div>
-                                        <div className="mb-2 flex items-center justify-between gap-3 text-sm">
-                                            <span className="setting-label">Wallpaper Intensity</span>
-                                            <span className="text-[var(--text-label)]">{settings.backgroundIntensity}%</span>
+                            {activeTab === 'appearance' && (
+                                <>
+                                    <section className="card-subtle space-y-4 p-4">
+                                        <div className="setting-row">
+                                            <div className="setting-copy">
+                                                <div className="setting-label">Dark Mode</div>
+                                                <p className="setting-hint">Switch between light and dark surfaces.</p>
+                                            </div>
+                                            <ToggleSwitch
+                                                pressed={settings.darkMode}
+                                                onPressedChange={(pressed) => updateSettings({ darkMode: pressed })}
+                                                ariaLabel="Toggle dark mode"
+                                            />
                                         </div>
-                                        <input
-                                            type="range"
-                                            min="10"
-                                            max="60"
-                                            value={settings.backgroundIntensity}
-                                            onChange={(e) => updateSettings({ backgroundIntensity: Number(e.target.value) })}
-                                            className="w-full accent-[var(--accent)]"
-                                        />
-                                    </div>
-                                    <div>
-                                        <div className="mb-2 flex items-center justify-between gap-3 text-sm">
-                                            <span className="setting-label">Wallpaper Blur</span>
-                                            <span className="text-[var(--text-label)]">{settings.backgroundBlur}px</span>
+                                    </section>
+
+                                    <section className="card-subtle space-y-4 p-4">
+                                        <div className="space-y-1">
+                                            <h3 className="setting-label">Background</h3>
+                                            <p className="section-copy">Choose a wallpaper that stays subtle behind the dashboard.</p>
                                         </div>
-                                        <input
-                                            type="range"
-                                            min="0"
-                                            max="10"
-                                            value={settings.backgroundBlur}
-                                            onChange={(e) => updateSettings({ backgroundBlur: Number(e.target.value) })}
-                                            className="w-full accent-[var(--accent)]"
-                                        />
-                                    </div>
-                                </div>
-                            </section>
-                            <section className="card-subtle space-y-4 p-4">
-                                <div className="space-y-1">
-                                    <h3 className="section-heading">Clock</h3>
-                                    <p className="section-copy">Tune the main time display for the way you work.</p>
-                                </div>
-                                <div className="setting-row">
-                                    <div className="setting-copy">
-                                        <div className="setting-label">24-Hour Format</div>
-                                        <p className="setting-hint">Use a military-style clock instead of AM/PM.</p>
-                                    </div>
-                                    <ToggleSwitch
-                                        pressed={settings.clockFormat === '24'}
-                                        onPressedChange={(pressed) => updateSettings({ clockFormat: pressed ? '24' : '12' })}
-                                        ariaLabel="Toggle 24-hour format"
-                                    />
-                                </div>
-                                <div className="setting-row">
-                                    <div className="setting-copy">
-                                        <div className="setting-label">Show Seconds</div>
-                                        <p className="setting-hint">Display a live seconds counter in the clock.</p>
-                                    </div>
-                                    <ToggleSwitch
-                                        pressed={settings.showSeconds}
-                                        onPressedChange={(pressed) => updateSettings({ showSeconds: pressed })}
-                                        ariaLabel="Toggle seconds"
-                                    />
-                                </div>
-                                <div>
-                                    <label htmlFor="timezone" className="mb-2 block text-sm font-medium text-[var(--text-secondary)]">Timezone</label>
-                                    <select
-                                        id="timezone"
-                                        value={settings.timeZone}
-                                        onChange={(e) => updateSettings({ timeZone: e.target.value })}
-                                        className="input-field rounded-[var(--radius-lg)]"
-                                    >
-                                        {TIMEZONES.map(tz => (
-                                            <option key={tz.value} value={tz.value}>{tz.label}</option>
+                                        <div className="space-y-2 rounded-[var(--radius-md)] border border-dashed border-[var(--border)] p-3">
+                                            <input
+                                                ref={wallpaperInputRef}
+                                                type="file"
+                                                accept="image/*"
+                                                className="hidden"
+                                                onChange={(event) => void handleCustomWallpaperUpload(event)}
+                                            />
+                                            {settings.customBackground ? (
+                                                <div className="flex items-center gap-3">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => void updateSettings({ customBackground: settings.customBackground })}
+                                                        aria-label="Use custom wallpaper"
+                                                        className={`aspect-[4/3] w-24 shrink-0 rounded-[var(--radius-md)] border bg-cover bg-center ${settings.customBackground
+                                                            ? 'border-[var(--accent)] shadow-[var(--glow)]'
+                                                            : 'border-transparent'
+                                                            }`}
+                                                        style={{ backgroundImage: `url(${settings.customBackground})` }}
+                                                    />
+                                                    <div className="min-w-0 flex-1 space-y-2">
+                                                        <p className="text-sm font-medium text-[var(--text-primary)]">Custom wallpaper</p>
+                                                        <p className="text-xs text-[var(--text-label)]">Saved locally on this device only.</p>
+                                                        <div className="flex flex-wrap gap-2">
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => wallpaperInputRef.current?.click()}
+                                                                disabled={wallpaperUploading}
+                                                                className="btn-secondary px-3 py-1.5 text-xs"
+                                                            >
+                                                                Replace
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => void updateSettings({ customBackground: null })}
+                                                                className="chip-button px-3 py-1.5 text-xs text-[var(--error)]"
+                                                            >
+                                                                <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />
+                                                                Remove
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => wallpaperInputRef.current?.click()}
+                                                    disabled={wallpaperUploading}
+                                                    className="btn-secondary flex w-full items-center justify-center gap-2"
+                                                >
+                                                    <ImagePlus aria-hidden="true" className="h-4 w-4" />
+                                                    {wallpaperUploading ? 'Processing image…' : 'Upload custom wallpaper'}
+                                                </button>
+                                            )}
+                                            <p className="text-xs text-[var(--text-label)]">
+                                                JPG, PNG, or WebP up to 8 MB. Stored in local browser storage, not Chrome Sync.
+                                            </p>
+                                            {wallpaperError ? (
+                                                <p className="text-xs text-[var(--error)]">{wallpaperError}</p>
+                                            ) : null}
+                                        </div>
+                                        <div className="grid grid-cols-3 gap-2">
+                                            {visibleBackgrounds.map((bg, i) => (
+                                                <button
+                                                    key={i}
+                                                    onClick={() => updateSettings({ background: bg, customBackground: null })}
+                                                    aria-label={`Select background ${i + 1}`}
+                                                    className={`aspect-[4/3] w-full rounded-[var(--radius-md)] bg-cover bg-center border ${settings.background === bg && !settings.customBackground
+                                                        ? 'border-[var(--accent)] shadow-[var(--glow)]'
+                                                        : 'border-transparent'
+                                                        }`}
+                                                    style={{ backgroundImage: `url(${bg})` }}
+                                                />
+                                            ))}
+                                        </div>
+                                        {BACKGROUNDS.length > 9 && (
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowAllBackgrounds((value) => !value)}
+                                                className="btn-secondary w-full"
+                                            >
+                                                {showAllBackgrounds ? 'Show fewer wallpapers' : `Browse all ${BACKGROUNDS.length} wallpapers`}
+                                            </button>
+                                        )}
+                                        <div className="space-y-3 pt-1">
+                                            <div>
+                                                <div className="mb-2 flex items-center justify-between gap-3 text-sm">
+                                                    <span className="setting-label">Wallpaper Intensity</span>
+                                                    <span className="text-[var(--text-label)]">{settings.backgroundIntensity}%</span>
+                                                </div>
+                                                <input
+                                                    type="range"
+                                                    min="10"
+                                                    max="100"
+                                                    value={settings.backgroundIntensity}
+                                                    onChange={(e) => updateSettings({ backgroundIntensity: Number(e.target.value) })}
+                                                    className="w-full accent-[var(--accent)]"
+                                                />
+                                            </div>
+                                            <div>
+                                                <div className="mb-2 flex items-center justify-between gap-3 text-sm">
+                                                    <span className="setting-label">Wallpaper Blur</span>
+                                                    <span className="text-[var(--text-label)]">{settings.backgroundBlur}px</span>
+                                                </div>
+                                                <input
+                                                    type="range"
+                                                    min="0"
+                                                    max="10"
+                                                    value={settings.backgroundBlur}
+                                                    onChange={(e) => updateSettings({ backgroundBlur: Number(e.target.value) })}
+                                                    className="w-full accent-[var(--accent)]"
+                                                />
+                                            </div>
+                                        </div>
+                                    </section>
+
+                                    <section className="card-subtle space-y-4 p-4">
+                                        <div className="space-y-1">
+                                            <h3 className="setting-label">Clock</h3>
+                                        </div>
+                                        <div className="setting-row">
+                                            <div className="setting-copy">
+                                                <div className="setting-label">24-Hour Format</div>
+                                            </div>
+                                            <ToggleSwitch
+                                                pressed={settings.clockFormat === '24'}
+                                                onPressedChange={(pressed) => updateSettings({ clockFormat: pressed ? '24' : '12' })}
+                                                ariaLabel="Toggle 24-hour format"
+                                            />
+                                        </div>
+                                        <div className="setting-row">
+                                            <div className="setting-copy">
+                                                <div className="setting-label">Show Seconds</div>
+                                            </div>
+                                            <ToggleSwitch
+                                                pressed={settings.showSeconds}
+                                                onPressedChange={(pressed) => updateSettings({ showSeconds: pressed })}
+                                                ariaLabel="Toggle seconds"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label htmlFor="timezone" className="mb-2 block text-sm font-medium text-[var(--text-secondary)]">Timezone</label>
+                                            <select
+                                                id="timezone"
+                                                value={settings.timeZone}
+                                                onChange={(e) => updateSettings({ timeZone: e.target.value })}
+                                                className="input-field rounded-[var(--radius-lg)]"
+                                            >
+                                                {TIMEZONES.map(tz => (
+                                                    <option key={tz.value} value={tz.value}>{tz.label}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </section>
+                                </>
+                            )}
+
+                            {activeTab === 'layout' && (
+                                <>
+                                    <section className="card-subtle space-y-3 p-4">
+                                        <div className="space-y-1">
+                                            <h3 className="setting-label">Layout Presets</h3>
+                                            <p className="section-copy">Start from a curated layout, then fine-tune individual widgets below.</p>
+                                        </div>
+                                        <div className="space-y-2">
+                                            {LAYOUT_PRESETS.map((preset) => (
+                                                <button
+                                                    key={preset.id}
+                                                    type="button"
+                                                    onClick={() => void applyLayoutPreset(preset.id)}
+                                                    data-active={settings.layoutPreset === preset.id}
+                                                    className="card-subtle flex w-full flex-col gap-1 px-4 py-3 text-left transition-colors hover:border-[var(--accent)]/30"
+                                                >
+                                                    <span className="text-sm font-semibold text-[var(--text-primary)]">{preset.label}</span>
+                                                    <span className="text-xs text-[var(--text-secondary)]">{preset.description}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </section>
+
+                                    <section className="card-subtle space-y-4 p-4">
+                                        <div className="setting-row">
+                                            <div className="setting-copy">
+                                                <div className="setting-label">Focus Mode</div>
+                                                <p className="setting-hint">Hide secondary surfaces and leave the hero area clean.</p>
+                                            </div>
+                                            <ToggleSwitch
+                                                pressed={settings.focusMode}
+                                                onPressedChange={(pressed) => updateSettings({ focusMode: pressed })}
+                                                ariaLabel="Toggle focus mode"
+                                            />
+                                        </div>
+                                    </section>
+
+                                    <section className="card-subtle space-y-4 p-4">
+                                        <div className="space-y-1">
+                                            <h3 className="setting-label">Widgets</h3>
+                                            <p className="section-copy">Toggle individual sections. Dev Panel and Notes open from the bottom dock.</p>
+                                        </div>
+                                        {WIDGET_TOGGLES.map(({ key, label }) => (
+                                            <div key={key} className="setting-row">
+                                                <div className="setting-copy">
+                                                    <div className="setting-label">{label}</div>
+                                                </div>
+                                                <ToggleSwitch
+                                                    pressed={settings[key]}
+                                                    onPressedChange={(pressed) => updateSettings({ [key]: pressed })}
+                                                    ariaLabel={`Toggle ${label}`}
+                                                />
+                                            </div>
                                         ))}
-                                    </select>
-                                </div>
-                            </section>
-                            <section className="card-subtle space-y-4 p-4">
-                                <div className="space-y-1">
-                                    <h3 className="section-heading">Weather</h3>
-                                    <p className="section-copy">Keep the small weather chip useful without making it noisy.</p>
-                                </div>
-                                <div>
-                                    <label htmlFor="weather-api-key" className="mb-2 block text-sm font-medium text-[var(--text-secondary)]">OpenWeatherMap API Key</label>
-                                    <input
-                                        id="weather-api-key"
-                                        name="weather-api-key"
-                                        autoComplete="off"
-                                        type="password"
-                                        value={settings.weatherApiKey}
-                                        onChange={(e) => updateSettings({ weatherApiKey: e.target.value })}
-                                        placeholder="Enter API key…"
-                                        className="input-field"
-                                    />
-                                </div>
-                                <div className="setting-row">
-                                    <div className="setting-copy">
-                                        <div className="setting-label">Use Fahrenheit</div>
-                                        <p className="setting-hint">Switch units for temperature display.</p>
-                                    </div>
-                                    <ToggleSwitch
-                                        pressed={settings.useFahrenheit}
-                                        onPressedChange={(pressed) => updateSettings({ useFahrenheit: pressed })}
-                                        ariaLabel="Toggle fahrenheit"
-                                    />
-                                </div>
-                            </section>
-                            <section className="card-subtle space-y-4 p-4">
-                                <div className="space-y-1">
-                                    <h3 className="section-heading">Developer</h3>
-                                    <p className="section-copy">Configure developer-focused integrations and automation.</p>
-                                </div>
-                                <div>
-                                    <label htmlFor="github-username" className="mb-2 block text-sm font-medium text-[var(--text-secondary)]">GitHub Username</label>
-                                    <input
-                                        id="github-username"
-                                        name="github-username"
-                                        autoComplete="off"
-                                        type="text"
-                                        value={settings.githubUsername}
-                                        onChange={(e) => updateSettings({ githubUsername: e.target.value })}
-                                        className="input-field"
-                                    />
-                                </div>
-                                <div className="setting-row">
-                                    <div className="setting-copy">
-                                        <div className="setting-label">Auto-Rotate Backgrounds</div>
-                                        <p className="setting-hint">Cycle through the bundled wallpapers automatically.</p>
-                                    </div>
-                                    <ToggleSwitch
-                                        pressed={settings.autoRotateBackgrounds}
-                                        onPressedChange={(pressed) => updateSettings({ autoRotateBackgrounds: pressed })}
-                                        ariaLabel="Toggle auto-rotate"
-                                    />
-                                </div>
-                            </section>
-                            <section className="card-subtle space-y-4 p-4">
-                                <div className="space-y-1">
-                                    <h3 className="section-heading">Productivity</h3>
-                                    <p className="section-copy">Shape how much guidance and structure shows up in the workspace.</p>
-                                </div>
-                                <div className="setting-row">
-                                    <div className="setting-copy">
-                                        <div className="setting-label">Focus Mode</div>
-                                        <p className="setting-hint">Hide secondary surfaces and leave the hero area clean.</p>
-                                    </div>
-                                    <ToggleSwitch
-                                        pressed={settings.focusMode}
-                                        onPressedChange={(pressed) => updateSettings({ focusMode: pressed })}
-                                        ariaLabel="Toggle focus mode"
-                                    />
-                                </div>
-                                <div className="setting-row">
-                                    <div className="setting-copy">
-                                        <div className="setting-label">Quick Actions</div>
-                                        <p className="setting-hint">Show the action row for command palette, focus mode, tasks, and settings.</p>
-                                    </div>
-                                    <ToggleSwitch
-                                        pressed={settings.showQuickActions}
-                                        onPressedChange={(pressed) => updateSettings({ showQuickActions: pressed })}
-                                        ariaLabel="Toggle quick actions"
-                                    />
-                                </div>
-                                <div className="setting-row">
-                                    <div className="setting-copy">
-                                        <div className="setting-label">Pinned Apps</div>
-                                        <p className="setting-hint">Keep a small strip of daily apps under the hero area.</p>
-                                    </div>
-                                    <ToggleSwitch
-                                        pressed={settings.showPinnedApps}
-                                        onPressedChange={(pressed) => updateSettings({ showPinnedApps: pressed })}
-                                        ariaLabel="Toggle pinned apps"
-                                    />
-                                </div>
-                                <div className="setting-row">
-                                    <div className="setting-copy">
-                                        <div className="setting-label">Task Planner</div>
-                                        <p className="setting-hint">Show the Today planner alongside bookmarks.</p>
-                                    </div>
-                                    <ToggleSwitch
-                                        pressed={settings.showTaskPlanner}
-                                        onPressedChange={(pressed) => updateSettings({ showTaskPlanner: pressed })}
-                                        ariaLabel="Toggle task planner"
-                                    />
-                                </div>
-                                <div className="setting-row">
-                                    <div className="setting-copy">
-                                        <div className="setting-label">Recent Activity</div>
-                                        <p className="setting-hint">Show a lightweight section for recently visited pages.</p>
-                                    </div>
-                                    <ToggleSwitch
-                                        pressed={settings.showRecentActivity}
-                                        onPressedChange={(pressed) => updateSettings({ showRecentActivity: pressed })}
-                                        ariaLabel="Toggle recent activity"
-                                    />
-                                </div>
-                                <div className="setting-row">
-                                    <div className="setting-copy">
-                                        <div className="setting-label">Snippet Shelf</div>
-                                        <p className="setting-hint">Save frequently used commands and code blocks for quick copy.</p>
-                                    </div>
-                                    <ToggleSwitch
-                                        pressed={settings.showSnippetShelf}
-                                        onPressedChange={(pressed) => updateSettings({ showSnippetShelf: pressed })}
-                                        ariaLabel="Toggle snippet shelf"
-                                    />
-                                </div>
-                                <div className="setting-row">
-                                    <div className="setting-copy">
-                                        <div className="setting-label">Dev Shortcuts</div>
-                                        <p className="setting-hint">Quick access to local dev URLs and environments.</p>
-                                    </div>
-                                    <ToggleSwitch
-                                        pressed={settings.showDevShortcuts}
-                                        onPressedChange={(pressed) => updateSettings({ showDevShortcuts: pressed })}
-                                        ariaLabel="Toggle dev shortcuts"
-                                    />
-                                </div>
-                            </section>
-                            <section className="card-subtle space-y-4 p-4">
-                                <div className="space-y-1">
-                                    <h3 className="section-heading">Workspace Layout</h3>
-                                    <p className="section-copy">Choose which surfaces are visible and which utility panels open by default.</p>
-                                </div>
-                                {[
-                                    { key: 'showWeatherWidget', label: 'Weather Widget' },
-                                    { key: 'showBookmarks', label: 'Bookmarks' },
-                                    { key: 'showDevPanel', label: 'Dev Panel' },
-                                    { key: 'showTerminalNotes', label: 'Terminal Notes' }
-                                ].map(({ key, label }) => (
-                                    <div key={key} className="setting-row">
-                                        <div className="setting-copy">
-                                            <div className="setting-label">{label}</div>
+                                    </section>
+                                </>
+                            )}
+
+                            {activeTab === 'integrations' && (
+                                <>
+                                    <section className="card-subtle space-y-4 p-4">
+                                        <div className="space-y-1">
+                                            <h3 className="setting-label">Weather</h3>
                                         </div>
-                                        <ToggleSwitch
-                                            pressed={settings[key as keyof typeof settings] as boolean}
-                                            onPressedChange={(pressed) => updateSettings({ [key]: pressed })}
-                                            ariaLabel={`Toggle ${label}`}
-                                        />
-                                    </div>
-                                ))}
-                                <div className="setting-row border-t border-[var(--border)] pt-4">
-                                    <div className="setting-copy">
-                                        <div className="setting-label">Dev Panel Open</div>
-                                        <p className="setting-hint">Keep the utilities panel expanded on launch.</p>
-                                    </div>
-                                    <ToggleSwitch
-                                        pressed={settings.devPanelOpen}
-                                        onPressedChange={(pressed) => updateSettings({ devPanelOpen: pressed })}
-                                        ariaLabel="Toggle dev panel"
-                                    />
-                                </div>
-                                <div className="setting-row">
-                                    <div className="setting-copy">
-                                        <div className="setting-label">Terminal Notes Open</div>
-                                        <p className="setting-hint">Show the notes panel immediately when a new tab opens.</p>
-                                    </div>
-                                    <ToggleSwitch
-                                        pressed={settings.terminalNotesOpen}
-                                        onPressedChange={(pressed) => updateSettings({ terminalNotesOpen: pressed })}
-                                        ariaLabel="Toggle terminal notes"
-                                    />
-                                </div>
-                            </section>
+                                        <div>
+                                            <label htmlFor="weather-api-key" className="mb-2 block text-sm font-medium text-[var(--text-secondary)]">OpenWeatherMap API Key</label>
+                                            <input
+                                                id="weather-api-key"
+                                                name="weather-api-key"
+                                                autoComplete="off"
+                                                type="password"
+                                                value={settings.weatherApiKey}
+                                                onChange={(e) => updateSettings({ weatherApiKey: e.target.value })}
+                                                placeholder="Enter API key…"
+                                                className="input-field"
+                                            />
+                                        </div>
+                                        <div className="setting-row">
+                                            <div className="setting-copy">
+                                                <div className="setting-label">Use Fahrenheit</div>
+                                            </div>
+                                            <ToggleSwitch
+                                                pressed={settings.useFahrenheit}
+                                                onPressedChange={(pressed) => updateSettings({ useFahrenheit: pressed })}
+                                                ariaLabel="Toggle fahrenheit"
+                                            />
+                                        </div>
+                                    </section>
+
+                                    <section className="card-subtle space-y-4 p-4">
+                                        <div className="space-y-1">
+                                            <h3 className="setting-label">GitHub</h3>
+                                        </div>
+                                        <div>
+                                            <label htmlFor="github-username" className="mb-2 block text-sm font-medium text-[var(--text-secondary)]">GitHub Username</label>
+                                            <input
+                                                id="github-username"
+                                                name="github-username"
+                                                autoComplete="off"
+                                                type="text"
+                                                value={settings.githubUsername}
+                                                onChange={(e) => updateSettings({ githubUsername: e.target.value })}
+                                                placeholder="your-username"
+                                                className="input-field"
+                                            />
+                                        </div>
+                                        <div className="setting-row">
+                                            <div className="setting-copy">
+                                                <div className="setting-label">Auto-Rotate Backgrounds</div>
+                                            </div>
+                                            <ToggleSwitch
+                                                pressed={settings.autoRotateBackgrounds}
+                                                onPressedChange={(pressed) => updateSettings({ autoRotateBackgrounds: pressed })}
+                                                ariaLabel="Toggle auto-rotate"
+                                            />
+                                        </div>
+                                    </section>
+                                </>
+                            )}
+
                             <section className="card-subtle p-4">
                                 <button onClick={handleReset} className="btn-secondary w-full border-[var(--error)]/30 text-[var(--error)] hover:border-[var(--error)] hover:bg-[var(--error)]/8 hover:text-[var(--error)]">
                                     <RotateCcw aria-hidden="true" className="h-4 w-4" />

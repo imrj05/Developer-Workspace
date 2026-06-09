@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Terminal, Minus, Square, X, ChevronDown, ChevronUp } from 'lucide-react'
+import { Terminal, ChevronDown, ChevronUp, X } from 'lucide-react'
 import { useBookmarksStore } from '../../stores/bookmarksStore'
 import { useSettingsStore } from '../../stores/settingsStore'
 
@@ -7,12 +7,15 @@ function generateId() {
   return Math.random().toString(36).substring(2, 15)
 }
 
-export function TerminalNotes() {
-  const { settings, updateSettings } = useSettingsStore()
+interface TerminalNotesProps {
+  embedded?: boolean
+}
+
+export function TerminalNotes({ embedded = false }: TerminalNotesProps) {
+  const { settings, setUtilityPanel } = useSettingsStore()
   const { devNotes, addNote, toggleNote, deleteNote, clearNotes } = useBookmarksStore()
   const [input, setInput] = useState('')
-  const [collapsed, setCollapsed] = useState(false)
-  const [minimized, setMinimized] = useState(false)
+  const [collapsed, setCollapsed] = useState(embedded)
   const outputRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -67,12 +70,13 @@ export function TerminalNotes() {
     return parts
   }
 
-  if (!settings.showTerminalNotes || !settings.terminalNotesOpen) return null
+  if (!settings.showTerminalNotes) return null
+  if (!embedded && settings.utilityPanel !== 'terminal-notes') return null
 
   return (
     <div
-      className={`w-full max-w-[94vw] xl:w-[680px] xl:max-w-[94vw] card-glass transition-[height,width,transform] duration-300 ${
-        collapsed ? 'h-12' : minimized ? 'h-12' : 'h-80'
+      className={`card-glass w-full transition-[height,width,transform] duration-300 ${
+        collapsed ? 'h-12' : 'h-80'
       }`}
     >
       <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-2.5">
@@ -84,7 +88,7 @@ export function TerminalNotes() {
           </span>
         </div>
         <div className="flex items-center gap-1">
-          {devNotes.length > 0 && !collapsed && !minimized && (
+          {devNotes.length > 0 && !collapsed && (
             <button
               aria-label="Clear all notes"
               onClick={() => void clearNotes()}
@@ -96,14 +100,8 @@ export function TerminalNotes() {
           <button aria-label={collapsed ? 'Expand terminal notes' : 'Collapse terminal notes'} onClick={() => setCollapsed(!collapsed)} className="icon-button h-8 w-8">
             {collapsed ? <ChevronUp aria-hidden="true" className="h-4 w-4" /> : <ChevronDown aria-hidden="true" className="h-4 w-4" />}
           </button>
-          <button aria-label={minimized ? 'Restore terminal notes' : 'Minimize terminal notes'} onClick={() => setMinimized(!minimized)} className="icon-button h-8 w-8">
-            <Minus aria-hidden="true" className="h-4 w-4" />
-          </button>
-          <button aria-label="Restore terminal notes panel" onClick={() => setMinimized(false)} className="icon-button h-8 w-8">
-            <Square aria-hidden="true" className="h-4 w-4" />
-          </button>
           <button
-            onClick={() => updateSettings({ terminalNotesOpen: false })}
+            onClick={() => void setUtilityPanel('none')}
             aria-label="Close terminal notes"
             className="icon-button h-8 w-8"
           >
@@ -112,7 +110,7 @@ export function TerminalNotes() {
         </div>
       </div>
 
-      {!collapsed && !minimized && (
+      {!collapsed && (
         <>
           <div
             ref={outputRef}

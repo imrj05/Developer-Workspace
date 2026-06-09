@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { ClipboardCopy, Code2, Pencil, Plus, Trash2, X } from 'lucide-react'
+import { ClipboardCopy, Code2, Plus, X } from 'lucide-react'
 import { useSnippetsStore } from '../../stores/snippetsStore'
-import { Modal } from '../ui/Modal'
+import { SectionPanel } from '../ui/SectionPanel'
+import { EmptyState } from '../ui/EmptyState'
 
 const LANGUAGES = ['bash', 'javascript', 'typescript', 'python', 'sql', 'json', 'yaml', 'plaintext']
 
@@ -23,20 +24,6 @@ export function SnippetShelf() {
     } catch {}
   }
 
-  const startEdit = (snippet: typeof snippets[0]) => {
-    setEditingId(snippet.id)
-    setFormTitle(snippet.title)
-    setFormContent(snippet.content)
-    setFormLanguage(snippet.language)
-  }
-
-  const startAdd = () => {
-    setAdding(true)
-    setFormTitle('')
-    setFormContent('')
-    setFormLanguage('bash')
-  }
-
   const handleSave = async () => {
     if (!formTitle.trim() || !formContent.trim()) return
     if (editingId) {
@@ -51,112 +38,64 @@ export function SnippetShelf() {
     setFormLanguage('bash')
   }
 
-  const handleCancel = () => {
-    setEditingId(null)
-    setAdding(false)
-    setFormTitle('')
-    setFormContent('')
-    setFormLanguage('bash')
-  }
-
   const isFormOpen = adding || editingId !== null
 
   return (
-    <section className="mx-auto w-full max-w-6xl">
-      <div className="card-glass p-4 sm:p-5">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <div>
-            <div className="section-heading mb-2">Snippets</div>
-            <h3 className="text-lg font-semibold text-[var(--text-primary)]">Clipboard Shelf</h3>
+    <SectionPanel
+      title="Snippets"
+      badge={`${snippets.length}`}
+      scroll
+      actions={
+        <button type="button" onClick={() => setAdding(true)} className="btn-primary h-9 px-3 text-sm">
+          <Plus aria-hidden="true" className="h-4 w-4" />
+          Add
+        </button>
+      }
+    >
+      {isFormOpen && (
+        <div className="card-subtle mb-3 space-y-2.5 p-3.5">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-[var(--text-primary)]">{editingId ? 'Edit snippet' : 'New snippet'}</span>
+            <button type="button" onClick={() => { setEditingId(null); setAdding(false) }} className="icon-button h-8 w-8" aria-label="Cancel">
+              <X aria-hidden="true" className="h-3.5 w-3.5" />
+            </button>
           </div>
-          <button type="button" onClick={startAdd} className="chip-button px-4 py-2">
-            <Plus aria-hidden="true" className="h-3.5 w-3.5" />
-            Add
+          <input type="text" value={formTitle} onChange={(e) => setFormTitle(e.target.value)} placeholder="Title" className="input-field h-10 text-sm" />
+          <select value={formLanguage} onChange={(e) => setFormLanguage(e.target.value)} className="input-field h-10 w-full text-sm sm:w-40">
+            {LANGUAGES.map((lang) => <option key={lang} value={lang}>{lang}</option>)}
+          </select>
+          <textarea value={formContent} onChange={(e) => setFormContent(e.target.value)} placeholder="Snippet content…" rows={3} className="input-field resize-none rounded-[var(--radius-md)] font-mono text-sm" />
+          <button type="button" onClick={() => void handleSave()} disabled={!formTitle.trim() || !formContent.trim()} className="btn-primary h-9 px-4 text-sm">
+            {editingId ? 'Save' : 'Add'}
           </button>
         </div>
+      )}
 
-        {isFormOpen && (
-          <div className="card-subtle mb-4 space-y-3 p-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-[var(--text-primary)]">{editingId ? 'Edit Snippet' : 'New Snippet'}</span>
-              <button type="button" onClick={handleCancel} className="icon-button h-8 w-8" aria-label="Cancel">
-                <X aria-hidden="true" className="h-3.5 w-3.5" />
-              </button>
-            </div>
-            <input
-              type="text"
-              value={formTitle}
-              onChange={(e) => setFormTitle(e.target.value)}
-              placeholder="Snippet title…"
-              className="input-field h-11"
-            />
-            <div className="flex gap-2">
-              <select
-                value={formLanguage}
-                onChange={(e) => setFormLanguage(e.target.value)}
-                className="input-field h-11 w-36 shrink-0"
-              >
-                {LANGUAGES.map((lang) => (
-                  <option key={lang} value={lang}>{lang}</option>
-                ))}
-              </select>
-            </div>
-            <textarea
-              value={formContent}
-              onChange={(e) => setFormContent(e.target.value)}
-              placeholder="Paste or type your snippet…"
-              rows={3}
-              className="input-field resize-none rounded-[var(--radius-lg)] font-mono text-sm"
-            />
-            <div className="flex justify-end gap-2">
-              <button type="button" onClick={handleCancel} className="btn-secondary px-4 py-2">Cancel</button>
-              <button type="button" onClick={() => void handleSave()} disabled={!formTitle.trim() || !formContent.trim()} className="btn-primary px-4 py-2">
-                {editingId ? 'Save' : 'Add Snippet'}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {snippets.length === 0 ? (
-          <div className="card-subtle flex flex-col items-center justify-center gap-2 px-4 py-8 text-center">
-            <Code2 aria-hidden="true" className="h-5 w-5 text-[var(--text-label)]" />
-            <p className="text-sm font-medium text-[var(--text-primary)]">No snippets yet.</p>
-            <p className="text-xs text-[var(--text-secondary)]">Save frequently used commands and code blocks.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-            {snippets.map((snippet) => (
-              <div key={snippet.id} className="card-subtle group flex flex-col gap-2 p-4 transition-transform duration-200 hover:-translate-y-0.5">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0 flex-1">
-                    <div className="truncate text-sm font-semibold text-[var(--text-primary)]">{snippet.title}</div>
-                    <div className="mt-0.5 text-xs text-[var(--text-label)]">{snippet.language}</div>
-                  </div>
-                  <div className="flex shrink-0 gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-                    <button type="button" onClick={() => startEdit(snippet)} className="icon-button h-7 w-7" aria-label={`Edit ${snippet.title}`}>
-                      <Pencil aria-hidden="true" className="h-3 w-3" />
-                    </button>
-                    <button type="button" onClick={() => void deleteSnippet(snippet.id)} className="icon-button h-7 w-7 text-[var(--error)] hover:border-[var(--error)]/40 hover:bg-[var(--error)]/10" aria-label={`Delete ${snippet.title}`}>
-                      <Trash2 aria-hidden="true" className="h-3 w-3" />
-                    </button>
-                  </div>
+      {snippets.length === 0 ? (
+        <EmptyState icon={<Code2 aria-hidden="true" className="h-4 w-4" />} title="No snippets yet" description="Save commands and code blocks for quick copy." />
+      ) : (
+        <div className="space-y-2">
+          {snippets.map((snippet) => (
+            <div key={snippet.id} className="card-subtle group p-3">
+              <div className="mb-2 flex items-center justify-between gap-2">
+                <div className="min-w-0">
+                  <div className="truncate text-sm font-semibold text-[var(--text-primary)]">{snippet.title}</div>
+                  <div className="text-xs text-[var(--text-label)]">{snippet.language}</div>
                 </div>
-                <pre className="max-h-24 overflow-auto rounded-[var(--radius-sm)] bg-[var(--code-bg)] p-2.5 font-mono text-xs text-[var(--text-secondary)]">
-                  <code>{snippet.content}</code>
-                </pre>
-                <button
-                  type="button"
-                  onClick={() => void handleCopy(snippet.id, snippet.content)}
-                  className="btn-secondary w-full justify-center py-2 text-xs"
-                >
-                  <ClipboardCopy aria-hidden="true" className="h-3.5 w-3.5" />
-                  {copiedId === snippet.id ? 'Copied!' : 'Copy'}
-                </button>
+                <div className="flex shrink-0 gap-1.5">
+                  <button type="button" onClick={() => void handleCopy(snippet.id, snippet.content)} className="chip-button px-2.5 py-1 text-xs">
+                    <ClipboardCopy aria-hidden="true" className="h-3.5 w-3.5" />
+                    {copiedId === snippet.id ? 'Copied' : 'Copy'}
+                  </button>
+                  <button type="button" onClick={() => { setEditingId(snippet.id); setFormTitle(snippet.title); setFormContent(snippet.content); setFormLanguage(snippet.language) }} className="chip-button px-2.5 py-1 text-xs">Edit</button>
+                  <button type="button" onClick={() => void deleteSnippet(snippet.id)} className="chip-button px-2.5 py-1 text-xs text-[var(--error)]">Del</button>
+                </div>
               </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </section>
+              <pre className="max-h-20 overflow-auto rounded-[var(--radius-sm)] bg-[var(--code-bg)] p-2.5 font-mono text-xs text-[var(--text-secondary)]"><code>{snippet.content}</code></pre>
+            </div>
+          ))}
+        </div>
+      )}
+    </SectionPanel>
   )
 }

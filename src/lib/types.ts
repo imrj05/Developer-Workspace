@@ -1,4 +1,8 @@
+import type { LayoutPreset, UtilityPanel } from './layoutPresets'
+
 export interface Settings {
+  layoutPreset: LayoutPreset
+  utilityPanel: UtilityPanel
   darkMode: boolean
   focusMode: boolean
   clockFormat: '12' | '24'
@@ -13,6 +17,7 @@ export interface Settings {
   autoRotateBackgrounds: boolean
   showWeatherWidget: boolean
   showBookmarks: boolean
+  bookmarksShowMostVisited: boolean
   showDevPanel: boolean
   showTerminalNotes: boolean
   showGitHubActivity: boolean
@@ -35,6 +40,8 @@ export interface Settings {
 }
 
 export const DEFAULT_SETTINGS: Settings = {
+  layoutPreset: 'developer',
+  utilityPanel: 'none',
   darkMode: true,
   focusMode: false,
   clockFormat: '24',
@@ -49,6 +56,7 @@ export const DEFAULT_SETTINGS: Settings = {
   autoRotateBackgrounds: false,
   showWeatherWidget: true,
   showBookmarks: true,
+  bookmarksShowMostVisited: true,
   showDevPanel: true,
   showTerminalNotes: true,
   showGitHubActivity: true,
@@ -59,11 +67,11 @@ export const DEFAULT_SETTINGS: Settings = {
   showPinnedApps: true,
   showTaskPlanner: true,
   showRecentActivity: true,
-  showSnippetShelf: true,
+  showSnippetShelf: false,
   showDevShortcuts: true,
   weatherApiKey: '',
-  devPanelOpen: true,
-  terminalNotesOpen: true,
+  devPanelOpen: false,
+  terminalNotesOpen: false,
   githubActivityCollapsed: false,
   apiStatusCollapsed: false,
   quickDocsCollapsed: false,

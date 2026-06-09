@@ -17,7 +17,11 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   cloudFog: CloudFog
 }
 
-export function Weather() {
+interface WeatherProps {
+  onOpenSettings?: () => void
+}
+
+export function Weather({ onOpenSettings }: WeatherProps) {
   const { settings } = useSettingsStore()
   const [weather, setWeather] = useState<{
     temp: number
@@ -54,32 +58,39 @@ export function Weather() {
   if (!settings.showWeatherWidget) return null
 
   const IconComponent = iconMap[getWeatherIcon(weather?.icon || '')] || Cloud
+  const needsSetup = !settings.weatherApiKey
+
+  if (needsSetup) {
+    return (
+      <button
+        type="button"
+        onClick={onOpenSettings}
+        className="chip-button self-start text-left"
+      >
+        <Cloud aria-hidden="true" className="h-4 w-4 text-[var(--muted)]" />
+        <span className="text-sm font-medium text-[var(--text-primary)]">Set up weather</span>
+      </button>
+    )
+  }
 
   return (
-    <div className="card-glass inline-flex items-center gap-3 self-start rounded-full px-4 py-2.5 text-left">
+    <div className="chip-button pointer-events-none self-start text-left">
       {loading ? (
-        <Loader2 aria-hidden="true" className="h-5 w-5 animate-spin text-[var(--muted)]" />
-      ) : error || !settings.weatherApiKey ? (
-        <Cloud aria-hidden="true" className="h-5 w-5 text-[var(--muted)]" />
+        <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin text-[var(--muted)]" />
+      ) : error ? (
+        <button type="button" onClick={onOpenSettings} className="pointer-events-auto inline-flex items-center gap-2 text-left">
+          <Cloud aria-hidden="true" className="h-4 w-4 text-[var(--muted)]" />
+          <span className="text-sm font-medium text-[var(--text-primary)]">Weather unavailable</span>
+        </button>
       ) : (
-        <IconComponent className="h-5 w-5 text-[var(--accent)]" />
+        <>
+          <IconComponent className="h-4 w-4 text-[var(--accent)]" />
+          <span className="text-sm font-semibold tabular-nums text-[var(--text-primary)]">
+            {weather?.temp}°{settings.useFahrenheit ? 'F' : 'C'}
+          </span>
+          <span className="text-xs capitalize text-[var(--text-label)]">{weather?.name}</span>
+        </>
       )}
-      <div className="min-w-0">
-        {loading ? (
-          <span className="text-sm text-[var(--muted)]">Loading…</span>
-        ) : error || !settings.weatherApiKey ? (
-          <span className="text-sm text-[var(--muted)]">Weather unavailable</span>
-        ) : (
-          <>
-            <div className="text-sm font-semibold text-[var(--text-primary)]">
-              {weather?.temp}°{settings.useFahrenheit ? 'F' : 'C'}
-            </div>
-            <div className="text-xs text-[var(--muted)] capitalize">
-              {weather?.name}
-            </div>
-          </>
-        )}
-      </div>
     </div>
   )
 }

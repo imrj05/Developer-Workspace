@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Settings as SettingsIcon } from 'lucide-react'
-import { Logo } from './components/ui/Logo'
+import { Settings as SettingsIcon, Zap } from 'lucide-react'
+import headerIcon from '../icons/icon-48.png'
 import { useSettingsStore } from './stores/settingsStore'
 import { useBookmarksStore } from './stores/bookmarksStore'
 import { useSnippetsStore } from './stores/snippetsStore'
@@ -9,7 +9,6 @@ import { Clock } from './components/Clock/Clock'
 import { Weather } from './components/Weather/Weather'
 import { SearchBar } from './components/Search/SearchBar'
 import { Bookmarks } from './components/Bookmarks/Bookmarks'
-import { DevPanel } from './components/DevPanel/DevPanel'
 import { TerminalNotes } from './components/TerminalNotes/TerminalNotes'
 import { Settings } from './components/Settings/Settings'
 import { Tooltip } from './components/ui/Tooltip'
@@ -22,6 +21,9 @@ import { ShortcutsHelpModal } from './components/Help/ShortcutsHelpModal'
 import { RecentActivity } from './components/RecentActivity/RecentActivity'
 import { SnippetShelf } from './components/Snippets/SnippetShelf'
 import { DevShortcuts } from './components/DevShortcuts/DevShortcuts'
+import { UtilityDock } from './components/UtilityDock/UtilityDock'
+import { DevPanel } from './components/DevPanel/DevPanel'
+import type { SettingsTab } from './lib/layoutPresets'
 
 function App() {
   const { settings, loadSettings, updateSettings } = useSettingsStore()
@@ -30,10 +32,16 @@ function App() {
   const { loadSnippets } = useSnippetsStore()
   const { loadDevShortcuts } = useDevShortcutsStore()
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [settingsTab, setSettingsTab] = useState<SettingsTab>('appearance')
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false)
   const [shortcutsOpen, setShortcutsOpen] = useState(false)
   const [taskFocusRequest, setTaskFocusRequest] = useState(0)
   const [mounted, setMounted] = useState(false)
+
+  const openSettings = (tab: SettingsTab = 'appearance') => {
+    setSettingsTab(tab)
+    setSettingsOpen(true)
+  }
 
   useEffect(() => {
     loadSettings()
@@ -50,19 +58,35 @@ function App() {
     }
   }, [settings.darkMode, mounted])
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null
+      const isTypingTarget = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target?.isContentEditable
+
+      if (event.key === '?' && !isTypingTarget && !event.metaKey && !event.ctrlKey) {
+        event.preventDefault()
+        setShortcutsOpen(true)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
   const showWeather = settings.showWeatherWidget && !settings.focusMode
   const showBookmarks = settings.showBookmarks && !settings.focusMode
-  const showDevPanel = settings.showDevPanel && settings.devPanelOpen && !settings.focusMode
-  const showTerminalNotes = settings.showTerminalNotes && settings.terminalNotesOpen && !settings.focusMode
+  const showDevPanel = settings.showDevPanel && !settings.focusMode
+  const showTerminalNotes = settings.showTerminalNotes && !settings.focusMode
   const showQuickActions = settings.showQuickActions
   const showPinnedApps = settings.showPinnedApps && !settings.focusMode
   const showTaskPlanner = settings.showTaskPlanner && !settings.focusMode
   const showRecentActivity = settings.showRecentActivity && !settings.focusMode
   const showSnippetShelf = settings.showSnippetShelf && !settings.focusMode
   const showDevShortcuts = settings.showDevShortcuts && !settings.focusMode
-  const hasSecondaryContent = showBookmarks || showDevPanel || showTerminalNotes || showPinnedApps || showTaskPlanner || showRecentActivity || showSnippetShelf || showDevShortcuts
+  const hasSecondaryContent = showBookmarks || showTerminalNotes || showPinnedApps || showTaskPlanner || showRecentActivity || showSnippetShelf || showDevShortcuts
   const centerHero = !hasSecondaryContent
-  const contentLayoutClass = showTerminalNotes ? 'xl:pb-[22rem]' : ''
+  const terminalNotesOpen = showTerminalNotes && settings.utilityPanel === 'terminal-notes'
+  const bottomPaddingClass = terminalNotesOpen ? 'pb-28 sm:pb-32' : ''
 
   const backgroundStyle = settings.background || settings.customBackground
     ? {
@@ -72,7 +96,7 @@ function App() {
         backgroundRepeat: 'no-repeat',
         width: '100vw',
         height: '100vh',
-        position: 'fixed',
+        position: 'fixed' as const,
         top: 0,
         left: 0,
         opacity: settings.backgroundIntensity / 100,
@@ -80,19 +104,19 @@ function App() {
           ? `blur(${settings.backgroundBlur}px) saturate(0.9)`
           : `blur(${Math.max(settings.backgroundBlur - 1, 0)}px) saturate(0.95)`,
         transform: 'scale(1.02)',
-        pointerEvents: 'none',
+        pointerEvents: 'none' as const,
       }
     : {
         width: '100vw',
         height: '100vh',
-        position: 'fixed',
+        position: 'fixed' as const,
         top: 0,
         left: 0,
-        pointerEvents: 'none',
+        pointerEvents: 'none' as const,
       }
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden">
+    <div className="app-shell relative min-h-dvh overflow-x-hidden">
       <div aria-hidden="true" style={backgroundStyle} />
       <div
         aria-hidden="true"
@@ -104,22 +128,30 @@ function App() {
         }}
       />
 
-      <div className="relative min-h-screen px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
-        <div className="relative mx-auto flex min-h-[calc(100vh-2rem)] max-w-6xl flex-col gap-6 sm:min-h-[calc(100vh-3rem)] lg:gap-8">
-          <header className={`${centerHero ? 'pointer-events-none absolute inset-x-0 top-0 z-[100]' : ''} flex items-start justify-between gap-4`}>
-            <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center">
-              <div className="card-glass inline-flex items-center gap-2 self-start px-3 py-2 text-xs font-medium text-[var(--text-secondary)]">
-                <Logo className="h-4 w-4" />
+      <DevPanel />
+
+      <div className={`relative min-h-dvh px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8 ${bottomPaddingClass}`}>
+        <div className="workspace-column relative flex min-h-[calc(100vh-2rem)] flex-col gap-5 sm:min-h-[calc(100vh-3rem)] sm:gap-6">
+          <header className={`${centerHero ? 'pointer-events-none absolute inset-x-0 top-0 z-[100]' : ''} flex w-full items-center justify-between gap-3`}>
+            <div className="flex min-w-0 items-center gap-2.5">
+              <div className="header-brand pointer-events-auto">
+                <img src={headerIcon} alt="Developer Workspace" className="header-brand-icon" width={36} height={36} />
               </div>
-              {showWeather && <Weather />}
+              {showWeather && <Weather onOpenSettings={() => openSettings('integrations')} />}
             </div>
 
-            <div className={`z-[110] shrink-0 ${centerHero ? 'pointer-events-auto' : ''}`}>
+            <div className={`z-[110] flex shrink-0 items-center gap-1.5 ${centerHero ? 'pointer-events-auto' : ''}`}>
+              {settings.focusMode && (
+                <div className="panel hidden items-center gap-1.5 !px-3 !py-2 text-xs font-medium text-[var(--accent)] sm:inline-flex">
+                  <Zap aria-hidden="true" className="h-3.5 w-3.5" />
+                  Focus
+                </div>
+              )}
               <Tooltip content="Settings" side="left">
                 <button
-                  onClick={() => setSettingsOpen(true)}
+                  onClick={() => openSettings('appearance')}
                   aria-label="Open settings"
-                  className="icon-button card-glass h-12 w-12"
+                  className="icon-button h-10 w-10"
                 >
                   <SettingsIcon aria-hidden="true" className="h-5 w-5" />
                 </button>
@@ -127,50 +159,50 @@ function App() {
             </div>
           </header>
 
-          <div className={`flex flex-1 flex-col ${centerHero ? 'justify-center' : `gap-6 lg:gap-8 ${contentLayoutClass}`}`}>
-            <main className={`mx-auto flex w-full max-w-4xl flex-col items-center text-center ${centerHero ? 'flex-1 justify-center' : ''}`}>
-              <Clock />
-              <SearchBar />
-              {showQuickActions && (
-                <QuickActions
-                  focusMode={settings.focusMode}
-                  onOpenPalette={() => setCommandPaletteOpen(true)}
-                  onOpenSettings={() => setSettingsOpen(true)}
-                  onToggleFocusMode={() => void updateSettings({ focusMode: !settings.focusMode })}
-                  onCreateTask={() => setTaskFocusRequest((value) => value + 1)}
-                  onOpenHelp={() => setShortcutsOpen(true)}
-                />
-              )}
+          <div className={`flex w-full flex-1 flex-col ${centerHero ? 'justify-center' : 'gap-4 sm:gap-5'}`}>
+            <main className={`flex w-full flex-col items-center text-center ${centerHero ? 'flex-1 justify-center' : ''}`}>
+              <section
+                className={`hero-stack w-full ${settings.focusMode ? 'hero-stack--focus' : ''} ${centerHero ? 'hero-stack--minimal' : ''}`}
+                aria-label="Time and search"
+              >
+                <Clock focusMode={settings.focusMode || centerHero} />
+                <SearchBar embedded />
+                {showQuickActions && (
+                  <QuickActions
+                    focusMode={settings.focusMode}
+                    onOpenPalette={() => setCommandPaletteOpen(true)}
+                    onToggleFocusMode={() => void updateSettings({ focusMode: !settings.focusMode })}
+                    onCreateTask={() => setTaskFocusRequest((value) => value + 1)}
+                    onOpenHelp={() => setShortcutsOpen(true)}
+                  />
+                )}
+              </section>
             </main>
 
-            {showPinnedApps && <PinnedApps />}
-            {showTaskPlanner && <TaskPlanner focusRequest={taskFocusRequest} />}
-            {showRecentActivity && <RecentActivity />}
-            {showDevShortcuts && <DevShortcuts />}
-            {showSnippetShelf && <SnippetShelf />}
-
-            {showBookmarks && (
-              <div className="mx-auto grid w-full max-w-7xl gap-5">
-                <Bookmarks />
+            {!settings.focusMode && (
+              <div className="content-stack">
+                {(showPinnedApps || showTaskPlanner) && (
+                  <div className="content-grid">
+                    {showTaskPlanner && <TaskPlanner focusRequest={taskFocusRequest} />}
+                    {showPinnedApps && <PinnedApps />}
+                  </div>
+                )}
+                {showRecentActivity && <RecentActivity />}
+                {showDevShortcuts && <DevShortcuts />}
+                {showSnippetShelf && <SnippetShelf />}
+                {showBookmarks && <Bookmarks />}
               </div>
             )}
           </div>
 
-          <div className="fixed bottom-4 right-4 z-40 hidden xl:block">
-            {showDevPanel && <DevPanel />}
-          </div>
-          <div className="mx-auto hidden w-full max-w-4xl xl:hidden">
-            {showDevPanel && <DevPanel />}
-          </div>
-          <div className="fixed bottom-4 left-1/2 z-40 hidden -translate-x-1/2 xl:block">
-            {showTerminalNotes && <TerminalNotes />}
-          </div>
-          <div className="mx-auto hidden w-full max-w-4xl xl:hidden">
-            {showTerminalNotes && <TerminalNotes />}
+          <div className="xl:hidden">
+            {terminalNotesOpen && <TerminalNotes />}
           </div>
 
-          <Settings open={settingsOpen} onOpenChange={setSettingsOpen} />
-          <CommandPalette open={commandPaletteOpen} onOpenChange={setCommandPaletteOpen} onOpenSettings={() => setSettingsOpen(true)} />
+          <UtilityDock />
+
+          <Settings open={settingsOpen} onOpenChange={setSettingsOpen} initialTab={settingsTab} />
+          <CommandPalette open={commandPaletteOpen} onOpenChange={setCommandPaletteOpen} onOpenSettings={() => openSettings('layout')} />
           <ShortcutsHelpModal open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
         </div>
       </div>

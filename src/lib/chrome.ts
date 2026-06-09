@@ -184,19 +184,29 @@ export function getVisitCounts(urls: string[]): Promise<Map<string, number>> {
   })
 }
 
+export function openInNewTab(url: string): void {
+  if (!url) return
+  window.open(url, '_blank', 'noopener,noreferrer')
+}
+
 export function search(query: string): Promise<void> {
   return new Promise((resolve) => {
-    if (typeof chrome === 'undefined' || !chrome.search) {
-      resolve()
-      return
+    if (typeof chrome !== 'undefined' && chrome.search) {
+      try {
+        chrome.search.query({ text: query, disposition: 'NEW_TAB' }, () => {
+          if (chrome.runtime.lastError) {
+            openInNewTab(`https://www.google.com/search?q=${encodeURIComponent(query)}`)
+          }
+          resolve()
+        })
+        return
+      } catch {
+        // fall through to web fallback
+      }
     }
-    try {
-      chrome.search.query({ query, disposition: 'NEW_TAB' }, () => {
-        resolve()
-      })
-    } catch {
-      resolve()
-    }
+
+    openInNewTab(`https://www.google.com/search?q=${encodeURIComponent(query)}`)
+    resolve()
   })
 }
 

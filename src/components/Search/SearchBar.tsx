@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Search, X } from 'lucide-react'
-import { search } from '../../lib/chrome'
+import { openInNewTab, search } from '../../lib/chrome'
 import { useBookmarksStore } from '../../stores/bookmarksStore'
 import { useWorkspaceStore } from '../../stores/workspaceStore'
 
@@ -14,6 +14,13 @@ function getHostnameLabel(url: string) {
 
 interface SearchBarProps {
   embedded?: boolean
+}
+
+interface SearchSuggestion {
+  id: string
+  label: string
+  sublabel: string
+  url: string
 }
 
 export function SearchBar({ embedded = false }: SearchBarProps) {
@@ -56,7 +63,7 @@ export function SearchBar({ embedded = false }: SearchBarProps) {
     }
   }
 
-  const suggestions = useMemo(() => {
+  const suggestions = useMemo<SearchSuggestion[]>(() => {
     const normalized = query.trim().toLowerCase()
     if (!normalized) return []
 
@@ -64,23 +71,30 @@ export function SearchBar({ embedded = false }: SearchBarProps) {
       id: `bookmark-${bookmark.id}`,
       label: bookmark.title,
       sublabel: getHostnameLabel(bookmark.url),
-      value: bookmark.title
+      url: bookmark.url
     }))
 
     const pinnedSuggestions = pinnedApps.map((app) => ({
       id: `pinned-${app.id}`,
       label: app.title,
-      sublabel: app.description,
-      value: app.title
+      sublabel: app.description || getHostnameLabel(app.url),
+      url: app.url
     }))
 
     return [...pinnedSuggestions, ...bookmarkSuggestions]
-      .filter((item) => `${item.label} ${item.sublabel}`.toLowerCase().includes(normalized))
+      .filter((item) => `${item.label} ${item.sublabel} ${item.url}`.toLowerCase().includes(normalized))
       .slice(0, 5)
   }, [bookmarks, pinnedApps, query])
 
+  const handleSuggestionSelect = (suggestion: SearchSuggestion) => {
+    openInNewTab(suggestion.url)
+    setQuery('')
+    setSuggestionsOpen(false)
+    inputRef.current?.blur()
+  }
+
   return (
-    <div className={`w-full ${embedded ? 'max-w-md' : 'mx-auto mt-4 max-w-lg px-2 sm:px-0'}`}>
+    <div className={`search-bar w-full ${embedded ? 'max-w-md' : 'mx-auto mt-4 max-w-lg px-2 sm:px-0'}`}>
       <form
         onSubmit={handleSubmit}
         className={`relative flex w-full items-center gap-1 rounded-full px-1 py-1 ${
@@ -103,6 +117,9 @@ export function SearchBar({ embedded = false }: SearchBarProps) {
             setSuggestionsOpen(true)
           }}
           onFocus={() => setSuggestionsOpen(true)}
+          onBlur={() => {
+            window.setTimeout(() => setSuggestionsOpen(false), 150)
+          }}
           placeholder="Search…"
           className="input-field h-9 w-full min-w-0 border-transparent bg-transparent py-1 pl-9 pr-2 text-left text-sm shadow-none focus:border-transparent focus:shadow-none"
         />
@@ -124,7 +141,7 @@ export function SearchBar({ embedded = false }: SearchBarProps) {
         )}
 
         {suggestionsOpen && suggestions.length > 0 && (
-          <div className="absolute left-0 right-0 top-[calc(100%+0.375rem)] z-20 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface-overlay)]/95 p-1.5 shadow-[var(--card-shadow-soft)] backdrop-blur-xl">
+          <div className="search-suggestions absolute left-0 right-0 top-[calc(100%+0.375rem)] overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface-overlay)]/95 p-1.5 shadow-[var(--card-shadow-soft)] backdrop-blur-xl">
             <div className="space-y-0.5">
               {suggestions.map((suggestion) => (
                 <button
@@ -132,9 +149,7 @@ export function SearchBar({ embedded = false }: SearchBarProps) {
                   type="button"
                   onMouseDown={(event) => {
                     event.preventDefault()
-                    setQuery(suggestion.value)
-                    setSuggestionsOpen(false)
-                    inputRef.current?.focus()
+                    handleSuggestionSelect(suggestion)
                   }}
                   className="flex w-full items-center justify-between gap-2 rounded-[var(--radius-md)] px-2.5 py-2 text-left transition-colors hover:bg-[var(--accent)]/8"
                 >
@@ -142,7 +157,7 @@ export function SearchBar({ embedded = false }: SearchBarProps) {
                     <div className="truncate text-xs font-medium text-[var(--text-primary)]">{suggestion.label}</div>
                     <div className="truncate text-[11px] text-[var(--text-secondary)]">{suggestion.sublabel}</div>
                   </div>
-                  <span className="text-[10px] font-medium uppercase tracking-[0.12em] text-[var(--text-label)]">Use</span>
+                  <span className="text-[10px] font-medium uppercase tracking-[0.12em] text-[var(--text-label)]">Open</span>
                 </button>
               ))}
             </div>

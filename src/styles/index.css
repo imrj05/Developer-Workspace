@@ -558,6 +558,7 @@
 
   .hero-stack {
     position: relative;
+    z-index: 30;
     width: 100%;
     margin-inline: auto;
     display: flex;
@@ -611,6 +612,17 @@
     flex-direction: column;
     width: 100%;
     gap: 1rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .search-bar {
+    position: relative;
+    z-index: 40;
+  }
+
+  .search-suggestions {
+    z-index: 50;
   }
 
   .setting-row {
